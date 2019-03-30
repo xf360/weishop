@@ -12,15 +12,15 @@
       </div>
     </div>
     <van-row class="user-links" :gutter="1" type="flex" justify="center" align="center">
-      <van-col span="8">
+      <van-col span="8" @click.native="push('/mycash')">
         <van-icon name="pending-payment" />
         我的钱包
       </van-col>
-      <van-col span="8">
+      <van-col span="8" @click.native="push('/mysale')">
         <van-icon name="medel-o" />
         我的销售
       </van-col>
-      <van-col span="8">
+      <van-col span="8" @click.native="push('/myway')">
         <van-icon name="shop-collect-o" />
         渠道
       </van-col>
@@ -40,15 +40,15 @@
       </van-col>
     </van-row>
        <van-row style="margin-top:2px" class="user-links" :gutter="1" type="flex" justify="center" align="center">
-      <van-col span="8">
-        <van-icon name="passed" />
+      <van-col span="8"  @click.native="push('/mylicence')">
+        <van-icon name="passed"/>
         我的授权
       </van-col>
-      <van-col span="8">
+      <van-col span="8" @click.native="push('/myad')">
         <van-icon name="fire-o" />
         我要推广
       </van-col>
-      <van-col span="8">
+      <van-col span="8" @click.native="push('/setting')">
         <van-icon name="apps-o" />
         综合业务
       </van-col>
@@ -82,6 +82,11 @@
       [Icon.name]: Icon,
       [Cell.name]: Cell,
       [CellGroup.name]: CellGroup
+    },
+    methods:{
+      push(url){
+        this.$router.push(url);
+      }
     }
   };
 </script>

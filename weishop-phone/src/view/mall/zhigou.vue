@@ -3,7 +3,7 @@
         <van-nav-bar title="直购" right-text="结算" left-arrow @click-left="onClickLeft" @click-right="onClickRight">
             <van-icon name="todo-list-o" slot="left" />
         </van-nav-bar>
-        <van-pull-refresh v-model="refreshing" @refresh="onRefresh()">
+        <van-pull-refresh v-model="refreshing" @refresh="onRefresh()" style="top:50px">
             <van-list v-model="loading" :finished="finished" finished-text="加载完成" @load="onLoad()">
                 <gooditem v-for="(item,index) in goods" :key="index" :title="item.title" :desc="item.desc"
                     :num="item.num" :price="item.price" :thumb="item.thumb" />
@@ -23,7 +23,7 @@
         bottom: 50px;
         position: fixed;
         overflow: auto;
-        top: 50px;
+      
         left: 0;
         right: 0;
     }

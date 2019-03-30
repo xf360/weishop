@@ -3,7 +3,7 @@
         <van-nav-bar title="直购" right-text="结算" left-arrow @click-left="onClickLeft" />
         <van-tabs>
             <van-tab title="全部">
-                <van-pull-refresh v-model="refreshing" @refresh="onRefresh(0)">
+                <van-pull-refresh v-model="refreshing" @refresh="onRefresh(0)" style="top:90px;">
                     <van-list v-model="loading" :finished="finished" finished-text="加载完成" @load="onLoad(0)">
                         <van-panel v-for="(item ,index) in datalist" :key="index" title="订单信息" :desc="`编号：${item.no}`"
                             :status="item.statusTitle">
@@ -103,9 +103,16 @@
     </div>
 </template>
 <style>
- .van-tabs--line{
-    margin-top: 45px;
- } 
+.van-tabs {
+    position: absolute;
+    top: 45px;
+    height: 45px;
+    left: 0;
+    right: 0;
+}
+ /* .van-pull-refresh{
+     top:90px !important;
+ } */
     .card-desc {
         color: #7d7e80;
         max-height: 20px;

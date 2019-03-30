@@ -23,6 +23,90 @@ const routes = [{
     }
   },
   {
+    name: 'mycash',
+    component: () => import('./view/user/mycash.vue'),
+    meta: {
+      title: '我的钱包'
+    }
+  },
+  {
+    name: 'getcash',
+    component: () => import('./view/user/getcash.vue'),
+    meta: {
+      title: '余额提现'
+    }
+  },
+  {
+    name: 'getcashlist',
+    component: () => import('./view/user/getcashlist.vue'),
+    meta: {
+      title: '提现记录'
+    }
+  },
+  {
+    name: 'pushcash',
+    component: () => import('./view/user/pushcash.vue'),
+    meta: {
+      title: '货款充值'
+    }
+  },
+  {
+    name: 'pushcashlist',
+    component: () => import('./view/user/pushcashlist.vue'),
+    meta: {
+      title: '货款充值'
+    }
+  },
+  {
+    name: 'myway',
+    component: () => import('./view/user/myway.vue'),
+    meta: {
+      title: '渠道'
+    }
+  },
+  {
+    name: 'agentinfo',
+    component: () => import('./view/user/agentinfo.vue'),
+    meta: {
+      title: '代理详情'
+    }
+  },
+  {
+    name: 'mylicence',
+    component: () => import('./view/user/mylicence.vue'),
+    meta: {
+      title: '我的授权'
+    }
+  },
+  {
+    name: 'myad',
+    component: () => import('./view/user/myad.vue'),
+    meta: {
+      title: '我要推广'
+    }
+  },
+  {
+    name: 'myadadd',
+    component: () => import('./view/user/myadadd.vue'),
+    meta: {
+      title: '新增邀请链接'
+    }
+  },
+  {
+    name: 'myaddinfo',
+    component: () => import('./view/user/myaddinfo.vue'),
+    meta: {
+      title: '邀请链接'
+    }
+  },
+  {
+    name: 'setting',
+    component: () => import('./view/user/setting/index.vue'),
+    meta: {
+      title: '设置'
+    }
+  },
+  {
     name: 'index',
     component: () => import('./view/'),
     meta: {
