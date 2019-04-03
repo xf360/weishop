@@ -7,11 +7,11 @@
       </router-link>
       <a-divider v-if="isMobile" type="vertical" />
       <a-icon v-if="layout === 'side'" class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="toggleCollapse" :style="{float:'left'}" />
-      <a-menu  v-if="layout === 'side'" mode="horizontal" :defaultSelectedKeys="['1']" :style="{ lineHeight: '64px' ,display:'inline-block',marginLeft:'30px'}">
+      <!-- <a-menu  v-if="layout === 'side'" mode="horizontal" :defaultSelectedKeys="['1']" :style="{ lineHeight: '64px' ,display:'inline-block',marginLeft:'30px'}">
         <a-menu-item key="1">系统模块</a-menu-item>
         <a-menu-item key="2">模块1</a-menu-item>
         <a-menu-item key="3">模块2</a-menu-item>
-      </a-menu>
+      </a-menu> -->
 
       <div v-if="layout === 'head'" class="global-header-menu">
         <i-menu style="height: 64px; line-height: 64px;" :theme="theme" mode="horizontal" :menuData="menuData" @select="onSelect" />

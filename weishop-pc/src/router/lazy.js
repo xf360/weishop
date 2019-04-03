@@ -26,7 +26,7 @@ const routers = new Router({
       children: [
         {
           path: '/dashboard',
-          name: 'dashboard',
+          name: '仪表盘',
           component: RouteView,
           icon: 'dashboard',
           children: [
@@ -39,31 +39,169 @@ const routers = new Router({
           ]
         },
         {
-          path: '/form',
-          name: '表单页',
+          path: '/audit',
+          name: '审核管理',
           component: PageView,
-          icon: 'form',
+          // icon: 'dashboard',
           children: [
             {
-              path: '/form/basic',
-              name: '基础表单',
-              component: () => import('@/demopages/form/BasicForm'),
+              path: '/audit/agent',
+              name: '代理审核',
+              component: () => import('@/pages/views/audit/agentaudit.vue'),
               icon: 'none'
             },
             {
-              path: '/form/step',
-              name: '分步表单',
-              component: () => import('@/demopages/form/stepForm/StepForm'),
+              path: '/audit/payin',
+              name: '充值审核',
+              component: () => import('@/pages/views/audit/payinaudit.vue'),
               icon: 'none'
             },
             {
-              path: '/form/advanced',
-              name: '高级表单',
-              component: () => import('@/demopages/form/advancedForm/AdvancedForm'),
+              path: '/audit/payout',
+              name: '提现审核',
+              component: () => import('@/pages/views/audit/payoutaudit.vue'),
               icon: 'none'
             }
           ]
         },
+        {
+          path: '/stock',
+          name: '云仓管理',
+          component: PageView,
+          // icon: 'dashboard',
+          children: [
+            {
+              path: '/stock/goods',
+              name: '商品管理',
+              component: () => import('@/pages/views/stock/goods.vue'),
+              icon: 'none'
+            },
+            {
+              path: '/stock/stockin',
+              name: '进货管理',
+              component: () => import('@/pages/views/stock/stockin.vue'),
+              icon: 'none'
+            },
+            {
+              path: '/stock/stockout',
+              name: '提货管理',
+              component: () => import('@/pages/views/stock/stockout.vue'),
+              icon: 'none'
+            }
+          ]
+        },
+        {
+          path: '/agent',
+          name: '代理管理',
+          component: PageView,
+          // icon: 'dashboard',
+          children: [
+            {
+              path: '/agent/all',
+              name: '全部代理',
+              component: () => import('@/pages/views/agent/allagent.vue'),
+              icon: 'none'
+            },
+            {
+              path: '/agent/first',
+              name: '一级代理',
+              component: () => import('@/pages/views/agent/firstagent.vue'),
+              icon: 'none'
+            }
+          ]
+        },
+        {
+          path: '/money',
+          name: '金额管理',
+          component: PageView,
+          // icon: 'dashboard',
+          children: [
+            {
+              path: '/money/depoist',
+              name: '提现打款',
+              component: () => import('@/pages/views/money/depoist.vue'),
+              icon: 'none'
+            },
+            {
+              path: '/money/static',
+              name: '平台金额',
+              component: () => import('@/pages/views/money/static.vue'),
+              icon: 'none'
+            },
+            {
+              path: '/money/agent',
+              name: '代理金额',
+              component: () => import('@/pages/views/money/agentstatic.vue'),
+              icon: 'none'
+            },
+            {
+              path: '/money/reward',
+              name: '奖励设置',
+              component: () => import('@/pages/views/money/reward.vue'),
+              icon: 'none'
+            },
+            {
+              path: '/money/account',
+              name: '账户设置',
+              component: () => import('@/pages/views/money/account.vue'),
+              icon: 'none'
+            }
+          ]
+        },
+        {
+          path: '/notice',
+          name: '通知公告',
+          component: PageView,
+          // icon: 'dashboard',
+          children: [
+            {
+              path: '/notice/all',
+              name: '全部通知',
+              component: () => import('@/pages/views/notice/allnotice.vue'),
+              icon: 'none'
+            }
+          ]
+        },
+        {
+          path: '/system',
+          name: '系统设置',
+          component: PageView,
+          // icon: 'dashboard',
+          children: [
+            {
+              path: '/system/user',
+              name: '账户设置',
+              component: () => import('@/pages/views/system/user.vue'),
+              icon: 'none'
+            }
+          ]
+        },
+        // {
+        //   path: '/form',
+        //   name: '表单页',
+        //   component: PageView,
+        //   icon: 'form',
+        //   children: [
+        //     {
+        //       path: '/form/basic',
+        //       name: '基础表单',
+        //       component: () => import('@/demopages/form/BasicForm'),
+        //       icon: 'none'
+        //     },
+        //     {
+        //       path: '/form/step',
+        //       name: '分步表单',
+        //       component: () => import('@/demopages/form/stepForm/StepForm'),
+        //       icon: 'none'
+        //     },
+        //     {
+        //       path: '/form/advanced',
+        //       name: '高级表单',
+        //       component: () => import('@/demopages/form/advancedForm/AdvancedForm'),
+        //       icon: 'none'
+        //     }
+        //   ]
+        // },
         {
           path: '/list',
           name: '列表页',
@@ -116,72 +254,72 @@ const routers = new Router({
             }
           ]
         },
-        {
-          path: '/detail',
-          name: '详情页',
-          icon: 'profile',
-          component: RouteView,
-          children: [
-            {
-              path: '/detail/basic',
-              name: '基础详情页',
-              icon: 'none',
-              component: () => import('@/demopages/detail/BasicDetail')
-            },
-            {
-              path: '/detail/advanced',
-              name: '高级详情页',
-              icon: 'none',
-              component: () => import('@/demopages/detail/AdvancedDetail')
-            }
-          ]
-        },
-        {
-          path: '/result',
-          name: '结果页',
-          icon: 'check-circle-o',
-          component: PageView,
-          children: [
-            {
-              path: '/result/success',
-              name: '成功',
-              icon: 'none',
-              component: () => import('@/pages/result/Success')
-            },
-            {
-              path: '/result/error',
-              name: '失败',
-              icon: 'none',
-              component: () => import('@/pages/result/Error')
-            }
-          ]
-        },
-        {
-          path: '/exception',
-          name: '异常页',
-          icon: 'warning',
-          component: RouteView,
-          children: [
-            {
-              path: '/exception/404',
-              name: '404',
-              icon: 'none',
-              component: () => import('@/pages/exception/404')
-            },
-            {
-              path: '/exception/403',
-              name: '403',
-              icon: 'none',
-              component: () => import('@/pages/exception/403')
-            },
-            {
-              path: '/exception/500',
-              name: '500',
-              icon: 'none',
-              component: () => import('@/pages/exception/500')
-            }
-          ]
-        }
+        // {
+        //   path: '/detail',
+        //   name: '详情页',
+        //   icon: 'profile',
+        //   component: RouteView,
+        //   children: [
+        //     {
+        //       path: '/detail/basic',
+        //       name: '基础详情页',
+        //       icon: 'none',
+        //       component: () => import('@/demopages/detail/BasicDetail')
+        //     },
+        //     {
+        //       path: '/detail/advanced',
+        //       name: '高级详情页',
+        //       icon: 'none',
+        //       component: () => import('@/demopages/detail/AdvancedDetail')
+        //     }
+        //   ]
+        // },
+        // {
+        //   path: '/result',
+        //   name: '结果页',
+        //   icon: 'check-circle-o',
+        //   component: PageView,
+        //   children: [
+        //     {
+        //       path: '/result/success',
+        //       name: '成功',
+        //       icon: 'none',
+        //       component: () => import('@/pages/result/Success')
+        //     },
+        //     {
+        //       path: '/result/error',
+        //       name: '失败',
+        //       icon: 'none',
+        //       component: () => import('@/pages/result/Error')
+        //     }
+        //   ]
+        // },
+        // {
+        //   path: '/exception',
+        //   name: '异常页',
+        //   icon: 'warning',
+        //   component: RouteView,
+        //   children: [
+        //     {
+        //       path: '/exception/404',
+        //       name: '404',
+        //       icon: 'none',
+        //       component: () => import('@/pages/exception/404')
+        //     },
+        //     {
+        //       path: '/exception/403',
+        //       name: '403',
+        //       icon: 'none',
+        //       component: () => import('@/pages/exception/403')
+        //     },
+        //     {
+        //       path: '/exception/500',
+        //       name: '500',
+        //       icon: 'none',
+        //       component: () => import('@/pages/exception/500')
+        //     }
+        //   ]
+        // }
       ]
     }
   ]
