@@ -1,23 +1,10 @@
 <template>
-  <!-- 充值审核 -->
+  <!-- 下级代理 -->
   <div>
     <a-card>
       <div class="tools">
 
         <a-form layout="inline">
-          <a-form-item label="打款方式">
-            <a-select style="width:100px" placeholder="选择打款方式" allowClear>
-              <a-select-option :value="1">
-                微信
-              </a-select-option>
-              <a-select-option :value="2">
-                支付宝
-              </a-select-option>
-              <a-select-option :value="3">
-                银行卡转账
-              </a-select-option>
-            </a-select>
-          </a-form-item>
           <a-form-item label="等级">
             <a-select style="width:100px" placeholder="选择等级" allowClear>
               <a-select-option :value="1">
@@ -41,11 +28,11 @@
               </a-select-option>
             </a-select>
           </a-form-item>
-          <a-form-item label="打款日期">
+          <a-form-item label="通过日期">
             <a-range-picker style="width:250px" @change="onChange" />
           </a-form-item>
           <a-form-item label="关键字">
-            <a-input style="width:300px" placeholder="请输入充值单号、姓名、联系电话" />
+            <a-input style="width:300px" placeholder="请输入代理姓名、电话、微信、身份证搜索" />
           </a-form-item>
           <a-form-item>
             <a-button type="primary" @click="loadlist">
@@ -54,27 +41,16 @@
           </a-form-item>
         </a-form>
       </div>
-      <a-alert style="margin-top:20px" message="待审核人数：11，已通过人数：22，未通过人数:33。" type="info" :show-icon="true" />
+      <a-alert style="margin-top:20px" message="一级代理：王珊，下级代理人数：11。" type="info" :show-icon="true" />
       <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
         :loading="loading">
         <span slot="action" slot-scope="text, record">
-          <a href="javascript:;" @click="openaudit(record)">审核</a>
-          <a href="javascript:;" @click="detailvisible=true">查看</a>
+          <a href="javascript:;" @click="opendetail(record)">查看</a>
         </span>
       </a-table>
     </a-card>
-    <a-modal title="审核不通过" v-model="reasonvisible" @ok="handleReasonOk" cancelText="取消" okText="确认">
-      <auditresult ref="reasoncom"></auditresult>
-    </a-modal>
-    <a-modal title="审核" v-model="auditvisible" :width="800">
-      <payininfo :id="selectid"></payininfo>
-      <template slot="footer">
-        <a-button key="back" @click="reasonvisible=true">审核不通过</a-button>
-        <a-button key="submit" type="primary" :loading="loading" @click="auditpass">审核通过</a-button>
-      </template>
-    </a-modal>
     <a-modal title="查看详情" v-model="detailvisible" :width="800">
-      <payininfo :id="selectid"></payininfo>
+     <agentinfo :id="selectid"></agentinfo>
       <template slot="footer">
         <a-button key="back" @click="detailvisible=false">关闭</a-button>
       </template>
@@ -82,58 +58,46 @@
   </div>
 </template>
 <script>
-  import auditresult from './auditresult.vue'
-  import payininfo from './payinauditinfo.vue'
+import agentinfo from './agentinfo.vue'
   export default {
     components: {
-      auditresult,
-      payininfo
+        agentinfo
     },
     data() {
       return {
-        reasonvisible: false,
         detailvisible:false,
-        auditvisible:false,
         selectid:null,
         data: [{
           id:1,
-          name1: 'test'
+          name1: 'test',
+          sub:10
         }],
         loading: false,
         columns: [{
-          title: '充值单号',
+          title: '代理编号',
           dataIndex: 'name1'
         }, {
-          title: '姓名',
-          dataIndex: 'name2'
-        },{
+          title: '代理姓名',
+          dataIndex: 'name3'
+        }, {
           title: '等级',
           dataIndex: 'name4'
         }, {
           title: '联系电话',
           dataIndex: 'name5'
-        },  {
-          title: '打款方式',
-          dataIndex: 'name8'
         }, {
-          title: '打款金额',
-          dataIndex: 'name9'
+          title: '微信号',
+          dataIndex: 'name6'
         }, {
-          title: '打款时间',
-          dataIndex: 'name10'
-        }, {
-          title: '充值时间',
-          dataIndex: 'name11'
-        }, {
-          title: '备注',
-          dataIndex: 'name12'
+          title: '通过时间',
+          dataIndex: 'name7'
         }, {
           title: '状态',
-          dataIndex: 'name13'
+          dataIndex: 'name11'
         }, {
           title: '操作',
           key: 'action',
-          dataIndex: 'name14',
+          dataIndex: 'name12',
           scopedSlots: {
             customRender: 'action'
           },
@@ -151,26 +115,10 @@
         //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
         this.loading=false
       },
-      openaudit(row){
+      opendetail(row){
         this.selectid=row.id
-        this.auditvisible=true
+        this.detailvisible=true
       },
-      onChange() {},
-      auditpass(){
-        this.$success({
-        title: '该记录审核已通过。',
-        content: (  // JSX support
-          <div>
-            <p>你可以继续处理其他记录。</p>
-          </div>
-        ),
-      });
-      },//审核通过
-      handleReasonOk(){//审核不通过并提交原因
-        debugger;
-        this.$refs.reasoncom.submit();
-
-      }
     }
   }
 

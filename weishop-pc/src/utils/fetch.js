@@ -5,7 +5,7 @@ import {
 import axios from 'axios'
 import qs from 'qs'
 
-axios.defaults.baseURL = 'http://localhost:21021/'
+axios.defaults.baseURL = 'http://dev.rhpass.com:8091/'
 axios.defaults.timeout = 30000
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 // 添加请求拦截器
@@ -84,44 +84,26 @@ axios.interceptors.response.use(function (response) {
 })
 
 export default {
-  Post (url, params, result) {
-    if (!result) {
-      result = {}
-    }
-    result.loading = true
+  Post (url, params) {
     return new Promise((resolve, reject) => {
       axios.post(url, params)
         .then(response => {
-          result.loading = false
-          result.data = response
           resolve(response)
         }, error => {
-          result.loading = false
-          result.data = error.response.data
-          debugger
-          // resolve(error.response)
+          // resolve(error.response
           reject(error.response)
         })
         .catch((error) => {
-          result.loading = false
-          result.data = error.response.data
-          debugger
           // resolve(error.response)
           reject(error.response)
         })
     })
   },
-  Get (url, params, vm) {
-    if (vm) {
-      vm.loading = true
-    }
-    var data = null
-    if (params) {
-      data = params.params
-    }
+  Get (url, params) {
+    
     return new Promise((resolve, reject) => {
       axios.get(url, {
-        params: data,
+        params: params,
         paramsSerializer: params => {
           var json = qs.stringify(params, {
             indices: false
@@ -130,67 +112,37 @@ export default {
         }
       })
         .then(response => {
-          if (vm) {
-            vm.loading = false
-          }
           resolve(response)
         }, error => {
-          if (vm) {
-            vm.loading = false
-          }
           reject(error.response)
         })
         .catch((error) => {
-          if (vm) {
-            vm.loading = false
-          }
           reject(error.response)
         })
     })
   },
-  Put (url, params, vm) {
-    if (vm) {
-      vm.loading = true
-    }
+  Put (url, params) {
     return new Promise((resolve, reject) => {
       axios.put(url, params)
         .then(response => {
-          if (vm) {
-            vm.loading = false
-          }
           resolve(response)
         }, error => {
-          if (vm) {
-            vm.loading = false
-          }
           reject(error.response)
         })
         .catch((error) => {
-          if (vm) {
-            vm.loading = false
-          }
           reject(error.response)
         })
     })
   },
-  Delete (url, params, vm) {
+  Delete (url, params) {
     return new Promise((resolve, reject) => {
       axios.delete(url, {
         params: params
       }).then(response => {
-        if (vm) {
-          vm.loading = false
-        }
         resolve(response)
       }, error => {
-        if (vm) {
-          vm.loading = false
-        }
         reject(error.response)
       }).catch((error) => {
-        if (vm) {
-          vm.loading = false
-        }
         reject(error.response)
       })
     })

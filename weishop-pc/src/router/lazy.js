@@ -42,7 +42,7 @@ const routers = new Router({
           path: '/audit',
           name: '审核管理',
           component: PageView,
-          // icon: 'dashboard',
+          icon: 'tool',
           children: [
             {
               path: '/audit/agent',
@@ -68,12 +68,18 @@ const routers = new Router({
           path: '/stock',
           name: '云仓管理',
           component: PageView,
-          // icon: 'dashboard',
+          icon: 'fork',
           children: [
             {
               path: '/stock/goods',
               name: '商品管理',
               component: () => import('@/pages/views/stock/goods.vue'),
+              icon: 'none'
+            },
+            {
+              path: '/stock/stock',
+              name: '库存管理',
+              component: () => import('@/pages/views/stock/stock.vue'),
               icon: 'none'
             },
             {
@@ -94,7 +100,7 @@ const routers = new Router({
           path: '/agent',
           name: '代理管理',
           component: PageView,
-          // icon: 'dashboard',
+          icon: 'trophy',
           children: [
             {
               path: '/agent/all',
@@ -107,6 +113,12 @@ const routers = new Router({
               name: '一级代理',
               component: () => import('@/pages/views/agent/firstagent.vue'),
               icon: 'none'
+            },
+            {
+              path: '/agent/sub',
+              name: '下级代理',  
+              component: () => import('@/pages/views/agent/subagent.vue'),
+              icon: 'none'
             }
           ]
         },
@@ -114,7 +126,7 @@ const routers = new Router({
           path: '/money',
           name: '金额管理',
           component: PageView,
-          // icon: 'dashboard',
+          icon: 'pay-circle',
           children: [
             {
               path: '/money/depoist',
@@ -152,7 +164,7 @@ const routers = new Router({
           path: '/notice',
           name: '通知公告',
           component: PageView,
-          // icon: 'dashboard',
+          icon: 'sound',
           children: [
             {
               path: '/notice/all',
@@ -166,7 +178,7 @@ const routers = new Router({
           path: '/system',
           name: '系统设置',
           component: PageView,
-          // icon: 'dashboard',
+          icon: 'setting',
           children: [
             {
               path: '/system/user',
@@ -202,58 +214,58 @@ const routers = new Router({
         //     }
         //   ]
         // },
-        {
-          path: '/list',
-          name: '列表页',
-          component: PageView,
-          icon: 'table',
-          children: [
-            {
-              path: '/list/query',
-              name: '查询表格',
-              component: () => import('@/demopages/list/QueryList'),
-              icon: 'none'
-            },
-            {
-              path: '/list/primary',
-              name: '标准列表',
-              component: () => import('@/demopages/list/StandardList'),
-              icon: 'none'
-            },
-            {
-              path: '/list/card',
-              name: '卡片列表',
-              component: () => import('@/demopages/list/CardList'),
-              icon: 'none'
-            },
-            {
-              path: '/list/search',
-              name: '搜索列表',
-              component: () => import('@/demopages/list/search/SearchLayout'),
-              icon: 'none',
-              children: [
-                {
-                  path: '/list/search/article',
-                  name: '文章',
-                  component: () => import('@/demopages/list/search/ArticleList'),
-                  icon: 'none'
-                },
-                {
-                  path: '/list/search/application',
-                  name: '应用',
-                  component: () => import('@/demopages/list/search/ApplicationList'),
-                  icon: 'none'
-                },
-                {
-                  path: '/list/search/project',
-                  name: '项目',
-                  component: () => import('@/demopages/list/search/ProjectList'),
-                  icon: 'none'
-                }
-              ]
-            }
-          ]
-        },
+        // {
+        //   path: '/list',
+        //   name: '列表页',
+        //   component: PageView,
+        //   icon: 'table',
+        //   children: [
+        //     {
+        //       path: '/list/query',
+        //       name: '查询表格',
+        //       component: () => import('@/demopages/list/QueryList'),
+        //       icon: 'none'
+        //     },
+        //     {
+        //       path: '/list/primary',
+        //       name: '标准列表',
+        //       component: () => import('@/demopages/list/StandardList'),
+        //       icon: 'none'
+        //     },
+        //     {
+        //       path: '/list/card',
+        //       name: '卡片列表',
+        //       component: () => import('@/demopages/list/CardList'),
+        //       icon: 'none'
+        //     },
+        //     {
+        //       path: '/list/search',
+        //       name: '搜索列表',
+        //       component: () => import('@/demopages/list/search/SearchLayout'),
+        //       icon: 'none',
+        //       children: [
+        //         {
+        //           path: '/list/search/article',
+        //           name: '文章',
+        //           component: () => import('@/demopages/list/search/ArticleList'),
+        //           icon: 'none'
+        //         },
+        //         {
+        //           path: '/list/search/application',
+        //           name: '应用',
+        //           component: () => import('@/demopages/list/search/ApplicationList'),
+        //           icon: 'none'
+        //         },
+        //         {
+        //           path: '/list/search/project',
+        //           name: '项目',
+        //           component: () => import('@/demopages/list/search/ProjectList'),
+        //           icon: 'none'
+        //         }
+        //       ]
+        //     }
+        //   ]
+        // },
         // {
         //   path: '/detail',
         //   name: '详情页',
