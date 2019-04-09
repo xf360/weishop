@@ -35,7 +35,6 @@ Vue.use(Notify);
     // 对响应数据做点什么
     return response.data
   }, function (error) {
-    debugger
     switch (error.response.status) {
       case 400:
         var content = ''
@@ -67,42 +66,27 @@ Vue.use(Notify);
   })
   
   export default {
-    Post (url, params, result) {
-      if (!result) {
-        result = {}
-      }
-      result.loading = true
+    Post (url, params) {
       return new Promise((resolve, reject) => {
         axios.post(url, params)
           .then(response => {
-            result.loading = false
-            result.data = response
+           
             resolve(response)
           }, error => {
-            result.loading = false
-            result.data = error.response.data
-            // resolve(error.response)
+           
+            resolve(error.response)
             reject(error.response)
           })
           .catch((error) => {
-            result.loading = false
-            result.data = error.response.data
-            // resolve(error.response)
+            resolve(error.response)
             reject(error.response)
           })
       })
     },
-    Get (url, params, vm) {
-      if (vm) {
-        vm.loading = true
-      }
-      var data = null
-      if (params) {
-        data = params.params
-      }
+    Get (url, params) {
       return new Promise((resolve, reject) => {
         axios.get(url, {
-          params: data,
+          params: params,
           paramsSerializer: params => {
             var json = qs.stringify(params, {
               indices: false
@@ -111,67 +95,44 @@ Vue.use(Notify);
           }
         })
           .then(response => {
-            if (vm) {
-              vm.loading = false
-            }
+            
             resolve(response)
           }, error => {
-            if (vm) {
-              vm.loading = false
-            }
+            resolve(response)
             reject(error.response)
           })
           .catch((error) => {
-            if (vm) {
-              vm.loading = false
-            }
+            resolve(response)
             reject(error.response)
           })
       })
     },
-    Put (url, params, vm) {
-      if (vm) {
-        vm.loading = true
-      }
+    Put (url, params) {
       return new Promise((resolve, reject) => {
         axios.put(url, params)
           .then(response => {
-            if (vm) {
-              vm.loading = false
-            }
             resolve(response)
           }, error => {
-            if (vm) {
-              vm.loading = false
-            }
+            resolve(response)
             reject(error.response)
           })
           .catch((error) => {
-            if (vm) {
-              vm.loading = false
-            }
+            resolve(response)
             reject(error.response)
           })
       })
     },
-    Delete (url, params, vm) {
+    Delete (url, params) {
       return new Promise((resolve, reject) => {
         axios.delete(url, {
           params: params
         }).then(response => {
-          if (vm) {
-            vm.loading = false
-          }
           resolve(response)
         }, error => {
-          if (vm) {
-            vm.loading = false
-          }
+          resolve(response)
           reject(error.response)
         }).catch((error) => {
-          if (vm) {
-            vm.loading = false
-          }
+          resolve(response)
           reject(error.response)
         })
       })
