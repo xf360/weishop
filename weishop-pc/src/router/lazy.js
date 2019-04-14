@@ -119,6 +119,12 @@ const routers = new Router({
               name: '下级代理',  
               component: () => import('@/pages/views/agent/subagent.vue'),
               icon: 'none'
+            },
+            {
+              path: '/agent/level',
+              name: '等级管理',  
+              component: () => import('@/pages/views/agent/agentlevel.vue'),
+              icon: 'none'
             }
           ]
         },
@@ -148,7 +154,7 @@ const routers = new Router({
             },
             {
               path: '/money/reward',
-              name: '奖励设置',
+              name: '等级金额',
               component: () => import('@/pages/views/money/reward.vue'),
               icon: 'none'
             },
