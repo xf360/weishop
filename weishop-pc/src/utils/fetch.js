@@ -36,7 +36,6 @@ axios.interceptors.response.use(function (response) {
   // 对响应数据做点什么
   return response.data
 }, function (error) {
-  debugger
   var modal = Modal
   switch (error.response.status) {
     case 400:
@@ -100,7 +99,6 @@ export default {
     })
   },
   Get (url, params) {
-    
     return new Promise((resolve, reject) => {
       axios.get(url, {
         params: params,
@@ -114,9 +112,11 @@ export default {
         .then(response => {
           resolve(response)
         }, error => {
+          resolve(response)
           reject(error.response)
         })
         .catch((error) => {
+          resolve(response)
           reject(error.response)
         })
     })
@@ -126,10 +126,13 @@ export default {
       axios.put(url, params)
         .then(response => {
           resolve(response)
+          resolve(response)
         }, error => {
+          resolve(response)
           reject(error.response)
         })
         .catch((error) => {
+          resolve(response)
           reject(error.response)
         })
     })
@@ -141,8 +144,10 @@ export default {
       }).then(response => {
         resolve(response)
       }, error => {
+        resolve(response)
         reject(error.response)
       }).catch((error) => {
+        resolve(response)
         reject(error.response)
       })
     })
