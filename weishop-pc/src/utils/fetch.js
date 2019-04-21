@@ -79,7 +79,7 @@ axios.interceptors.response.use(function (response) {
       })
       break
   }
-  return Promise.reject(error)
+  return Promise.reject(error.response)
 })
 
 export default {
@@ -89,12 +89,12 @@ export default {
         .then(response => {
           resolve(response)
         }, error => {
-          // resolve(error.response
-          reject(error.response)
+          resolve(error.data)
+          reject(error.data)
         })
         .catch((error) => {
-          // resolve(error.response)
-          reject(error.response)
+          resolve(error.data)
+          reject(error.data)
         })
     })
   },
@@ -112,12 +112,12 @@ export default {
         .then(response => {
           resolve(response)
         }, error => {
-          resolve(response)
-          reject(error.response)
+          resolve(error.data)
+          reject(error.data)
         })
         .catch((error) => {
-          resolve(response)
-          reject(error.response)
+          resolve(error.data)
+          reject(error.data)
         })
     })
   },
@@ -126,14 +126,13 @@ export default {
       axios.put(url, params)
         .then(response => {
           resolve(response)
-          resolve(response)
         }, error => {
-          resolve(response)
-          reject(error.response)
+          resolve(error.data)
+          reject(error.data)
         })
         .catch((error) => {
-          resolve(response)
-          reject(error.response)
+          resolve(error.data)
+          reject(error.data)
         })
     })
   },
@@ -144,11 +143,11 @@ export default {
       }).then(response => {
         resolve(response)
       }, error => {
-        resolve(response)
-        reject(error.response)
+        resolve(error.data)
+        reject(error.data)
       }).catch((error) => {
-        resolve(response)
-        reject(error.response)
+        resolve(error.data)
+          reject(error.data)
       })
     })
   }

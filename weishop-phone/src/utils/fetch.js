@@ -62,7 +62,7 @@ Vue.use(Notify);
         Notify('未处理的错误类型');
         break
     }
-    return Promise.reject(error)
+    return Promise.reject(error.response)
   })
   
   export default {
@@ -74,12 +74,12 @@ Vue.use(Notify);
             resolve(response)
           }, error => {
            
-            resolve(error.response)
-            reject(error.response)
+            resolve(error.data)
+            reject(error.data)
           })
           .catch((error) => {
-            resolve(error.response)
-            reject(error.response)
+            resolve(error.data)
+            reject(error.data)
           })
       })
     },
@@ -98,12 +98,12 @@ Vue.use(Notify);
             
             resolve(response)
           }, error => {
-            resolve(response)
-            reject(error.response)
+            resolve(error.data)
+            reject(error.data)
           })
           .catch((error) => {
-            resolve(response)
-            reject(error.response)
+            resolve(error.data)
+            reject(error.data)
           })
       })
     },
@@ -113,12 +113,12 @@ Vue.use(Notify);
           .then(response => {
             resolve(response)
           }, error => {
-            resolve(response)
-            reject(error.response)
+            resolve(error.data)
+            reject(error.data)
           })
           .catch((error) => {
-            resolve(response)
-            reject(error.response)
+            resolve(error.data)
+            reject(error.data)
           })
       })
     },
@@ -129,11 +129,11 @@ Vue.use(Notify);
         }).then(response => {
           resolve(response)
         }, error => {
-          resolve(response)
-          reject(error.response)
+          resolve(error.data)
+          reject(error.data)
         }).catch((error) => {
-          resolve(response)
-          reject(error.response)
+          resolve(error.data)
+          reject(error.data)
         })
       })
     }

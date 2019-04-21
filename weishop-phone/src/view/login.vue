@@ -50,23 +50,21 @@
                     password: ''
                 },
                 result: {
-                    loading:false
+                    loading: false
                 }
             }
         },
         methods: {
-            onSubmit(e) {
+            async onSubmit(e) {
                 e.preventDefault()
                 var vm = this;
-                this.$http.Post('/api/TokenAuth/Authenticate', this.parm, this.result).then((res) => {
-                    vm.result = res.result
-                    if (res.success) {
-                        const token = vm.result.accessToken
-                        window.localStorage.setItem("token", token);
-                        this.$router.push('/index/message')
-                        this.$notify('欢迎你回来');
-                    }
-                })
+                var res = await this.$http.Post('/api/TokenAuth/Authenticate', this.parm);
+                if (res.success) {
+                    var token = res.result.accessToken
+                    window.localStorage.setItem("token", token);
+                    this.$router.push('/index/message')
+                    this.$notify('欢迎你回来');
+                }
             }
         }
     }

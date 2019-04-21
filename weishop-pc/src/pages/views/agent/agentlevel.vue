@@ -14,13 +14,14 @@
         </span>
       </a-table>
     </a-card>
-    <a-modal title="新建等级" v-model="addvisible" :width="800" @ok="save" cancelText="取消" okText="确认">
+    <a-modal title="新建等级" v-model="addvisible" :width="800" @ok="save" :confirmLoading="confirmLoading" cancelText="取消"
+      okText="确认">
       <a-form :autoFormCreate="(form) => this.form = form">
-        <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="等级名称" fieldDecoratorId="info.levelName"
+        <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="等级名称" fieldDecoratorId="name"
           :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入等级名称，不可重复。',whitespace: true}]}">
           <a-input placeholder="请输入等级名称，不可重复。" />
         </a-form-item>
-        <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="层级" fieldDecoratorId="info.level"
+        <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="层级" fieldDecoratorId="level"
           :fieldDecoratorOptions="{rules: [{ required: true, message: '请选择层级'}]}">
           <a-select placeholder="请选择层级">
             <a-select-option :value="1">
@@ -42,6 +43,7 @@
   export default {
     data() {
       return {
+        confirmLoading: false,
         labelcol: {
           span: 5
         },
@@ -51,47 +53,69 @@
         addvisible: false,
         selectid: null,
         info: {
-          levelName: '',
+          name: '',
           level: 1
         },
-        data: [{
-          id: 1,
-          name1: '金牌',
-          name3:'一级',
-          name4:20,
-          sub: 10
-        }],
+        data: [],
         loading: false,
         columns: [{
           title: '等级名称',
-          dataIndex: 'name1'
+          dataIndex: 'name'
         }, {
           title: '层级',
-          dataIndex: 'name3'
+          dataIndex: 'level'
         }, {
           title: '人数',
           dataIndex: 'name4'
         }, {
+          title: '是否默认',
+          dataIndex: 'isDefault'
+        }, {
           title: '操作',
           key: 'action',
-          dataIndex: 'name12',
           scopedSlots: {
             customRender: 'action'
           },
         }]
       }
     },
+    mounted() {
+      this.loadlist();
+    },
     methods: {
       opennew() {
         this.addvisible = true;
+        this.form.resetFields();
       },
-      save() {
-          this.addvisible=false;
+      async save() {
+        var vm=this;
+        await this.form.validateFields(async function (err, values) {
+          if (err) {
+            return;
+          } else {
+            vm.confirmLoading = true;
+            var ret=await vm.$http.Post('/api/services/app/B_AgencyLevel/Create',values);
+            vm.confirmLoading = false;
+            if(ret.success){
+              vm.addvisible = false;
+              vm.loadlist();
+            }
+            
+          }
+        });
+
       },
       async loadlist() {
         this.loading = true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
+        var ret = await this.$http.Get('/api/services/app/B_AgencyLevel/GetList', {
+          MaxResultCount: 10,
+          SkipCount: 0
+        })
+        debugger;
         this.loading = false
+        if (ret.success) {
+          this.data = ret.result.items;
+        }
       },
       async loaddetail() {
         this.loading = true

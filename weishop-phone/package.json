@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "qrcodejs2": "0.0.2",
     "vant": "^1.6.1",
     "vue": "^2.6.2",
     "vue-router": "^3.0.1"

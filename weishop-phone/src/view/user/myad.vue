@@ -1,15 +1,15 @@
 <template>
     <div id="myad">
-        <van-nav-bar title="我要邀请" right-text="添加" left-arrow @click-left="onClickLeft" @click-right="onClickRight"/>
+        <van-nav-bar title="我要邀请" right-text="添加" left-arrow @click-left="onClickLeft" @click-right="onClickRight" />
         <van-swipe-cell :right-width="65" @click="del">
             <van-cell-group>
                 <van-cell v-for="(item,index) in datalist" :key="index" is-link @click="agentinfo">
                     <div slot="title" class="userbox">
-                        <img :src="item.qrcode" width="70" height="70" />
+                        <img :src="qrcode(item.id)" width="70" height="70" />
                         <div>
-                            代理级别：{{item.agentlevelname}}<br />
-                            有效期：{{item.endtime}}<br />
-                            可用次数：{{item.count}}
+                            代理级别：{{item.agencyLevelName}}<br />
+                            有效期：{{item.validityDataType}}<br />
+                            可用次数：{{item.availableCount}}
                         </div>
                     </div>
                 </van-cell>
@@ -39,6 +39,7 @@
 </style>
 <script>
     import Vue from 'vue';
+    import QRCode from 'qrcodejs2'
     import {
         NavBar,
         Cell,
@@ -52,32 +53,37 @@
     export default {
         data() {
             return {
-                datalist: [{
-                    qrcode: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1553940890547&di=6088c0c6db77ebb80386693e6203298b&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201701%2F28%2F20170128085020_jfRhX.jpeg',
-                    id: '',
-                    agentlevelname: '一级',
-                    endtime: '2020-10-10 23:59:59',
-                    count: 10
-                },{
-                    qrcode: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1553940890547&di=6088c0c6db77ebb80386693e6203298b&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201701%2F28%2F20170128085020_jfRhX.jpeg',
-                    id: '',
-                    agentlevelname: '一级',
-                    endtime: '2020-10-10 23:59:59',
-                    count: 10
-                },{
-                    qrcode: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1553940890547&di=6088c0c6db77ebb80386693e6203298b&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201701%2F28%2F20170128085020_jfRhX.jpeg',
-                    id: '',
-                    agentlevelname: '一级',
-                    endtime: '2020-10-10 23:59:59',
-                    count: 10
-                }]
+                datalist: []
             }
         },
+        mounted(){
+            this.getlist();
+        },
         methods: {
+            qrcode(id) {
+                var url='http://baidu.com/?'+id
+                let qrcode = new QRCode('qrcode', {
+                    width: 70,
+                    height: 70,
+                    text: url, // 二维码地址
+                    colorDark: "#000",
+                    colorLight: "#fff",
+                })
+                debugger;
+            },
+            async getlist() {
+                var ret = await this.$http.Get('/api/services/app/B_InviteUrl/GetList', {
+                    MaxResultCount: 999,
+                    SkipCount: 0
+                });
+                if (ret.success) {
+                    this.datalist = ret.result.items;
+                }
+            },
             onClickLeft() {
                 this.$router.go(-1)
             },
-            onClickRight(){
+            onClickRight() {
                 this.$router.push("/myadadd")
             },
             del(val) {

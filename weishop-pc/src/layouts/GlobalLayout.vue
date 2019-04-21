@@ -84,7 +84,7 @@ export default {
     }
   },
   beforeCreate () {
-    debugger;//读取路由配置为菜单
+    //读取路由配置为菜单
     menuData = this.$router.options.routes.find((item) => item.path === '/').children
   }
 }
