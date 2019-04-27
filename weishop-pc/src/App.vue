@@ -14,7 +14,7 @@ export default {
     enquireScreen(isMobile => {
       _this.$store.commit('setting/setDevice', isMobile)
     })
-    this.$store.dispatch("account/getCurrentLoginInformations")
+   
   }
 }
 </script>

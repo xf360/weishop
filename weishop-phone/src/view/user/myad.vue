@@ -3,9 +3,10 @@
         <van-nav-bar title="我要邀请" right-text="添加" left-arrow @click-left="onClickLeft" @click-right="onClickRight" />
         <van-swipe-cell :right-width="65" @click="del">
             <van-cell-group>
-                <van-cell v-for="(item,index) in datalist" :key="index" is-link @click="agentinfo">
+                <van-cell v-for="(item,index) in datalist" :key="index" is-link @click="agentinfo(item)">
                     <div slot="title" class="userbox">
-                        <img :src="qrcode(item.id)" width="70" height="70" />
+                        <!-- <img :id="item.id" :src="qrcode(item.id)" width="70" height="70" /> -->
+                        <qrcode value="Hello, World!" :options="{ size: 70 }"></qrcode>
                         <div>
                             代理级别：{{item.agencyLevelName}}<br />
                             有效期：{{item.validityDataType}}<br />
@@ -39,7 +40,7 @@
 </style>
 <script>
     import Vue from 'vue';
-    import QRCode from 'qrcodejs2'
+    import VueQrcode from '@xkeshi/vue-qrcode';
     import {
         NavBar,
         Cell,
@@ -49,27 +50,24 @@
     } from 'vant';
 
     Vue.use(Cell).use(CellGroup).use(NavBar).use(SwipeCell).use(Dialog);
-
+Vue.component(VueQrcode.name, VueQrcode);
     export default {
         data() {
             return {
-                datalist: []
+                datalist: [{
+                    id:'fdsafdsa',
+                    agencyLevelName:'一级代理',
+                    validityDataType:'一天',
+                    availableCount:4
+                }]
             }
         },
         mounted(){
-            this.getlist();
+            //this.getlist();
         },
         methods: {
-            qrcode(id) {
-                var url='http://baidu.com/?'+id
-                let qrcode = new QRCode('qrcode', {
-                    width: 70,
-                    height: 70,
-                    text: url, // 二维码地址
-                    colorDark: "#000",
-                    colorLight: "#fff",
-                })
-                debugger;
+            agentinfo(item){
+                this.$router.push('/myaddinfo?id='+item.id)
             },
             async getlist() {
                 var ret = await this.$http.Get('/api/services/app/B_InviteUrl/GetList', {
@@ -89,7 +87,8 @@
             del(val) {
                 switch (val) {
                     case 'cell':
-                        this.$router.push('/myaddinfo')
+                    debugger;
+                        
                         break;
                     case 'right':
                         Dialog.confirm({

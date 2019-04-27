@@ -7,7 +7,9 @@
             
         </div>
         <div class="imgcard">
-            母婴用品
+            <router-link :to="{name:'yuncang'}">
+                母婴用品
+            </router-link>
         </div>
         <div class="imgcard">
             美妆面膜

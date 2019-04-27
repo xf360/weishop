@@ -4,7 +4,7 @@ Vue.use(Notify);
   import axios from 'axios'
   import qs from 'qs'
   
-  axios.defaults.baseURL = 'http://dev.rhpass.com:8091/'
+  axios.defaults.baseURL = api
   axios.defaults.timeout = 30000
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
   // 添加请求拦截器

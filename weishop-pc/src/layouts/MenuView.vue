@@ -153,6 +153,9 @@ export default {
         this.activePage = this.linkList[this.linkList.length - 1]
       }
     }
+  },
+  mounted(){
+     this.$store.dispatch("account/getCurrentLoginInformations")
   }
 }
 </script>

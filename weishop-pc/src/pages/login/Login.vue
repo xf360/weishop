@@ -12,13 +12,16 @@
         <a-form @submit="onSubmit" :autoFormCreate="(form) => this.form = form">
           <a-tabs size="large" :tabBarStyle="{textAlign: 'center'}" style="padding: 0 2px;">
             <a-tab-pane tab="账户密码登录" key="1">
-              <a-alert type="error" :closable="true" v-show="error" :message="error" showIcon style="margin-bottom: 24px;" />
-              <a-form-item fieldDecoratorId="userNameOrEmailAddress" :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入账户名', whitespace: true}]}">
+              <a-alert type="error" :closable="true" v-show="error" :message="error" showIcon
+                style="margin-bottom: 24px;" />
+              <a-form-item fieldDecoratorId="userNameOrEmailAddress"
+                :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入账户名', whitespace: true}]}">
                 <a-input v-model="parm.userNameOrEmailAddress" size="large" placeholder="用户名/邮箱">
                   <a-icon slot="prefix" type="user" />
                 </a-input>
               </a-form-item>
-              <a-form-item fieldDecoratorId="password" :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入密码', whitespace: true}]}">
+              <a-form-item fieldDecoratorId="password"
+                :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入密码', whitespace: true}]}">
                 <a-input v-model="parm.password" size="large" placeholder="密码" type="password">
                   <a-icon slot="prefix" type="lock" />
                 </a-input>
@@ -49,7 +52,8 @@
             <!-- <a style="float: right">忘记密码</a> -->
           </div>
           <a-form-item>
-            <a-button :loading="data.loading" style="width: 100%;margin-top: 24px" size="large" htmlType="submit" type="primary">登录</a-button>
+            <a-button :loading="loading" style="width: 100%;margin-top: 24px" size="large" htmlType="submit"
+              type="primary">登录</a-button>
           </a-form-item>
           <!-- <div>
             其他登录方式
@@ -61,7 +65,7 @@
         </a-form>
       </div>
     </div>
-    <global-footer  :copyright="copyright" />
+    <global-footer :copyright="copyright" />
   </div>
 </template>
 
@@ -75,12 +79,13 @@
     },
     data() {
       return {
-        parm:{
-          userNameOrEmailAddress:'',
-          password:''
+        parm: {
+          userNameOrEmailAddress: '',
+          password: ''
         },
-        data:{
-          loading:false,
+        loading: false,
+        data: {
+
         },
         error: ''
       }
@@ -97,19 +102,21 @@
       }
     },
     methods: {
-      onSubmit(e) {
+     async onSubmit(e) {
         e.preventDefault()
-        this.form.validateFields((err, values) => {
+        this.form.validateFields(async (err, values) => {
           if (!err) {
-            this.$http.Post('/api/TokenAuth/Authenticate', this.parm,this.data).then((res) => {
-              const result = res.result
-              if (res.success) {
-                const token = result.accessToken
-                window.localStorage.setItem("token",token);
-                this.$router.push('/dashboard/analysis')
-                this.$message.success("欢迎你回来", 3)
-              }
-            })
+            this.loading = true;
+            var res = await this.$http.Post('/api/TokenAuth/Authenticate', this.parm);
+             this.loading = false;
+            const result = res.result;
+           
+            if (res.success) {
+              const token = result.accessToken
+              window.localStorage.setItem("token", token);
+              this.$router.push('/dashboard/analysis')
+              this.$message.success("欢迎你回来", 3)
+            }
           }
         })
       }

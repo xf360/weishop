@@ -5,7 +5,7 @@ import {
 import axios from 'axios'
 import qs from 'qs'
 
-axios.defaults.baseURL = 'http://dev.rhpass.com:8091/'
+axios.defaults.baseURL = 'http://test.yalingkeji.com:8033/'
 axios.defaults.timeout = 30000
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 // 添加请求拦截器
@@ -37,6 +37,13 @@ axios.interceptors.response.use(function (response) {
   return response.data
 }, function (error) {
   var modal = Modal
+  if (error.message === 'Network Error') {
+    modal.error({
+      title: '服务器异常',
+      content: '连接服务器超时。'
+    })
+    return Promise.reject({data:{success:false,error:{message:'连接服务器超时。'}}});
+  }
   switch (error.response.status) {
     case 400:
       var content = ''
@@ -147,7 +154,7 @@ export default {
         reject(error.data)
       }).catch((error) => {
         resolve(error.data)
-          reject(error.data)
+        reject(error.data)
       })
     })
   }

@@ -23,6 +23,20 @@ const routes = [{
     }
   },
   {
+    name: 'register',
+    component: () => import('./view/user/register.vue'),
+    meta: {
+      title: '邀请注册'
+    }
+  },
+  {
+    name: 'register2',
+    component: () => import('./view/user/register2.vue'),
+    meta: {
+      title: '邀请注册'
+    }
+  },
+  {
     name: 'mycash',
     component: () => import('./view/user/mycash.vue'),
     meta: {
@@ -157,6 +171,30 @@ const routes = [{
         component: () => import('./view/mall/zhigou.vue'),
         meta: {
           title: '直购'
+        }
+      },
+      {
+        name: 'yuncang',
+        path:'yuncang',
+        component: () => import('./view/mall/yuncang.vue'),
+        meta: {
+          title: '云仓'
+        }
+      },
+      {
+        name: 'yuncangin',
+        path:'yuncangin',
+        component: () => import('./view/mall/yuncangin.vue'),
+        meta: {
+          title: '云仓进货'
+        }
+      },
+      {
+        name: 'yuncangout',
+        path:'yuncangout',
+        component: () => import('./view/mall/yuncangout.vue'),
+        meta: {
+          title: '云仓提货'
         }
       },
       {
