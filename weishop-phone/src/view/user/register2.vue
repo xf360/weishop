@@ -8,30 +8,47 @@
         </van-cell-group>
         <h2 class="celltitle">填写内容</h2>
         <van-cell-group>
-            <van-cell title="代理等级" value="一级" />
-            <van-field v-model="name" required clearable label="姓名：" placeholder="请输入姓名" />
-            <van-field v-model="name" required clearable label="联系电话：" placeholder="请输入联系电话" />
-            <van-field v-model="sms" center clearable label="短信验证码" placeholder="请输入短信验证码">
+            <van-cell title="代理等级" :value="info.agencyLevelName" />
+            <van-field v-model="info.name" required clearable label="姓名：" placeholder="请输入姓名" />
+            <van-field v-model="info.tel" required clearable label="联系电话：" placeholder="请输入联系电话" />
+            <van-field v-model="info.vCode" required center clearable label="短信验证码" placeholder="请输入短信验证码">
                 <van-button slot="button" size="small" type="primary">发送验证码</van-button>
             </van-field>
-            <van-field v-model="password" type="password" label="密码" placeholder="请输入密码" required />
-            <van-field v-model="password" type="password" label="确认密码" placeholder="请再次输入密码" required />
-            <van-field v-model="name" required clearable label="微信号：" placeholder="请输入微信号" />
+            <van-field v-model="info.pwd" type="password" label="密码" placeholder="请输入密码" required />
+            <van-field v-model="info.pwd2" type="password" label="确认密码" placeholder="请再次输入密码" required />
+            <van-field v-model="info.wxId" required clearable label="微信号：" placeholder="请输入微信号" />
 
-            <van-field v-model="name" required clearable label="身份证号：" placeholder="请输入身份证号" />
-            <van-field @click="areaclick" v-model="info.areaname" required readonly="readonly" clearable label="地区："
-                placeholder="省/市/区" />
-            <van-field v-model="name" required clearable label="详细地址：" placeholder="请输入详细地址" />
-            <van-cell title="打款方式：">
+            <van-field v-model="info.pNumber" required clearable label="身份证号：" placeholder="请输入身份证号" />
+            <van-cell title="国家：">
                 <template slot="right-icon">
-                    <select v-model="info.paytype" style="width:250px">
-                        <option value="1">支付宝</option>
-                        <option value="2">银行转账</option>
+                    <select v-model="info.country" style="width:250px">
+                        <option value="001">中国</option>
+                        <option value="002">中国香港</option>
+                        <option value="003">中国澳门</option>
+                        <option value="004">中国台湾</option>
                     </select>
                 </template>
             </van-cell>
-            <van-field v-model="info.money" required readonly="readonly" label="打款金额：" />
-            <van-field v-model="name" required clearable label="支付宝：" placeholder="请输入支付宝号" />
+            <van-field @click="areaclick" v-model="info.areaname" required readonly="readonly" clearable label="地区："
+                placeholder="省/市/区" />
+            <van-field v-model="info.address" clearable label="详细地址：" placeholder="请输入详细地址" />
+            <van-cell title="打款方式：">
+                <template slot="right-icon">
+                    <select v-model="info.payType" style="width:250px">
+                        <option :value="1">支付宝</option>
+                        <option :value="2">银行转账</option>
+                    </select>
+                </template>
+            </van-cell>
+            <van-field v-model="info.payAmout" required readonly="readonly" label="打款金额：" />
+            <van-field v-if="info.payType===1" v-model="info.payAcount" required clearable label="支付宝："
+                placeholder="请输入支付宝号" />
+            <van-field v-if="info.payType===2" v-model="info.bankName" required clearable label="开户银行："
+                placeholder="请输入开户银行" />
+            <van-field v-if="info.payType===2" v-model="info.bankUserName" required clearable label="银行户名："
+                placeholder="请输入银行户名" />
+            <van-field v-if="info.payType===2" v-model="info.payAcount" required clearable label="银行账户："
+                placeholder="请输入银行账户" />
             <van-field @click="timeclick" v-model="info.paytime" required readonly="readonly" clearable label="打款日期："
                 placeholder="打款日期" />
             <van-cell>
@@ -40,8 +57,34 @@
                     <uploader :limit="2" v-model="info.headimg"></uploader>
                 </template>
             </van-cell>
+            <van-cell>
+                <template slot="title">
+                    <span class="custom-text">打款凭证（1-2张）：</span>
+                    <uploader :limit="2" v-model="info.headimg"></uploader>
+                </template>
+            </van-cell>
+            <van-cell>
+                <template slot="title">
+                    <span class="custom-text">手持证件（1张）：</span>
+                    <uploader :limit="2" v-model="info.headimg"></uploader>
+                </template>
+            </van-cell>
         </van-cell-group>
-
+        <h2 class="celltitle">请打款至</h2>
+        <van-cell-group v-if="info.payType==1">
+            <van-cell title="支付宝账号" value="辉哥" />
+            <van-cell title="支付宝实名" value="邵辉" />
+            <van-cell title="如有疑问联系微信客服" value="12345" />
+        </van-cell-group>
+        <van-cell-group v-if="info.payType==2">
+            <van-cell title="开户银行" value="建设银行" />
+            <van-cell title="银行户名" value="邵辉" />
+            <van-cell title="银行账号" value="544354353" />
+            <van-cell title="如有疑问联系微信客服" value="12345" />
+        </van-cell-group>
+        <center style="margin:10px;">
+            <van-button type="primary" style="width:150px" @click="submit">提交</van-button>
+        </center>
         <van-popup v-model="show" position="bottom">
             <van-area :area-list="areaList" @confirm="areaok" @cancel="show=false;" />
         </van-popup>
@@ -65,13 +108,15 @@
         Popup,
         Picker,
         DatetimePicker,
-        Button 
+        Toast,
+        Button,
+        Dialog
     } from 'vant';
 
     Vue.use(NavBar).use(Cell).use(CellGroup).use(Field).use(Area).use(Popup).use(Picker)
-        .use(DatetimePicker).use(Button );
+        .use(DatetimePicker).use(Button).use(Toast).use(Dialog);
     export default {
-        components:{
+        components: {
             uploader
         },
         data() {
@@ -81,12 +126,32 @@
                 timeshow: false,
 
                 info: {
+                    agencyLevelId: '5f2714f4-9fa6-4560-608d-08d6c17aef53',
+                    agencyLevel: 1,
+                    agencyLevelName:'一级',
+                    inviteUrlId: this.$route.query.id,
+                    name: '',
+                    tel: '',
+                    vCode: '',
+                    pwd: '',
+                    pwd2: '',
+                    wxId: '',
+                    pNumber: '',
+                    country: '001',
+                    provinces: '',
+                    city: '',
+                    county: '',
+                    address: '',
+                    payType: 1,
+                    payAmout: 10000,
+                    payAcount: '',
+                    bankUserName: '',
                     areaname: '',
-                    areacode: '',
-                    paytype: 1,
-                    money: 36000,
-                    headerimg:'',
-                    paytime: (new Date()).toLocaleDateString()
+                    bankName: '',
+                    touxiangFile: null,
+                    credentFiles: null,
+                    handleCredentFiles: null,
+                    payDate: (new Date()).toLocaleDateString()
                 }
             }
         },
@@ -109,8 +174,76 @@
                     tem.push(val[item].name);
                 }
                 this.info.areaname = tem.join('/');
-                this.info.areacode = val[val.length - 1].code;
+                this.info.provinces = val[0].code;
+                this.info.city = val[1].code;
+                this.info.county = val[2].code;
                 this.show = false;
+            },
+            async submit() {
+                if (!this.info.inviteUrlId) {
+                    Toast.fail('无效的邀请链接，请重新扫描二维码注册。');
+                    return;
+                }
+                if (!this.info.name) {
+                    Toast.fail('姓名不能为空。');
+                    return;
+                }
+                if (!this.info.tel) {
+                    Toast.fail('手机号不能为空。');
+                    return;
+                }
+                if (!this.info.vCode) {
+                    Toast.fail('验证码不能为空。');
+                    return;
+                }
+                if (!this.info.pwd) {
+                    Toast.fail('密码不能为空。');
+                    return;
+                }
+                if (this.info.pwd.length < 6) {
+                    Toast.fail('密码不能小于6位。');
+                    return;
+                }
+                if (this.info.pwd != this.info.pwd2) {
+                    Toast.fail('两次密码输入不一致。');
+                    return;
+                }
+                if (!this.info.wxId) {
+                    Toast.fail('微信号不能为空。');
+                    return;
+                }
+                if (!this.info.pNumber) {
+                    Toast.fail('身份证号不能为空。');
+                    return;
+                }
+                if (!this.info.provinces) {
+                    Toast.fail('地区不能为空。');
+                    return;
+                }
+                if (!this.info.payAmout) {
+                    Toast.fail('打款金额不能为空。');
+                    return;
+                }
+                if (!this.info.payAcount) {
+                    Toast.fail('打款账号不能为空。');
+                    return;
+                }
+                if (!this.info.bankName && this.info.payType === 2) {
+                    Toast.fail('开户银行不能为空。');
+                    return;
+                }
+                if (!this.info.bankUserName && this.info.payType === 2) {
+                    Toast.fail('银行户名不能为空。');
+                    return;
+                }
+                var ret = await this.$http.Post('/api/services/app/B_AgencyApply/Create', this.info);
+                if (ret.success) {
+                    Dialog.alert({
+                        message: '恭喜你注册成功，请等待管理员审核。'
+                    }).then(() => {
+                        this.$router.push('login')
+                    });
+                }
             },
             timeok(val) {
                 this.info.paytime = val.toLocaleDateString();

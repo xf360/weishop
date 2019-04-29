@@ -4,11 +4,11 @@
             <van-tab title="代理消息">
                 <van-pull-refresh v-model="refreshing" @refresh="onRefresh(0)">
                     <van-list v-model="loading" :finished="finished" finished-text="加载完成"
-                        @load="onLoad(0)">
-                        <van-panel v-for="(item ,index) in agentdata" :key="index" title="订单信息" :desc="item.date"
-                            :status="item.statusName">
+                        @load="loadmessage(0)">
+                        <van-panel v-for="(item ,index) in messagedata" :key="index" :title="item.title" :desc="item.creationTime"
+                            :status="item.status">
 
-                            <p>订单编码：{{item.no}}</p>
+                            <p>订单编码：{{item.code}}</p>
                             <p>{{item.content}}</p>
 
                         </van-panel>
@@ -19,10 +19,10 @@
             <van-tab title="系统消息">
                 <van-pull-refresh v-model="refreshing" @refresh="onRefresh(0)">
                     <van-list v-model="loading" :finished="finished" finished-text="加载完成"
-                        @load="onLoad(0)">
-                        <van-panel v-for="(item ,index) in agentdata" :key="index" title="公告" 
-                            :status="item.date">
-                            <p>{{item.content}}</p>
+                        @load="loadnotice(0)">
+                        <van-panel v-for="(item ,index) in noticedata" :key="index" :title="item.title" 
+                            :status="item.creationTime">
+                            <p>{{item.status}}</p>
 
                         </van-panel>
                     </van-list>
@@ -51,43 +51,9 @@
                 loading: false,
                 finished: false,
                 refreshing: false,
-                agentdata: [{
-                    no: '2019112313',
-                    status: 0,
-                    statusName: '已完成',
-                    content: '货物已发出',
-                    date: '2019-3-25 18:25:00'
-                }, {
-                    no: '2019112313',
-                    status: 0,
-                    statusName: '已完成',
-                    content: '货物已发出',
-                    date: '2019-3-25 18:25:00'
-                }, {
-                    no: '2019112313',
-                    status: 0,
-                    statusName: '已完成',
-                    content: '货物已发出',
-                    date: '2019-3-25 18:25:00'
-                }, {
-                    no: '2019112313',
-                    status: 0,
-                    statusName: '已完成',
-                    content: '货物已发出',
-                    date: '2019-3-25 18:25:00'
-                }, {
-                    no: '2019112313',
-                    status: 0,
-                    statusName: '已完成',
-                    content: '货物已发出',
-                    date: '2019-3-25 18:25:00'
-                }, {
-                    no: '2019112313',
-                    status: 0,
-                    statusName: '已完成',
-                    content: '货物已发出',
-                    date: '2019-3-25 18:25:00'
-                }]
+                noticedata:[],
+                messagedata:[],
+                
             }
         },
         methods: {
@@ -98,26 +64,31 @@
                     window.scrollTo(0, 10);
                 }, 1000);
             },
-            onLoad() {
-                var vm = this;
-                setTimeout(function () {
-
-                    for (var i = 0; i < 10; i++) {
-                        vm.agentdata.push({
-                            no: i,
-                            status: 0,
-                            statusName: '已完成',
-                            content: '货物已发出',
-                            date: '2019-3-25 18:25:00'
-                        })
-                    }
-                    // 加载状态结束
-                    vm.loading = false;
-                    if (vm.agentdata.length > 40) {
-                        vm.finished = true;
-                    }
-                }, 500)
-            }
+            async loadnotice(){
+                this.loading=true;
+                var ret= await this.$http.Get('/api/services/app/B_Notice/GetList',{
+                    MaxResultCount:20,
+                    SkipCount:0
+                });
+                 this.loading=false;
+                  this.finished = true;
+                if(ret.success){
+                    this.noticedata=ret.result.items;
+                }
+            },
+            async loadmessage(){
+                this.loading=true;
+                var ret= await this.$http.Get('/api/services/app/B_Message/GetList',{
+                    MaxResultCount:20,
+                    SkipCount:0
+                });
+                 this.loading=false;
+                  this.finished = true;
+                if(ret.success){
+                    this.messagedata=ret.result.items;
+                }
+            },
+            
         }
     }
 </script>

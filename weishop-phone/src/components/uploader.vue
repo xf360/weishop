@@ -6,7 +6,7 @@
             <img :src="file.content" />
             </div>
         </div>
-        <van-uploader name="headerimg" :after-read="onRead" :before-read="onBefore" accept="image/gif, image/jpeg">
+        <van-uploader class="uploader" name="headerimg" :after-read="onRead" :before-read="onBefore" accept="image/gif, image/jpeg">
             <van-icon  name="plus" />
             <!-- <img src="" width="50" height="50"/> -->
         </van-uploader>
@@ -46,7 +46,11 @@
             },
             del(index){
                 debugger;
+                if(this.filelist.length==1){
+                    this.filelist=[];
+                }else{
                 this.filelist=this.filelist.slice(index)
+                }
             },
             onRead(file) {
                 debugger;
@@ -77,7 +81,7 @@
     margin-left: 30px;
     position: absolute;
 }
-.van-icon{
+.uploader .van-icon{
 font-size:40px !important;
 }
 </style>

@@ -27,15 +27,15 @@
     </van-row>
     <van-row style="margin-top:2px" class="user-links" :gutter="1" type="flex" justify="center" align="center">
       <van-col span="8">
-        <van-icon name="logistics" />
+        <van-icon name="logistics" @click.native="push('/index/yuncangin')"/>
         我要进货
       </van-col>
       <van-col span="8">
-        <van-icon name="cash-back-record" />
+        <van-icon name="cash-back-record"/>
         云仓订单
       </van-col>
       <van-col span="8">
-        <van-icon name="balance-list-o" />
+        <van-icon name="balance-list-o"/>
         提货订单
       </van-col>
     </van-row>

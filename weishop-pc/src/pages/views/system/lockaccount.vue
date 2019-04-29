@@ -48,7 +48,6 @@
         return new Promise((resolve, reject) => {
           this.form.validateFields(async (err, values) => {
             if (!err) {
-              values.agencyId = this.id;
               var ret = await this.$http.Post('/api/services/app/B_AgencyDisableRecord/Create', values);
               this.$message.success("操作成功", 3)
               resolve(ret.success);

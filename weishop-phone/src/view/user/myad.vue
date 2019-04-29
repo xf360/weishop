@@ -54,16 +54,11 @@ Vue.component(VueQrcode.name, VueQrcode);
     export default {
         data() {
             return {
-                datalist: [{
-                    id:'fdsafdsa',
-                    agencyLevelName:'一级代理',
-                    validityDataType:'一天',
-                    availableCount:4
-                }]
+                datalist: []
             }
         },
         mounted(){
-            //this.getlist();
+            this.getlist();
         },
         methods: {
             agentinfo(item){

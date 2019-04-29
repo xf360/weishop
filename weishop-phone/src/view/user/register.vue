@@ -30,7 +30,7 @@
         },
         methods:{
             click(){
-                this.$router.push("/register2")
+                this.$router.push("/register2?id="+this.$route.query.id)
             }
         }
     }
