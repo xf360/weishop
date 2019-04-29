@@ -2,21 +2,23 @@
   <div>
     <!-- 封号页面 -->
     <a-form :autoFormCreate="(form) => this.form = form">
-      <a-form-item label="封号原因" fieldDecoratorId="reason.type"
-        :fieldDecoratorOptions="{rules: [{ required: true, message: '请选择一个原因'}]}">
-        <a-select placeholder="请选择一个原因">
+      <a-form-item label="封号原因" fieldDecoratorId="reason"
+        :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入封号原因'}]}">
+        <!-- <a-select placeholder="请选择一个原因">
           <a-select-option :value="1">
             原因1
           </a-select-option>
           <a-select-option :value="2">
             原因2
           </a-select-option>
-        </a-select>
+        </a-select> -->
+        <a-input style="width:300px" placeholder="请输入封号原因" />
       </a-form-item>
-      <a-form-item label="备注" fieldDecoratorId="reason.des">
-        <a-textarea placeholder="请输入原因" :autosize="{ minRows: 2, maxRows: 6 }" />
+      <a-form-item label="备注" fieldDecoratorId="remark"
+        :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入备注'}]}">
+        <a-textarea placeholder="请输入备注" :autosize="{ minRows: 2, maxRows: 6 }" />
       </a-form-item>
-      <a-form-item fieldDecoratorId="reason.des">
+      <!-- <a-form-item fieldDecoratorId="reason.des">
         <a-checkbox  >
           通知代理
         </a-checkbox>
@@ -25,7 +27,7 @@
         <a-checkbox  >
           通知上级代理
         </a-checkbox>
-      </a-form-item>
+      </a-form-item> -->
     </a-form>
 
   </div>
@@ -39,18 +41,23 @@
       }
     },
     data() {
-      return {
-
-      }
+      return {}
     },
     methods: {
-      submit() {
-        debugger;
-        this.form.validateFields(function (err, values) {
-          if (!err) {
-            console.log('Received values of form: ', values)
-          }
+      async submit() {
+        return new Promise((resolve, reject) => {
+          this.form.validateFields(async (err, values) => {
+            if (!err) {
+              values.agencyId = this.id;
+              var ret = await this.$http.Post('/api/services/app/B_AgencyDisableRecord/Create', values);
+              this.$message.success("操作成功", 3)
+              resolve(ret.success);
+            } else {
+              resolve(false);
+            }
+          });
         });
+
       }
     }
   }

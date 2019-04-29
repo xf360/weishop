@@ -42,7 +42,7 @@ axios.interceptors.response.use(function (response) {
       title: '服务器异常',
       content: '连接服务器超时。'
     })
-    return Promise.reject({data:{success:false,error:{message:'连接服务器超时。'}}});
+    return Promise.reject({data: {success: false, error: {message: '连接服务器超时。'}}})
   }
   switch (error.response.status) {
     case 400:

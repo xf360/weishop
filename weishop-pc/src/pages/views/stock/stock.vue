@@ -37,16 +37,16 @@
               搜索
             </a-button>
           </a-form-item>
-          <a-form-item style="float:right">
+          <!-- <a-form-item style="float:right">
             <a-button type="primary" @click="opennew">
               新建
             </a-button>
-          </a-form-item>
+          </a-form-item> -->
         </a-form>
       </div>
 
       <a-table style="margin-top:20px"  :columns="columns" :dataSource="data"
-        :loading="loading">
+        :loading="loading" @change="pagechange" :pagination="pagination">
         <a-table slot="expandedRowRender" :columns="stockcolumns"  :dataSource="stacklist" slot-scope="text" :pagination="false">
         </a-table>
         <span slot="action" slot-scope="text, record">
@@ -70,15 +70,15 @@
       return {
         detailvisible: false,
         selectid: null,
-        data: [{
-          id: 1,
-          status:0,
-          name1: 'test'
-        },{
-          id: 1,
-          status:1,
-          name1: 'test2'
-        }],
+        pagination: {},
+        list: [],
+        params: {
+          maxResultCount: 10,
+          skipCount: 0,
+          categroyIdP: null,
+          categroyId: null,
+          searchKey: null,
+        },
         stacklist:[{
             createtime:'2018-03-29 12:23:23',
             num:22,
@@ -88,32 +88,40 @@
         loading: false,
         columns: [{
           title: '商品编号',
-          dataIndex: 'name1'
+          dataIndex: 'code'
         }, {
           title: '商品名称',
-          dataIndex: 'name2'
+          dataIndex: 'name'
         }, {
           title: '型号',
-          dataIndex: 'name3'
+          dataIndex: 'modeType'
         }, {
           title: '规格',
-          dataIndex: 'name4'
+          dataIndex: 'spe'
         }, {
           title: '单位',
-          dataIndex: 'name5'
+          dataIndex: 'unitName'
         }, {
           title: '商品大类',
-          dataIndex: 'name6'
+          dataIndex: 'categroyIdPName'
         }, {
           title: '商品小类',
-          dataIndex: 'name7'
+          dataIndex: 'categroyIdName'
         }, {
-          title: '剩余库存',
-          dataIndex: 'name8'
+          title: '原价',
+          dataIndex: 'price'
+        }, {
+          title: '优惠价',
+          dataIndex: 'pirce1'
+        }, {
+          title: '商品图',
+          dataIndex: 'name10'
+        }, {
+          title: '状态',
+          dataIndex: 'status'
         }, {
           title: '操作',
           key: 'action',
-          dataIndex: 'name12',
           scopedSlots: {
             customRender: 'action'
           },
@@ -134,10 +142,18 @@
       }
     },
     methods: {
+      pagechange(page) {
+        this.params.maxResultCount = page.pageSize;
+        this.params.skipCount = (page.current - 1) * page.pageSize;
+        this.loadlist();
+      },
       async loadlist() {
-        this.loading = true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
+        this.loading = true;
+        var ret = await this.$http.Get('/api/services/app/B_Goods/GetList', this.params)
         this.loading = false
+        if (ret.success) {
+          this.list = ret.result.items;
+        }
       },
       async loaddetail() {
         this.loading = true

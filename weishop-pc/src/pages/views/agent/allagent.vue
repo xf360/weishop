@@ -6,20 +6,14 @@
 
         <a-form layout="inline">
           <a-form-item label="等级">
-            <a-select style="width:100px" placeholder="选择等级" allowClear>
-              <a-select-option :value="1">
-                一级代理
-              </a-select-option>
-              <a-select-option :value="2">
-                二级代理
-              </a-select-option>
-              <a-select-option :value="3">
-                三级代理
+            <a-select v-model="params.agencyLevelId" style="width:100px" placeholder="选择等级" allowClear>
+              <a-select-option :value="item.id" v-for="(item,index) in levellist" :key="index">
+                {{item.name}}
               </a-select-option>
             </a-select>
           </a-form-item>
           <a-form-item label="状态">
-            <a-select style="width:100px" placeholder="选择状态" allowClear>
+            <a-select v-model="params.status" style="width:100px" placeholder="选择状态" allowClear>
               <a-select-option :value="1">
                 正常
               </a-select-option>
@@ -32,7 +26,7 @@
             <a-range-picker style="width:250px" @change="onChange" />
           </a-form-item>
           <a-form-item label="关键字">
-            <a-input style="width:300px" placeholder="请输入代理姓名、电话、微信、身份证搜索" />
+            <a-input v-model="params.searchKey" style="width:300px" placeholder="请输入代理姓名、电话、微信、身份证搜索" />
           </a-form-item>
           <a-form-item>
             <a-button type="primary" @click="loadlist">
@@ -41,9 +35,9 @@
           </a-form-item>
         </a-form>
       </div>
-      <a-alert style="margin-top:20px" message="代理人数：11。" type="info" :show-icon="true" />
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
-        :loading="loading">
+      <a-alert style="margin-top:20px" message="代理人数：-。" type="info" :show-icon="true" />
+      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
+        :loading="loading" @change="pagechange"  :pagination="pagination">
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="opendetail(record)">查看</a>
         </span>
@@ -67,39 +61,49 @@ import agentinfo from './agentinfo.vue'
       return {
         detailvisible:false,
         selectid:null,
-        data: [{
+        pagination:{},
+        params:{
+          maxResultCount:10,
+          skipCount:0,
+          agencyLevelId:null,
+          status:null,
+          startDate:null,
+          endDate:null,
+          searchKey:null,
+        },
+        list: [{
           id:1,
           name1: 'test'
         }],
+        levellist:[],
         loading: false,
         columns: [{
           title: '代理编号',
-          dataIndex: 'name1'
+          dataIndex: 'agenCyCode'
         }, {
           title: '代理姓名',
-          dataIndex: 'name3'
+          dataIndex: 'userName'
         }, {
           title: '等级',
-          dataIndex: 'name4'
+          dataIndex: 'agencyLevelName'
         }, {
           title: '联系电话',
-          dataIndex: 'name5'
+          dataIndex: 'tel'
         }, {
           title: '微信号',
-          dataIndex: 'name6'
+          dataIndex: 'wxId'
         }, {
           title: '通过时间',
-          dataIndex: 'name7'
+          dataIndex: 'creationTime'
         }, {
           title: '层级',
-          dataIndex: 'name8'
+          dataIndex: 'agencyLevelName'
         }, {
           title: '状态',
-          dataIndex: 'name11'
+          dataIndex: 'status'
         }, {
           title: '操作',
           key: 'action',
-          dataIndex: 'name12',
           scopedSlots: {
             customRender: 'action'
           },
@@ -107,20 +111,43 @@ import agentinfo from './agentinfo.vue'
       }
     },
     methods: {
-      async loadlist() {
-        this.loading=true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
-        this.loading=false
+      onChange(data,datastr){
+        this.params.startDate=datastr[0]+' 00:00:00'
+        this.params.endDate=datastr[1]+' 23:59:59'
       },
-      async loaddetail(){
-        this.loading=true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
+      pagechange(page){
+        this.params.maxResultCount=page.pageSize;
+        this.params.skipCount=(page.current-1)*page.pageSize;
+        this.loadlist();
+      },
+      async loadlist() {
+        this.loading=true;
+        var ret=await this.$http.Get('/api/services/app/B_Agency/GetManagerList',this.params)
         this.loading=false
+        if(ret.success){
+          this.list=ret.result.items;
+        }
+      },
+      async loadlevel(){
+        this.loading=true
+        var ret=await this.$http.Get('/api/services/app/B_AgencyLevel/GetList',{
+           MaxResultCount:999,
+          SkipCount:0
+        })
+        this.loading=false
+        if(ret.success){
+          this.levellist=ret.result.items;
+        }
       },
       opendetail(row){
         this.selectid=row.id
-        this.detailvisible=true
+        this.detailvisible=true;
+        
       },
+    },
+    mounted(){
+      this.loadlevel()
+      this.loadlist()
     }
   }
 
