@@ -4,7 +4,7 @@
         <div class="card-info">
             <div class="card-title">{{title}}</div>
             <div class="card-desc">{{desc}}</div>
-            <div class="card-price">￥{{formatPrice}}</div>
+            <div class="card-price">￥{{formatPrice}} <span v-if="oldprice" class="card-oldprice">原价：￥{{oldprice}}</span></div>
             <div class="card-count">
                 <van-stepper :integer="true" :disable-input="true" :min="0" :max="99" @change="change" :value="count" />
             </div>
@@ -40,6 +40,9 @@
             },
             price: {
                 type: Number
+            },
+            oldpreice:{
+                type:Number
             },
             thumb: {
                 type: String
@@ -86,6 +89,10 @@
         font-size: 18px;
     line-height: 18px;
     margin: 5px;
+}
+.card-oldprice{
+    color: #999;
+    font-size: 14px;
 }
 .card-title{
     font-size: 14px;

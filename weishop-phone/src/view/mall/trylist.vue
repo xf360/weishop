@@ -1,13 +1,14 @@
 <template>
     <div>
-        <van-nav-bar title="试用装" left-text="返回" right-text="按钮" left-arrow @click-left="onClickLeft"
-            @click-right="onClickRight" />
-        <van-pull-refresh v-model="refreshing" @refresh="onRefresh()">
+        <van-nav-bar title="试用装" left-text="返回" left-arrow @click-left="onClickLeft" />
+        
             <van-list v-model="loading" :finished="finished" finished-text="加载完成" @load="onLoad()">
-                <gooditem v-for="(item,index) in goods" :key="index" :title="item.title" :desc="item.desc"
-                     :price="item.price" :thumb="item.thumb" />
+                <gooditem v-for="(item,index) in goods" :key="index" :title="item.title" 
+                     :thumb="api+'/api/AbpFile/Show?id='+item.file.id" />
             </van-list>
-        </van-pull-refresh>
+            <h2 class="celltitle" style="margin-top:50px">填写收货信息</h2>
+               <van-address-edit  :area-list="areaList" show-set-default show-search-result
+           :address-info="addressinfo"  @save="onSave" />
     </div>
 </template>
 <style>
@@ -25,17 +26,24 @@
         left: 0;
         right: 0;
 }
+    .celltitle {
+        font-size: 14px;
+        padding: 10px;
+        margin: 0px;
+        color: #999;
+    }
 </style>
 
 <script>
     import Vue from 'vue';
+    import area from '../../utils/area.js'
     import {
         NavBar,
         List,
-        PullRefresh
+        AddressEdit
     } from 'vant';
 
-    Vue.use(NavBar).use(List).use(PullRefresh);
+    Vue.use(NavBar).use(List).use(AddressEdit);
     import gooditem from '../goods/gooditem.vue'
 import { truncate } from 'fs';
     export default {
@@ -44,96 +52,42 @@ import { truncate } from 'fs';
         },
         data() {
             return {
-                refreshing: false,
                 loading:false,
                 finished:false,
-                goods: [{
-                    id: '1',
-                    title: '进口香蕉',
-                    desc: '约250g，2根',
-                    price: 200,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/2f9a36046449dafb8608e99990b3c205.jpeg'
-                }, {
-                    id: '2',
-                    title: '陕西蜜梨',
-                    desc: '约600g',
-                    price: 690,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/f6aabd6ac5521195e01e8e89ee9fc63f.jpeg'
-                }, {
-                    id: '3',
-                    title: '美国伽力果',
-                    desc: '约680g/3个',
-                    price: 2680,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/320454216bbe9e25c7651e1fa51b31fd.jpeg'
-                }, {
-                    id: '3',
-                    title: '美国伽力果',
-                    desc: '约680g/3个',
-                    price: 2680,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/320454216bbe9e25c7651e1fa51b31fd.jpeg'
-                }, {
-                    id: '3',
-                    title: '美国伽力果',
-                    desc: '约680g/3个',
-                    price: 2680,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/320454216bbe9e25c7651e1fa51b31fd.jpeg'
-                }, {
-                    id: '3',
-                    title: '美国伽力果',
-                    desc: '约680g/3个',
-                    price: 2680,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/320454216bbe9e25c7651e1fa51b31fd.jpeg'
-                }, {
-                    id: '3',
-                    title: '美国伽力果',
-                    desc: '约680g/3个',
-                    price: 2680,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/320454216bbe9e25c7651e1fa51b31fd.jpeg'
-                }, {
-                    id: '3',
-                    title: '美国伽力果',
-                    desc: '约680g/3个',
-                    price: 2680,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/320454216bbe9e25c7651e1fa51b31fd.jpeg'
-                }, {
-                    id: '3',
-                    title: '美国伽力果',
-                    desc: '约680g/3个',
-                    price: 2680,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/320454216bbe9e25c7651e1fa51b31fd.jpeg'
-                }]
+                page:1,
+                addressinfo:{},
+                areaList:area,
+                goods: []
             }
         },
+        mounted(){
+            this.onLoad()
+        },
         methods: {
+            onSave(){},
             onClickLeft() {
                 this.$router.go(-1)
             },
-            onClickRight() {
-
-            },
             onRefresh() {
                 var vm=this;
-                setTimeout(() => {
-                    vm.refreshing = false;
-                    window.scrollTo(0, 10);
-                }, 1000);
+                this.page=1;
+                this.onLoad()
             },
-            onLoad() {
-                var vm=this;
-                setTimeout(() => {
-                    vm.loading = false;
-                    vm.finished=true;
-                    window.scrollTo(0, 10);
-                }, 1000);
+            async onLoad() {
+                this.loading=true;
+                var ret= await this.$http.Get('/api/services/app/B_TrialProduct/GetList',
+                {
+                    isActive:true,
+                    searchKey:'',
+                    maxResultCount:20,
+                    skipCount:(this.page-1)*20
+                });
+                this.loading=false;
+                this.finished=true;
+                if(ret.success){
+                    this.goods=ret.result.items;
+                }
+                 window.scrollTo(0, 10);
             }
         },
 

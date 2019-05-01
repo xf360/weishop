@@ -198,6 +198,14 @@ const routes = [{
         }
       },
       {
+        name: 'yuncanglog',
+        path:'yuncanglog',
+        component: () => import('./view/mall/yuncanglog.vue'),
+        meta: {
+          title: '云仓进出货明细'
+        }
+      },
+      {
         name: 'jiesuan',
         path:'jiesuan',
         component: () => import('./view/cart/jiesuan.vue'),

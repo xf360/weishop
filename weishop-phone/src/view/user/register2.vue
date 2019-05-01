@@ -54,19 +54,19 @@
             <van-cell>
                 <template slot="title">
                     <span class="custom-text">头像：</span>
-                    <uploader :limit="2" v-model="info.headimg"></uploader>
+                    <uploader :limit="1" v-model="info.touxiangFile"></uploader>
                 </template>
             </van-cell>
             <van-cell>
                 <template slot="title">
                     <span class="custom-text">打款凭证（1-2张）：</span>
-                    <uploader :limit="2" v-model="info.headimg"></uploader>
+                    <uploader :limit="2" v-model="info.credentFiles"></uploader>
                 </template>
             </van-cell>
             <van-cell>
                 <template slot="title">
                     <span class="custom-text">手持证件（1张）：</span>
-                    <uploader :limit="2" v-model="info.headimg"></uploader>
+                    <uploader :limit="2" v-model="info.handleCredentFiles"></uploader>
                 </template>
             </van-cell>
         </van-cell-group>
@@ -148,9 +148,9 @@
                     bankUserName: '',
                     areaname: '',
                     bankName: '',
-                    touxiangFile: null,
-                    credentFiles: null,
-                    handleCredentFiles: null,
+                    touxiangFile: {},
+                    credentFiles: [],
+                    handleCredentFiles: [],
                     payDate: (new Date()).toLocaleDateString()
                 }
             }

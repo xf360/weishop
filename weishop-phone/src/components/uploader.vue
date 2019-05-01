@@ -45,18 +45,23 @@
                 return true
             },
             del(index){
-                debugger;
                 if(this.filelist.length==1){
                     this.filelist=[];
                 }else{
                 this.filelist=this.filelist.slice(index)
                 }
             },
-            onRead(file) {
-                debugger;
-                //this.info.headerimg=file.content;
+            async onRead(file) {
                 this.filelist.push(file);
-                console.log(file)
+                let formData = new FormData();
+                formData.append(this.name, file.file);
+                var ret=await this.$http.Post('/api/AbpFile/Post',formData);
+                if(this.limit==1){
+                    this.$emit("input",ret.result.data[0])
+                }else{
+                    this.$emit("input",ret.result.data)
+                }
+                
             },
         }
     }

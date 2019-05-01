@@ -7,8 +7,8 @@
             <van-tab :title="item.name" v-for="(item,index) in catory" :key="index"></van-tab>
         </van-tabs>
         <div style="background-color:#fff">
-            <gooditem v-for="(item,index) in goods" :key="index" :title="item.title" :desc="item.desc"
-                :price="item.price" :thumb="item.thumb" />
+            <gooditem v-for="(item,index) in goods" :key="index" :title="item.name" :desc="item.spe"
+                :price="item.price" :oldprice="item.price1" :thumb="api+'/api/AbpFile/Show?id='+item.file.id" />
         </div>
     </div>
 </template>
@@ -31,21 +31,39 @@
         },
         data() {
             return {
-                goods: [{
-                    id: '1',
-                    title: '进口香蕉',
-                    desc: '约250g，2根',
-                    price: 200,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/2f9a36046449dafb8608e99990b3c205.jpeg'
-                }],
-                catory: [{
-                    id: 'dd',
-                    name: '类别1'
-                }, {
-                    id: 'ddd',
-                    name: '类别2'
-                }]
+                goods: [],
+                catory: []
+            }
+        },
+        mounted(){
+            this.loadcate();
+        },
+        methods:{
+            async loadcate(){
+                var ret=await this.$http.Get('/api/services/app/B_Categroy/GetListByCategroyId',{
+                    categroyId:'',
+                    maxResultCount:20,
+                    skipCount:0
+                });
+                if(ret.success){
+                    this.catory=ret.result.items;
+                    if(this.catory.length>0){
+                        this.loadlist(this.catory[0].id);
+                    }
+                }
+            },
+            async loadlist(id){
+                if(!id){
+                    return;
+                }
+                var ret=await this.$http.Get('',{
+                    categroyId:id,
+                    maxResultCount:20,
+                    skipCount:0,
+                });
+                if(ret.success){
+                    this.goods=ret.result.items;
+                }
             }
         }
     }

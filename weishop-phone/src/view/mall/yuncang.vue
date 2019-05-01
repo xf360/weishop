@@ -1,7 +1,7 @@
 <template>
     <!-- 云仓进货提货 -->
     <div>
-        <van-nav-bar title="我的云仓" right-text="明细" left-arrow @click-left="$router.go(-1)" @click-right="onClickRight" />
+        <van-nav-bar title="我的云仓" right-text="明细" left-arrow @click-left="$router.go(-1)" @click-right="$router.push('yuncanglog')" />
         <van-row style="text-align:center;padding:10px; background-color: #fff;">
             <van-col span="12">
                 <van-button type="primary" style="width:150px" @click="$router.push('yuncangin')">进货</van-button>
@@ -13,11 +13,11 @@
         <h2 class="celltitle">云仓库存</h2>
         <van-list v-model="loading" :finished="finished" finished-text="加载完成" @load="onLoad()">
             <div class="yuncangbox" v-for="(item,index) in list" :key="index">
-                <div><img :src="item.img" width="56" height="56" /></div>
+                <div><img :src="api+'/api/AbpFile/Show?id='+item.file.id" width="56" height="56" /></div>
                 <div>
-                    <div class="yuncangtitle">{{item.name}}</div>
-                    <div class="yuncangnum">可提取数量：{{item.num}}箱</div>
-                    <div class="yuncangerror">缺货{{item.que}}箱</div>
+                    <div class="yuncangtitle">{{item.title}}</div>
+                    <div class="yuncangnum">可提取数量：{{item.canExtractCount}}箱</div>
+                    <div class="yuncangerror">缺货{{item.takeLessCount}}箱</div>
                 </div>
             </div>
         </van-list>
@@ -38,12 +38,21 @@
     export default {
         data(){
             return {
-                list:[{
-                    name:'商品名字',
-                    num:5,
-                    que:3,
-                    img:''
-                }]
+                list:[]
+            }
+        },
+        methods:{
+            async onload(){
+                var ret=await this.$http.Get('/api/services/app/B_CloudWarehouse/GetCWInventoryListAsync',{
+                    categroyPropertyId:'',
+                    isActive:true,
+                    searchKey:'',
+                    maxResultCount:50,
+                    skipCount:0
+                })
+                if(ret.success){
+                    this.list=ret.result.items;
+                }
             }
         }
     }
