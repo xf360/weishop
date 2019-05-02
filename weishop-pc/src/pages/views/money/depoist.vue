@@ -6,28 +6,22 @@
 
         <a-form layout="inline">
           <a-form-item label="打款方式">
-            <a-select style="width:100px" placeholder="选择打款方式" allowClear>
-              <a-select-option :value="1">
+            <a-select v-model="params.payType" style="width:100px" placeholder="选择打款方式" allowClear>
+              <!-- <a-select-option :value="1">
                 微信
-              </a-select-option>
-              <a-select-option :value="2">
+              </a-select-option> -->
+              <a-select-option :value="0">
                 支付宝
               </a-select-option>
-              <a-select-option :value="3">
+              <a-select-option :value="1">
                 银行卡转账
               </a-select-option>
             </a-select>
           </a-form-item>
           <a-form-item label="等级">
-            <a-select style="width:100px" placeholder="选择等级" allowClear>
-              <a-select-option :value="1">
-                一级代理
-              </a-select-option>
-              <a-select-option :value="2">
-                二级代理
-              </a-select-option>
-              <a-select-option :value="3">
-                三级代理
+            <a-select v-model="params.agencyLevelId" style="width:100px" placeholder="选择等级" allowClear>
+              <a-select-option :value="item.id" v-for="(item,index) in levellist" :key="index">
+                {{item.name}}
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -45,7 +39,7 @@
             <a-range-picker style="width:250px" @change="onChange" />
           </a-form-item>
           <a-form-item label="关键字">
-            <a-input style="width:300px" placeholder="请输入代理姓名、电话、微信、身份证搜索" />
+            <a-input v-model="params.searchKey" style="width:300px" placeholder="请输入代理姓名、电话、微信、身份证搜索" />
           </a-form-item>
           <a-form-item>
             <a-button type="primary" @click="loadlist">
@@ -54,9 +48,11 @@
           </a-form-item>
         </a-form>
       </div>
-      <a-alert style="margin-top:20px" message="待审核人数：11，已通过人数：22，未通过人数:33。" type="info" :show-icon="true" />
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
-        :loading="loading">
+       <a-alert style="margin-top:20px"
+        :message="`待审核人数：${static.waitAuditCount}，已通过人数：${static.passCount}，未通过人数:${static.noPassCount}。已审核金额：${static.passAmout}，未审核金额：${static.waitAmout}。`" type="info"
+        :show-icon="true" />
+      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
+        :loading="loading" @change="pagechange" :pagination="pagination">
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="openaudit(record)">打款</a>
           <!-- <a href="javascript:;" @click="detailvisible=true">查看</a> -->
@@ -64,7 +60,7 @@
       </a-table>
     </a-card>
     <a-modal title="审核" v-model="auditvisible" :width="800">
-      <depoistaudit :id="selectid"></depoistaudit>
+      <depoistaudit :id="selectid" ref="depoistaudit"></depoistaudit>
       <template slot="footer">
         <a-button key="back">取消</a-button>
         <a-button key="submit" type="primary" :loading="loading" @click="auditpass">确认</a-button>
@@ -78,80 +74,121 @@
     components: {
       depoistaudit
     },
+    mounted() {
+      this.loadlist();
+      this.loadlevel();
+      this.loadstatic();
+    },
     data() {
       return {
         auditvisible:false,
         selectid:null,
-        data: [{
-          id:1,
-          name1: 'test'
-        }],
+         list: [],
+        levellist: [],
+        static: {
+          waitAuditCount: 0,
+          passCount: 0,
+          noPassCount: 0,
+          passAmout:0,
+          waitAmout:0
+        },
+        params: {
+          payType: null,
+          agencyLevelId: null,
+          status: 1,
+          payDateStart: null,
+          payDateEnd: null,
+          searchKey: null,
+          maxResultCount: 10,
+          skipCount: 0,
+        },
         loading: false,
         columns: [{
           title: '提现单号',
-          dataIndex: 'name1'
+          dataIndex: 'code'
         },  {
           title: '姓名',
-          dataIndex: 'name3'
+          dataIndex: 'userName'
         }, {
           title: '联系电话',
-          dataIndex: 'name5'
+          dataIndex: 'tel'
         }, {
           title: '银行名称',
-          dataIndex: 'name6'
+          dataIndex: 'bankName'
         }, {
           title: '支行名称',
-          dataIndex: 'name7'
+          dataIndex: 'bankBranchName'
         }, {
           title: '开户姓名',
-          dataIndex: 'name8'
+          dataIndex: 'bankUserName'
         }, {
           title: '卡号',
-          dataIndex: 'name2'
+          dataIndex: 'bankNumber'
         },{
           title: '金额',
-          dataIndex: 'name9'
+          dataIndex: 'amout'
         }, {
           title: '打款日期',
-          dataIndex: 'name10'
+          dataIndex: 'payTime'
         }, {
           title: '状态',
-          dataIndex: 'name11'
+          dataIndex: 'status'
         }, {
           title: '操作',
           key: 'action',
-          dataIndex: 'name12',
           scopedSlots: {
             customRender: 'action'
           },
         }]
       }
     },
+    mounted() {
+      this.loadlist();
+      this.loadlevel();
+      this.loadstatic();
+    },
     methods: {
-      async loadlist() {
-        this.loading=true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
-        this.loading=false
+       async loadlevel() {
+        this.loading = true
+        var ret = await this.$http.Get('/api/services/app/B_AgencyLevel/GetList', {
+          MaxResultCount: 999,
+          SkipCount: 0
+        })
+        this.loading = false
+        if (ret.success) {
+          this.levellist = ret.result.items;
+        }
       },
-      async loaddetail(){
-        this.loading=true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
-        this.loading=false
+      async loadstatic() {
+        var ret = await this.$http.Get('/api/services/app/B_Withdrawal/GetCount');
+        if (ret.success) {
+          this.static = ret.result;
+        }
+      },
+      pagechange(page) {
+        this.params.maxResultCount = page.pageSize;
+        this.params.skipCount = (page.current - 1) * page.pageSize;
+        this.loadlist();
+      },
+      async loadlist() {
+        this.loading = true
+        var ret = await this.$http.Get('/api/services/app/B_Withdrawal/GetList', this.params);
+        this.loading = false
+        if (ret.success) {
+          this.list = ret.result.items;
+        }
       },
       openaudit(row){
         this.selectid=row.id
         this.auditvisible=true
       },
-      auditpass(){
-        this.$success({
-        title: '该记录审核已通过。',
-        content: (  // JSX support
-          <div>
-            <p>你可以继续处理其他记录。</p>
-          </div>
-        ),
-      });
-      },
+      async auditpass(){
+        var ret=await this.$refs.depoistaudit.submit();
+        if(ret){
+          this.auditvisible=false;
+          this.loadlist()
+        }
+      }
     }
   }
 

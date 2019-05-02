@@ -4,7 +4,7 @@
     <a-card>
       <div class="tools">
         <a-form layout="inline">
-          <a-form-item label="全部大类">
+          <!-- <a-form-item label="全部大类">
             <a-select style="width:100px" placeholder="选择分类" allowClear>
               <a-select-option :value="1">
                 第一类
@@ -14,10 +14,10 @@
               </a-select-option>
 
             </a-select>
-          </a-form-item>
+          </a-form-item> -->
 
           <a-form-item label="关键字">
-            <a-input style="width:300px" placeholder="请输入订单编号、代理商名称" />
+            <a-input v-model="params.searchKey" style="width:300px" placeholder="请输入订单编号、代理商名称" />
           </a-form-item>
           <a-form-item>
             <a-button type="primary" @click="loadlist">
@@ -28,7 +28,7 @@
       </div>
 
       <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
-        :loading="loading">
+        :loading="loading" @change="pagechange"  :pagination="pagination">
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="opendetail(record)">查看</a>
         </span>
@@ -50,60 +50,67 @@
       return {
         detailvisible: false,
         selectid: null,
-        data: [{
-          id: 1,
-          status:0,
-          name1: 'test'
-        },{
-          id: 1,
-          status:1,
-          name1: 'test2'
-        }],
+         list: [],
+         pagination:{},
+         params:{
+          status:null,
+          lowerUsers:true,
+          startDate:null,
+          endDate:null,
+          searchKey:null,
+          maxResultCount:10,
+          skipCount:0,
+        },
         loading: false,
         columns: [{
           title: '订单编号',
-          dataIndex: 'name1'
+          dataIndex: 'orderNo'
         }, {
           title: '下单时间',
-          dataIndex: 'name2'
+          dataIndex: 'creationTime'
         }, {
           title: '代理姓名',
-          dataIndex: 'name3'
+          dataIndex: 'userName'
         }, {
           title: '商品件数',
-          dataIndex: 'name4'
+          dataIndex: 'number'
         }, {
           title: '订单金额',
-          dataIndex: 'name5'
+          dataIndex: 'amout'
         }, {
           title: '货款支付',
-          dataIndex: 'name6'
+          dataIndex: 'goodsPayment'
         }, {
           title: '余额支付',
-          dataIndex: 'name7'
+          dataIndex: 'balance'
         },{
           title: '状态',
-          dataIndex: 'name11'
+          dataIndex: 'status'
         }, {
           title: '操作',
           key: 'action',
-          dataIndex: 'name12',
           scopedSlots: {
             customRender: 'action'
           },
         }]
       }
     },
+    mounted(){
+      this.loadlist();
+    },
     methods: {
-      async loadlist() {
-        this.loading = true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
-        this.loading = false
+      pagechange(page){
+        this.params.maxResultCount=page.pageSize;
+        this.params.skipCount=(page.current-1)*page.pageSize;
+        this.loadlist();
       },
-      async loaddetail() {
-        this.loading = true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
-        this.loading = false
+      async loadlist() {
+        this.loading=true
+        var ret=await this.$http.Get('/api/services/app/B_InOrder/GetB_InOrderListAsync',this.params);
+        this.loading=false
+        if(ret.success){
+          this.list=ret.result.items;
+        }
       },
       onDelete() {},
       opendetail(row) {

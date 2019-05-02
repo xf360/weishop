@@ -108,18 +108,18 @@ const routers = new Router({
               component: () => import('@/pages/views/agent/allagent.vue'),
               icon: 'none'
             },
-            {
-              path: '/agent/first',
-              name: '一级代理',
-              component: () => import('@/pages/views/agent/firstagent.vue'),
-              icon: 'none'
-            },
-            {
-              path: '/agent/sub',
-              name: '下级代理',  
-              component: () => import('@/pages/views/agent/subagent.vue'),
-              icon: 'none'
-            },
+            // {
+            //   path: '/agent/first',
+            //   name: '一级代理',
+            //   component: () => import('@/pages/views/agent/firstagent.vue'),
+            //   icon: 'none'
+            // },
+            // {
+            //   path: '/agent/sub',
+            //   name: '下级代理',  
+            //   component: () => import('@/pages/views/agent/subagent.vue'),
+            //   icon: 'none'
+            // },
             {
               path: '/agent/level',
               name: '等级管理',  

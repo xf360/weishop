@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-form :autoFormCreate="(form) => this.form = form">
-      <a-form-item label="不通过原因" fieldDecoratorId="reason.type"
+      <a-form-item label="不通过原因" fieldDecoratorId="reason"
         :fieldDecoratorOptions="{rules: [{ required: true, message: '请选择一个原因'}]}">
         <a-select placeholder="请选择一个原因">
           <a-select-option :value="1">
@@ -12,29 +12,28 @@
           </a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item label="备注" fieldDecoratorId="reason.des">
+      <a-form-item label="备注" fieldDecoratorId="remark">
         <a-textarea placeholder="请输入原因" :autosize="{ minRows: 2, maxRows: 6 }" />
       </a-form-item>
     </a-form>
-  
+
   </div>
 </template>
 <script>
   export default {
     data() {
       return {
-
+        info: {}
+      }
+    },
+    props: {
+      id: {
+        type: [String, Number],
+        required: true
       }
     },
     methods: {
-        submit(){
-            debugger;
-            this.form.validateFields(function(err,values){
-                if(!err){
-                    console.log('Received values of form: ', values)
-                }
-            });
-        }
+
     }
   }
 

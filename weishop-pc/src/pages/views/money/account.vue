@@ -5,15 +5,15 @@
       <div class="tools">
 
         <a-form layout="inline">
-          <a-form-item label="账户类型">
-            <a-select style="width:100px" placeholder="选择账户类型" allowClear>
-              <a-select-option :value="1">
+          <a-form-item label="打款方式">
+            <a-select v-model="params.type" style="width:100px" placeholder="选择打款方式" allowClear>
+              <!-- <a-select-option :value="1">
                 微信
-              </a-select-option>
-              <a-select-option :value="2">
+              </a-select-option> -->
+              <a-select-option :value="0">
                 支付宝
               </a-select-option>
-              <a-select-option :value="3">
+              <a-select-option :value="1">
                 银行卡转账
               </a-select-option>
             </a-select>
@@ -22,7 +22,7 @@
         
          
           <a-form-item label="关键字">
-            <a-input style="width:300px" placeholder="请输入账号" />
+            <a-input v-model="params.searchKey"  style="width:300px" placeholder="请输入账号" />
           </a-form-item>
           <a-form-item>
             <a-button type="primary" @click="loadlist">
@@ -36,20 +36,20 @@
           </a-form-item>
         </a-form>
       </div>
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
-        :loading="loading">
+      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
+        :loading="loading" @change="pagechange"  :pagination="pagination">
         <span slot="action" slot-scope="text, record">
-          <a-popconfirm style="width:250px"  title="上线后，该账户信息将显示在货款充值页面，是否确定上线？" @confirm="() => onDelete(record.key)" okText='确认' cancelText='取消'>
+          <a-popconfirm v-if="record.status===1" style="width:250px"  title="上线后，该账户信息将显示在货款充值页面，是否确定上线？" @confirm="() => onDelete(record.key)" okText='确认' cancelText='取消'>
             <a href="javascript:;">上线</a>
           </a-popconfirm>
-          <a-popconfirm  title="下线后，该账户信息将不显示在货款充值页面，是否确定下线？" @confirm="() => onDelete(record.key)" okText='确认' cancelText='取消'>
+          <a-popconfirm v-if="record.status===0"  title="下线后，该账户信息将不显示在货款充值页面，是否确定下线？" @confirm="() => onDelete(record.key)" okText='确认' cancelText='取消'>
             <a href="javascript:;">下线</a>
           </a-popconfirm>
         </span>
       </a-table>
     </a-card>
     <a-modal title="新建账户" v-model="createvisible" :width="800">
-      <accountnew :id="selectid"></accountnew>
+      <accountnew :id="selectid" ref="accountnew"></accountnew>
       <template slot="footer">
         <a-button key="back" @click="createvisible=false">取消</a-button>
         <a-button key="submit" type="primary" :loading="loading" @click="create">确认</a-button>
@@ -67,63 +67,67 @@
       return {
         createvisible:false,
         selectid:null,
-        data: [{
-          id:1,
-          name1: 'test'
-        }],
+        params:{
+          type:null,
+          searchKey:null,
+          maxResultCount:10,
+          skipCount:0,
+        },
+        list:[],
         loading: false,
         columns: [{
           title: '类型',
-          dataIndex: 'name1'
+          dataIndex: 'type'
         },  {
           title: '账户',
-          dataIndex: 'name3'
+          dataIndex: 'account'
         }, {
           title: '银行名称',
-          dataIndex: 'name5'
+          dataIndex: 'bankName'
         }, {
           title: '户名',
-          dataIndex: 'name6'
+          dataIndex: 'bankUserName'
         }, {
           title: '微信客服',
-          dataIndex: 'name7'
+          dataIndex: 'wxName'
         }, {
           title: '备注',
-          dataIndex: 'name8'
+          dataIndex: 'remark'
         },  {
           title: '状态',
-          dataIndex: 'name11'
+          dataIndex: 'status'
         }, {
           title: '操作',
           key: 'action',
-          dataIndex: 'name12',
           scopedSlots: {
             customRender: 'action'
           },
         }]
       }
     },
+    mounted(){
+      this.loadlist();
+    },
     methods: {
+      pagechange(page){
+        this.params.maxResultCount=page.pageSize;
+        this.params.skipCount=(page.current-1)*page.pageSize;
+        this.loadlist();
+      },
       async loadlist() {
         this.loading=true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
+        var ret=await this.$http.Get('/api/services/app/B_ManagerPayAccount/GetList',this.params);
         this.loading=false
+        if(ret.success){
+          this.list=ret.result.items;
+        }
       },
-      async loaddetail(){
-        this.loading=true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
-        this.loading=false
-      },
-      create(){
-        this.$success({
-        title: '该记录审核已添加。',
-        content: (  // JSX support
-          <div>
-            <p>你可以继续处理其他记录。</p>
-          </div>
-        ),
-      });
-      this.createvisible=false;
+      async create(){
+        var ret= await this.$refs.accountnew.submit();
+        if(ret){
+          this.createvisible=false;
+          this.loadlist();
+        }
       },
     }
   }

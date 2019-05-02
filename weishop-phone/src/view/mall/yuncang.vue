@@ -36,13 +36,16 @@
 
     Vue.use(NavBar).use(List).use(Row).use(Col).use(Button);
     export default {
+        mounted(){
+            this.onLoad();
+        },
         data(){
             return {
                 list:[]
             }
         },
         methods:{
-            async onload(){
+            async onLoad(){
                 var ret=await this.$http.Get('/api/services/app/B_CloudWarehouse/GetCWInventoryListAsync',{
                     categroyPropertyId:'',
                     isActive:true,

@@ -2,26 +2,26 @@
   <!-- 等级金额 -->
   <div>
     <a-card>
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
-        :loading="loading">
+      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
+        :loading="loading" @change="pagechange"  :pagination="pagination">
         <template slot="first" slot-scope="text, record">
-          <a-input v-if="record.editable" style="margin: -5px 0" :value="text"
-            @change="e => handleChange(e.target.value, record.id,'name4')" />
+          <a-input-number :min="0" :max="99999" v-if="record.editable" style="margin: -5px 0" :value="text"
+            @change="e => handleChange(e, record.id,'firstRechargeAmout')" />
           <template v-else>{{text}}</template>
         </template>
         <template slot="name5" slot-scope="text, record">
-          <a-input v-if="record.editable" style="margin: -5px 0" :value="text"
-            @change="e => handleChange(e.target.value, record.id,'name5')" />
+          <a-input-number :min="0" :max="99999" v-if="record.editable" style="margin: -5px 0" :value="text"
+            @change="e => handleChange(e, record.id,'deposit')" />
           <template v-else>{{text}}</template>
         </template>
         <template slot="name6" slot-scope="text, record">
-          <a-input v-if="record.editable" style="margin: -5px 0" :value="text"
-            @change="e => handleChange(e.target.value, record.id,'name6')" />
+          <a-input-number :min="0" :max="99999" v-if="record.editable" style="margin: -5px 0" :value="text"
+            @change="e => handleChange(e, record.id,'recommendAmout')" />
           <template v-else>{{text}}</template>
         </template>
         <template slot="name7" slot-scope="text, record">
-          <a-input  v-if="record.editable" style="margin: -5px 0" :value="text"
-            @change="e => handleChange(e.target.value, record.id,'name7')" />
+          <a-input-number :min="0" :max="100"  v-if="record.editable" style="margin: -5px 0" :value="text"
+            @change="e => handleChange(e, record.id,'discount')" />
           <template v-else>{{text}}</template>
         </template>
         <span slot="action" slot-scope="text, record">
@@ -41,88 +41,103 @@
     data() {
       return {
         selectid: null,
-        data: [{
-          id: 1,
-          name1: '金牌',
-          name3: '一级',
-          name4: 20,
-          name5: 300,
-          name6: 2,
-          name7: 80
-        }],
+        list:[],
+        pagination:{},
+        params:{
+          maxResultCount:10,
+          skipCount:0,
+          name:null,
+          searchKey:null,
+        },
         loading: false,
         columns: [{
           title: '等级',
-          dataIndex: 'name1'
+          dataIndex: 'name'
         }, {
           title: '层级',
-          dataIndex: 'name3'
+          dataIndex: 'level'
         }, {
           title: '首充金额',
-          dataIndex: 'name4',
+          dataIndex: 'firstRechargeAmout',
           scopedSlots: {
             customRender: 'first'
           },
         }, {
           title: '保证金',
-          dataIndex: 'name5',
+          dataIndex: 'deposit',
           scopedSlots: {
             customRender: 'name5'
           },
         }, {
           title: '推荐奖',
-          dataIndex: 'name6',
+          dataIndex: 'recommendAmout',
           scopedSlots: {
             customRender: 'name6'
           },
         }, {
           title: '进货折扣',
-          dataIndex: 'name7',
+          dataIndex: 'discount',
           scopedSlots: {
             customRender: 'name7'
           },
         }, {
           title: '操作',
           key: 'action',
-          dataIndex: 'name12',
           scopedSlots: {
             customRender: 'action'
           },
         }]
       }
     },
+    mounted(){
+      this.loadlist();
+    },
     methods: {
       handleChange(value, key, column) {
         debugger;
-        const newData = [...this.data]
+        const newData = [...this.list]
         const target = newData.filter(item => key === item.id)[0]
         if (target) {
           target[column] = value
-          this.data = newData
+          this.list = newData
         }
       },
-      save() {
+      async save(row) {
+        var ret=await this.$http.Put('/api/services/app/B_AgencyLevel/Update',row);
+        if(ret.success){
+          this.loadlist();
+          this.cancel();
+        }
       },
       edit(row) {
-        const newData = [...this.data]
+        debugger;
+        const newData = [...this.list]
         const target = newData.filter(item => row.id === item.id)[0]
         if (target) {
           target.editable = true
-          this.data = newData
+          this.list = newData
         }
       },
       cancel(row) {
-        const newData = [...this.data]
+        const newData = [...this.list]
         const target = newData.filter(item => row.id === item.id)[0]
         if (target) {
           delete target.editable
-          this.data = newData
+          this.list = newData
         }
       },
+      pagechange(page){
+        this.params.maxResultCount=page.pageSize;
+        this.params.skipCount=(page.current-1)*page.pageSize;
+        this.loadlist();
+      },
       async loadlist() {
-        this.loading = true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
-        this.loading = false
+        this.loading=true;
+        var ret=await this.$http.Get('/api/services/app/B_AgencyLevel/GetAmoutListAsync',this.params)
+        this.loading=false
+        if(ret.success){
+          this.list=ret.result.items;
+        }
       },
 
     }

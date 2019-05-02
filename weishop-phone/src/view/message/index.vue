@@ -1,7 +1,7 @@
 <template>
     <div>
-        <van-tabs>
-            <van-tab title="代理消息">
+        <van-tabs @change="change">
+            <van-tab title="代理消息" >
                 <van-pull-refresh v-model="refreshing" @refresh="onRefresh(0)">
                     <van-list v-model="loading" :finished="finished" finished-text="加载完成"
                         @load="loadmessage(0)">
@@ -57,6 +57,14 @@
             }
         },
         methods: {
+            change(index){
+                if(index===0){
+                    this.loadmessage()
+                }
+                if(index===1){
+                    this.loadnotice()
+                }
+            },
             onRefresh(index) {
                 var vm=this;
                 setTimeout(() => {

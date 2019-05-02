@@ -7,13 +7,13 @@
         <a-form layout="inline">
           <a-form-item label="状态">
             <a-select style="width:100px" placeholder="选择状态" allowClear>
-              <a-select-option :value="1">
+              <a-select-option :value="2">
                 撤销
               </a-select-option>
-              <a-select-option :value="2">
+              <a-select-option :value="1">
                 正常
               </a-select-option>
-              <a-select-option :value="3">
+              <a-select-option :value="0">
                 草稿
               </a-select-option>
             </a-select>
@@ -39,36 +39,50 @@
       </div>
       <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange"  :pagination="pagination">
+        <span slot="status" slot-scope="text">
+          <span v-if="text===0">草稿</span>
+          <span v-if="text===1">正常</span>
+          <span v-if="text===2">撤销</span>
+        </span>
         <span slot="action" slot-scope="text, record">
-            <a href="javascript:;">查看</a>
-          <a-popconfirm style="width:250px"  title="撤销后，代理的消息中心将不显示该条公告，是否撤销？" @confirm="() => onDelete(record.key)" okText='确认' cancelText='取消'>
+            <a href="javascript:;" @click="selectid=record.id;detailvisible=true">查看</a>
+          <a-popconfirm v-if="record.status===1" style="width:250px"  title="撤销后，代理的消息中心将不显示该条公告，是否撤销？" @confirm="() => sendorcancle(record)" okText='确认' cancelText='取消'>
             <a href="javascript:;">撤销</a>
           </a-popconfirm>
-          <a href="javascript:;">发送</a>
-          <a-popconfirm style="width:250px"  title="删除后不可恢复，是否删除？" @confirm="() => onDelete(record.key)" okText='确认' cancelText='取消'>
+          <a  v-if="record.status===0" @click="sendorcancle(record)" href="javascript:;">发送</a>
+          <a-popconfirm v-if="record.status===2" style="width:250px"  title="删除后不可恢复，是否删除？" @confirm="() => onDelete(record)" okText='确认' cancelText='取消'>
             <a href="javascript:;">删除</a>
           </a-popconfirm>
         </span>
       </a-table>
     </a-card>
-    <a-modal title="新建账户" v-model="createvisible" :width="800">
+    <a-modal title="新建通知" v-model="createvisible" :width="800">
       <noticenew ref="noticenew" :id="selectid"></noticenew>
       <template slot="footer">
         <a-button key="back" @click="createvisible=false">取消</a-button>
         <a-button key="submit" type="primary" :loading="loading" @click="create">确认</a-button>
       </template>
     </a-modal>
+    <a-modal title="通知详情" v-model="detailvisible" :width="800">
+      <noticedetail ref="noticedetail" :id="selectid"></noticedetail>
+      <template slot="footer">
+        <a-button key="back" @click="detailvisible=false">取消</a-button>
+      </template>
+    </a-modal>
   </div>
 </template>
 <script>
   import noticenew from './noticenew.vue'
+  import noticedetail from './noticedetail.vue'
   export default {
     components: {
-      noticenew
+      noticenew,
+      noticedetail
     },
     data() {
       return {
         createvisible:false,
+        detailvisible:false,
         selectid:null,
         pagination:{},
         params:{
@@ -87,15 +101,15 @@
         },  {
           title: '标题',
           dataIndex: 'title'
-        }, {
-          title: '内容',
-          dataIndex: 'name5'
-        }, {
+        },{
           title: '发布人',
           dataIndex: 'name6'
         },  {
           title: '状态',
-          dataIndex: 'status'
+          dataIndex: 'status',
+          scopedSlots: {
+            customRender: 'status'
+          },
         }, {
           title: '操作',
           key: 'action',
@@ -127,10 +141,17 @@
           this.list=ret.result.items;
         }
       },
-      async loaddetail(){
-        this.loading=true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
-        this.loading=false
+      async sendorcancle(row){
+        var ret=await this.$http.Post('/api/services/app/B_Notice/SendOrCancle',{id:row.id});
+        if(ret.success){
+          this.loadlist();
+        }
+      },
+      async onDelete(row){
+        var ret=await this.$http.Post('/api/services/app/B_Notice/Delete',{id:row.id});
+        if(ret.success){
+          this.loadlist();
+        }
       },
       async create(){
         var ret=await this.$refs.noticenew.submit();

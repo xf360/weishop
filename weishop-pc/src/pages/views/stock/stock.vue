@@ -141,6 +141,10 @@
         },]
       }
     },
+    mounted(){
+      debugger;
+      this.loadlist()
+    },
     methods: {
       pagechange(page) {
         this.params.maxResultCount = page.pageSize;
@@ -154,11 +158,6 @@
         if (ret.success) {
           this.list = ret.result.items;
         }
-      },
-      async loaddetail() {
-        this.loading = true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
-        this.loading = false
       },
       onDelete() {},
       openaudit(row) {
