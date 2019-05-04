@@ -27,8 +27,12 @@
         </a-form>
       </div>
 
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
+      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange"  :pagination="pagination">
+        <span slot="status" slot-scope="text">
+          <span v-if="text===1">上级缺货</span>
+          <span v-if="text===2">已完成</span>
+        </span>
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="opendetail(record)">查看</a>
         </span>
@@ -85,14 +89,19 @@
           dataIndex: 'balance'
         },{
           title: '状态',
-          dataIndex: 'status'
-        }, {
-          title: '操作',
-          key: 'action',
+          dataIndex: 'status',
           scopedSlots: {
-            customRender: 'action'
+            customRender: 'status'
           },
-        }]
+        }, 
+        // {
+        //   title: '操作',
+        //   key: 'action',
+        //   scopedSlots: {
+        //     customRender: 'action'
+        //   },
+        // }
+        ]
       }
     },
     mounted(){
@@ -107,9 +116,9 @@
       async loadlist() {
         this.loading=true
         var ret=await this.$http.Get('/api/services/app/B_InOrder/GetB_InOrderListAsync',this.params);
-        this.loading=false
+        this.loading=false;
         if(ret.success){
-          this.list=ret.result.items;
+          this.list=ret.result;
         }
       },
       onDelete() {},

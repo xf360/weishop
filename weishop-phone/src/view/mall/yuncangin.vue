@@ -4,19 +4,19 @@
         <van-nav-bar title="我的云仓-进货" right-text="明细" left-arrow @click-left="$router.go(-1)"
             @click-right="onClickRight" />
         <div style="background-color:#fff">
-            <gooditem v-for="(item,index) in goods" :key="index" :title="item.title" :desc="item.desc"
-                :price="item.price" :thumb="item.thumb" />
+            <gooditem v-for="(item,index) in goods" :key="index" :title="item.name" :desc="item.remark"
+              :id="item.id"  :price="item.price" :thumb="api+'api/AbpFile/Show?id='+item.file.id" @addcart="addcart"/>
         </div>
         <van-cell-group>
             <van-cell title="可用货款" value="0" />
             <van-cell title="可用余额" value="0" />
             <van-cell title="订单总额" value="0" />
             <van-cell title="支付方式" value="货款+余额" />
-            <van-cell title="货款支付" value="0" />
-            <van-cell title="余额支付" value="0" />
+            <van-cell title="货款支付" :value="info.goodsPayment" />
+            <van-cell title="余额支付" :value="info.balance" />
         </van-cell-group>
         <center style="margin:10px">
-            <van-button type="primary" style="width:150px">支付</van-button>
+            <van-button type="primary" style="width:150px" @click="submit">支付</van-button>
         </center>
     </div>
 </template>
@@ -28,10 +28,11 @@
         Cell,
         CellGroup,
         Field,
-        Button
+        Button,
+        Dialog
     } from 'vant';
     import gooditem from '../goods/gooditem.vue'
-    Vue.use(NavBar).use(Cell).use(CellGroup).use(Field).use(Button);
+    Vue.use(NavBar).use(Cell).use(CellGroup).use(Field).use(Button).use(Dialog);
 
     export default {
         components: {
@@ -39,15 +40,55 @@
         },
         data() {
             return {
+                api:api,
                 goods: [{
-                    id: '1',
-                    title: '进口香蕉',
-                    desc: '约250g，2根',
-                    price: 200,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/2f9a36046449dafb8608e99990b3c205.jpeg'
-                }]
+                    id: "9b2f8915-618d-4ac7-3bd6-08d6cfccd5e7",
+                    name: "生发产品",
+                    p_Id: null,
+                    price: 100,
+                    unit: "套",
+                    tag: null,
+                    remark: "备注",
+                    status: 0,
+                    creationTime: "2019-05-03T22:01:06.57",
+                    file:{}
+                }],
+                info: {
+                    categroyId: '2572e5ee-1c05-43a4-3bd7-08d6cfccd5e7',
+                    number: 0,
+                    goodsPayment: 0,
+                    balance: 0
+                }
             }
+        },
+        methods: {
+            addcart(id,value,price){
+                debugger;
+                this.info.categroyId=id;
+                this.info.number=value;
+                this.info.goodsPayment=value*price;
+            },
+            async loadCategroy() {
+                var ret = await this.$http.Get('/api/services/app/B_Categroy/GetList', {
+                    MaxResultCount: 100,
+                    SkipCount: 0
+                });
+                if (ret.success && ret.result.items.length > 0) {
+                    for (var i in ret.result.items) {
+                        //if(ret.result.items[i].p_Id)
+                    }
+                }
+            },
+            async submit() {
+                var ret = await this.$http.Post('/api/services/app/B_InOrder/OrderIn', this.info);
+                if (ret.success) {
+                    await Dialog.alert({
+                        title: '标题',
+                        message: '下单成功'
+                    })
+                    this.$router.go(-1)
+                }
+            },
         }
     }
 </script>

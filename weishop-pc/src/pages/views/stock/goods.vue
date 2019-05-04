@@ -4,30 +4,17 @@
     <a-card>
       <div class="tools">
         <a-form layout="inline">
-          <a-form-item label="全部大类">
-            <a-select v-model="params.categroyIdP" style="width:100px" placeholder="选择分类" allowClear>
-              <a-select-option :value="1">
-                第一类
-              </a-select-option>
-              <a-select-option :value="2">
-                第二类
+          <a-form-item label="分类">
+            <a-cascader placeholder="选择分类" :options="pctree" v-model="params.categroyId" />
+          </a-form-item>
+          <!-- <a-form-item label="全部小类">
+            <a-select v-model="params.categroyId" style="width:100px" placeholder="选择分类" allowClear>
+              <a-select-option v-for="(item,index) in spc" :key="index" :value="item.id">
+                {{item.name}}
               </a-select-option>
 
             </a-select>
-          </a-form-item>
-          <a-form-item label="全部小类">
-            <a-select v-model="params.categroyId" style="width:100px" placeholder="选择分类" allowClear>
-              <a-select-option :value="1">
-                子分类1
-              </a-select-option>
-              <a-select-option :value="2">
-                子分类2
-              </a-select-option>
-              <a-select-option :value="3">
-                子分类3
-              </a-select-option>
-            </a-select>
-          </a-form-item>
+          </a-form-item> -->
 
           <a-form-item label="关键字">
             <a-input v-model="params.searchKey" style="width:300px" placeholder="请输入商品编号、商品名称" />
@@ -47,11 +34,15 @@
 
       <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange" :pagination="pagination">
+        <span slot="status" slot-scope="text">
+          <span v-if="text===0">上架</span>
+          <span v-if="text===1">下架</span>
+        </span>
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="openaudit(record)">编辑</a>
           <a v-if="record.status" href="javascript:;" @click="enable(record)">上架</a>
           <a v-if="!record.status" href="javascript:;" @click="enable(record)">下架</a>
-          <a-popconfirm title="确定要删除该记录吗？" @confirm="() => onDelete(record.key)" okText='确认' cancelText='取消'>
+          <a-popconfirm title="确定要删除该记录吗？" @confirm="() => onDelete(record.id)" okText='确认' cancelText='取消'>
             <a href="javascript:;">删除</a>
           </a-popconfirm>
         </span>
@@ -65,6 +56,7 @@
 </template>
 <script>
   import goodedit from './goodedit.vue'
+  import help from '../../../utils/help.js'
   export default {
     components: {
       goodedit
@@ -75,9 +67,16 @@
         selectid: null,
         pagination: {},
         list: [],
+        pctree: [],
+        cparams: {
+          p_Id: '',
+          maxResultCount: 99,
+          skipCount: 0
+        },
         params: {
           maxResultCount: 10,
           skipCount: 0,
+
           categroyIdP: null,
           categroyId: null,
           searchKey: null,
@@ -115,7 +114,10 @@
           dataIndex: 'name10'
         }, {
           title: '状态',
-          dataIndex: 'status'
+          dataIndex: 'status',
+          scopedSlots: {
+            customRender: 'status'
+          },
         }, {
           title: '操作',
           key: 'action',
@@ -125,11 +127,21 @@
         }]
       }
     },
+    mounted() {
+      this.loadlist();
+      this.loadCator();
+    },
     methods: {
       pagechange(page) {
         this.params.maxResultCount = page.pageSize;
         this.params.skipCount = (page.current - 1) * page.pageSize;
         this.loadlist();
+      },
+      async loadCator() {
+        var ret = await this.$http.Get('/api/services/app/B_Categroy/GetList', this.cparams)
+        if (ret.success) {
+          this.pctree=help.list2tree(ret.result.items,null);
+        }
       },
       async loadlist() {
         this.loading = true;
@@ -144,7 +156,12 @@
         //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
         this.loading = false
       },
-      onDelete() {},
+      async onDelete(id) {
+        var ret=await this.$http.Delete('/api/services/app/B_Goods/Delete',{id:id})
+        if(ret.success){
+          this.loadlist();
+        }
+      },
       openaudit(row) {
         this.selectid = row.id
         this.detailvisible = true
@@ -159,9 +176,14 @@
       },
       opennew() {
         this.detailvisible = true
+        this.$refs.detail.form.resetFields();
       },
-      save() {
-        this.$refs.detail.submit();
+      async save() {
+        var ret=await this.$refs.detail.submit();
+        if(ret){
+          this.detailvisible=false;
+          this.loadlist();
+        }
       },
 
     }

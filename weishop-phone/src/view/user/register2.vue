@@ -2,9 +2,9 @@
     <div>
         <van-nav-bar title="申请代理" left-arrow @click-left="onClickLeft" />
         <van-cell-group>
-            <van-cell title="邀请代理" value="辉哥" />
-            <van-cell title="联系电话" value="18000000000" />
-            <van-cell title="联系地址" value="地址" />
+            <van-cell title="邀请代理" :value="userinfo.createAgencyName" />
+            <van-cell title="联系电话" :value="userinfo.createAgencyTel" />
+            <van-cell title="联系地址" :value="userinfo.createAgencyAddress" />
         </van-cell-group>
         <h2 class="celltitle">填写内容</h2>
         <van-cell-group>
@@ -34,20 +34,20 @@
             <van-field v-model="info.address" clearable label="详细地址：" placeholder="请输入详细地址" />
             <van-cell title="打款方式：">
                 <template slot="right-icon">
-                    <select v-model="info.payType" style="width:250px">
-                        <option :value="1">支付宝</option>
-                        <option :value="2">银行转账</option>
+                    <select v-model="info.payType" style="width:250px" @change="loadpay()">
+                        <option :value="0">支付宝</option>
+                        <option :value="1">银行转账</option>
                     </select>
                 </template>
             </van-cell>
             <van-field v-model="info.payAmout" required readonly="readonly" label="打款金额：" />
-            <van-field v-if="info.payType===1" v-model="info.payAcount" required clearable label="支付宝："
+            <van-field v-if="info.payType===0" v-model="info.payAcount" required clearable label="支付宝："
                 placeholder="请输入支付宝号" />
-            <van-field v-if="info.payType===2" v-model="info.bankName" required clearable label="开户银行："
+            <van-field v-if="info.payType===1" v-model="info.bankName" required clearable label="开户银行："
                 placeholder="请输入开户银行" />
-            <van-field v-if="info.payType===2" v-model="info.bankUserName" required clearable label="银行户名："
+            <van-field v-if="info.payType===1" v-model="info.bankUserName" required clearable label="银行户名："
                 placeholder="请输入银行户名" />
-            <van-field v-if="info.payType===2" v-model="info.payAcount" required clearable label="银行账户："
+            <van-field v-if="info.payType===1" v-model="info.payAcount" required clearable label="银行账户："
                 placeholder="请输入银行账户" />
             <van-field @click="timeclick" v-model="info.paytime" required readonly="readonly" clearable label="打款日期："
                 placeholder="打款日期" />
@@ -71,16 +71,16 @@
             </van-cell>
         </van-cell-group>
         <h2 class="celltitle">请打款至</h2>
-        <van-cell-group v-if="info.payType==1">
-            <van-cell title="支付宝账号" value="辉哥" />
-            <van-cell title="支付宝实名" value="邵辉" />
-            <van-cell title="如有疑问联系微信客服" value="12345" />
+        <van-cell-group v-if="info.payType==0">
+            <van-cell title="支付宝账号" :value="payinfo.account" />
+            <van-cell title="支付宝实名" :value="payinfo.bankUserName" />
+            <van-cell title="如有疑问联系微信客服" :value="payinfo.wxName" />
         </van-cell-group>
-        <van-cell-group v-if="info.payType==2">
-            <van-cell title="开户银行" value="建设银行" />
-            <van-cell title="银行户名" value="邵辉" />
-            <van-cell title="银行账号" value="544354353" />
-            <van-cell title="如有疑问联系微信客服" value="12345" />
+        <van-cell-group v-if="info.payType==1">
+            <van-cell title="开户银行" :value="payinfo.bankName" />
+            <van-cell title="银行户名" :value="payinfo.bankUserName" />
+            <van-cell title="银行账号" :value="payinfo.account" />
+            <van-cell title="如有疑问联系微信客服" :value="payinfo.wxName" />
         </van-cell-group>
         <center style="margin:10px;">
             <van-button type="primary" style="width:150px" @click="submit">提交</van-button>
@@ -124,11 +124,12 @@
                 show: false,
                 areaList: area,
                 timeshow: false,
-
+                userinfo:{},
+                payinfo:{},
                 info: {
-                    agencyLevelId: '5f2714f4-9fa6-4560-608d-08d6c17aef53',
+                    agencyLevelId: 'af7e1490-5654-4442-9330-cc274bec495b',
                     agencyLevel: 1,
-                    agencyLevelName:'一级',
+                    agencyLevelName:'二级',
                     inviteUrlId: this.$route.query.id,
                     name: '',
                     tel: '',
@@ -142,7 +143,7 @@
                     city: '',
                     county: '',
                     address: '',
-                    payType: 1,
+                    payType: 0,
                     payAmout: 10000,
                     payAcount: '',
                     bankUserName: '',
@@ -156,7 +157,6 @@
             }
         },
         methods: {
-
             formatter(type, value) {
                 if (type === 'year') {
                     return `${value}年`;
@@ -178,6 +178,27 @@
                 this.info.city = val[1].code;
                 this.info.county = val[2].code;
                 this.show = false;
+            },
+            async loadinfo(){
+                if (!this.info.inviteUrlId) {
+                    Toast.fail('无效的邀请链接，请重新扫描二维码注册。');
+                    return;
+                }
+                var ret= await this.$http.Get('/api/services/app/B_InviteUrl/Get',{id:this.info.inviteUrlId})
+                if(ret.success){
+                    this.userinfo=ret.result;
+                }
+            },
+            async loadpay(){
+                
+                var ret= await this.$http.Get('/api/services/app/B_ManagerPayAccount/GetList',{
+                    type:this.info.payType,
+                    maxResultCount:10,
+                    skipCount:0
+                })
+                if(ret.success&&ret.result.items.length>0){
+                    this.payinfo=ret.result.items[0];
+                }
             },
             async submit() {
                 if (!this.info.inviteUrlId) {
@@ -258,8 +279,11 @@
             onClickLeft() {
                 this.$router.go(-1)
             }
+        },
+        mounted(){
+            this.loadinfo();
+            this.loadpay();
         }
-
     }
 </script>
 

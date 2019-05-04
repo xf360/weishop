@@ -6,7 +6,7 @@
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh()" style="top:50px">
             <van-list v-model="loading" :finished="finished" finished-text="加载完成" @load="onLoad()">
                 <gooditem v-for="(item,index) in goods" :key="index" :title="item.name" :desc="item.spe" :num="item.num"
-                    :price="item.price" :oldpreice="item.price1" :thumb="api+'/api/AbpFile/Show?id='+item.file.id" />
+                    :price="item.price" :oldpreice="item.price1" :thumb="api+'api/AbpFile/Show?id='+item.file.id" />
             </van-list>
         </van-pull-refresh>
     </div>
@@ -54,6 +54,7 @@
         },
         data() {
             return {
+                api:api,
                 refreshing: false,
                 loading: false,
                 finished: true,

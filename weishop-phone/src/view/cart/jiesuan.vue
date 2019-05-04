@@ -3,33 +3,35 @@
         <van-nav-bar title="结算" left-text="返回" left-arrow @click-left="onClickLeft" />
         <van-cell-group style="margin-top:50px">
             <van-cell icon="location-o" is-link @click="$router.push('/index/addresslist')">
-                <template slot="title">
+                <template slot="title" v-if="address&&address!={}">
                     <span class="custom-text">{{address.name}}[{{address.tel}}]</span>
                     <div class="van-cell__label">{{address.address}}</div>
                 </template>
+                <template slot="title" v-else>
+                    <span>请选择地址</span>
+                </template>
             </van-cell>
         </van-cell-group>
-
-        <carditem v-for="(item,index) in goods" :key="index" :title="item.title" :desc="item.desc" :num="item.num"
-            :price="item.price" :thumb="item.thumb" />
+        <carditem @countchange="countchange" v-for="item in goods" :key="item.id" :title="item.name" :desc="item.spe"
+            :count="item.number" :id="item.id" :price="item.price" :thumb="api+'api/AbpFile/Show?id='+item.file.id" />
 
         <van-cell-group style="margin-bottom:5px">
             <van-field v-model="message" label="买家备注" type="textarea" placeholder="请备注尺码颜色等信息" rows="2" autosize />
         </van-cell-group>
         <van-cell-group style="margin-bottom:5px">
-            <van-cell title="商品金额" value="￥333" />
+            <van-cell title="商品金额" :value="totalPrice" />
             <van-cell title="快递费用" value="￥0" />
-            <van-cell title="合计付款" value="￥333" />
+            <van-cell title="合计付款" :value="totalPrice" />
         </van-cell-group>
 
         <van-cell-group style="margin-bottom:5px">
             <van-cell title="可用货款" value="￥0" />
-            <van-cell title="可用余额" value="￥1000" />
+            <van-cell title="可用余额" value="￥0" />
         </van-cell-group>
         <div style="padding:20px">
             <van-button block type="primary" :loading="result.loading" @click="onSubmit">确认下单</van-button>
         </div>
-        
+
     </div>
 </template>
 <style>
@@ -68,10 +70,12 @@
         CellGroup,
         List,
         Field,
-        Button
+        Button,
+        Toast,
+        Dialog
     } from 'vant';
     import carditem from './carditem.vue'
-    Vue.use(NavBar).use(List).use(Button).use(Cell).use(CellGroup).use(Field);
+    Vue.use(NavBar).use(List).use(Button).use(Cell).use(Dialog).use(CellGroup).use(Field).use(Toast);
     import {
         truncate
     } from 'fs';
@@ -81,55 +85,98 @@
         },
         data() {
             return {
-                result:{
-                    loading:false
+                api: api,
+                result: {
+                    loading: false
                 },
+                totalPrice: 0,
                 refreshing: false,
                 loading: false,
                 finished: false,
-                address: {
-                    id: '2',
-                    name: '李四',
-                    tel: '1310000000',
-                    address: '浙江省杭州市拱墅区莫干山路 50 号'
-                },
-                goods: [{
-                    id: '1',
-                    title: '进口香蕉',
-                    desc: '约250g，2根',
-                    price: 200,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/2f9a36046449dafb8608e99990b3c205.jpeg'
-                }, {
-                    id: '2',
-                    title: '陕西蜜梨',
-                    desc: '约600g',
-                    price: 690,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/f6aabd6ac5521195e01e8e89ee9fc63f.jpeg'
-                }, {
-                    id: '3',
-                    title: '美国伽力果',
-                    desc: '约680g/3个',
-                    price: 2680,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/320454216bbe9e25c7651e1fa51b31fd.jpeg'
-                }, {
-                    id: '3',
-                    title: '美国伽力果',
-                    desc: '约680g/3个',
-                    price: 2680,
-                    num: 1,
-                    thumb: 'https://img.yzcdn.cn/public_files/2017/10/24/320454216bbe9e25c7651e1fa51b31fd.jpeg'
-                }]
+                // address: {
+                //     id: '2',
+                //     name: '李四',
+                //     tel: '1310000000',
+                //     address: '浙江省杭州市拱墅区莫干山路 50 号'
+                // },
+
+            }
+        },
+        mounted() {
+            var userid = this.$store.state.loginInfo.user.id;
+            if (userid) {
+                this.$store.dispatch('getaddress', userid)
+            }
+            this.gettotalPrice();
+        },
+        computed: {
+            goods() {
+                return this.$store.getters.goods;
+            },
+            address() {
+                return this.$store.getters.address;
             }
         },
         methods: {
+            gettotalPrice() {
+                var total = 0;
+                for (var i in this.goods) {
+                    total += (this.goods[i].number * this.goods[i].price)
+                }
+                this.totalPrice = total;
+            },
+            countchange(id, count, price) {
+                this.$store.commit('changecount', {
+                    id: id,
+                    count: count
+                });
+                this.gettotalPrice();
+            },
             onClickLeft() {
                 this.$router.go(-1)
             },
             onClickRight() {
 
+            },
+            async onSubmit() {
+                debugger;
+                if (!this.goods || this.goods.length == 0) {
+                    Toast.fail('购物车为空');
+                    return;
+                }
+                if (!this.address) {
+                    Toast.fail('请先选择地址');
+                    return;
+                }
+                var userid = this.$store.state.loginInfo.user.id;
+                var info = {
+                    userId: userid,
+                    amout: 0,
+                    deliveryFee: 0,
+                    payAmout: this.totalPrice,
+                    goodsPayment: this.totalPrice,
+                    balance: 0,
+                    addressId: this.address.id,
+                    remark:' '+ this.message,
+                    goods: []
+                }
+                for (var i in this.goods) {
+                    var tem = {
+                        number: this.goods[i].number,
+                        goodsId: this.goods[i].id,
+                        categroyId: this.goods[i].categroyId,
+                        amout: this.goods[i].amout
+                    }
+                    info.goods.push(tem);
+                }
+                var ret = await this.$http.Post('/api/services/app/B_OrderOut/Create', info)
+                if (ret.success) {
+                    Dialog.alert({
+                        message: '恭喜你下单成功。'
+                    }).then(() => {
+                        this.$router.go(-1)
+                    });
+                }
             },
             onRefresh() {
                 var vm = this;

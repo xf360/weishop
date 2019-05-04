@@ -31,11 +31,11 @@
         我要进货
       </van-col>
       <van-col span="8">
-        <van-icon name="cash-back-record"/>
+        <van-icon name="cash-back-record" @click.native="push('/index/inlog')"/>
         云仓订单
       </van-col>
       <van-col span="8">
-        <van-icon name="balance-list-o"/>
+        <van-icon name="balance-list-o" @click.native="push('/index/outlog')"/>
         提货订单
       </van-col>
     </van-row>

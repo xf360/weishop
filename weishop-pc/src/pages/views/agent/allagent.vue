@@ -33,49 +33,69 @@
               搜索
             </a-button>
           </a-form-item>
+          <a-form-item style="text-align:right">
+            <a-button type="primary" @click="createvisible=true">
+              新建
+            </a-button>
+          </a-form-item>
         </a-form>
       </div>
-      <a-alert style="margin-top:20px" message="代理人数：-。" type="info" :show-icon="true" />
+      <a-alert style="margin-top:20px" :message="`代理人数：${total}。`" type="info" :show-icon="true" />
       <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
-        :loading="loading" @change="pagechange"  :pagination="pagination">
+        :loading="loading" @change="pagechange" :pagination="pagination">
+        <span slot="status" slot-scope="text">
+          <span v-if="text===0">正常</span>
+          <span v-if="text===1">封号</span>
+        </span>
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="opendetail(record)">查看</a>
         </span>
       </a-table>
     </a-card>
     <a-modal title="查看详情" v-model="detailvisible" :width="800">
-     <agentinfo :id="selectid"></agentinfo>
+      <agentinfo :id="selectid"></agentinfo>
       <template slot="footer">
         <a-button key="back" @click="detailvisible=false">关闭</a-button>
+      </template>
+    </a-modal>
+    <a-modal title="新建代理" v-model="createvisible" :width="800">
+      <agentnew ref="agentnew"></agentnew>
+      <template slot="footer">
+        <a-button  @click="createvisible=false">关闭</a-button>
+         <a-button type="primary" @click="submit">保存</a-button>
       </template>
     </a-modal>
   </div>
 </template>
 <script>
-import agentinfo from './agentinfo.vue'
+  import agentinfo from './agentinfo.vue'
+  import agentnew from './agentnew.vue'
   export default {
     components: {
-        agentinfo
+      agentinfo,
+      agentnew
     },
     data() {
       return {
-        detailvisible:false,
-        selectid:null,
-        pagination:{},
-        params:{
-          maxResultCount:10,
-          skipCount:0,
-          agencyLevelId:null,
-          status:null,
-          startDate:null,
-          endDate:null,
-          searchKey:null,
+        total:0,
+        detailvisible: false,
+        createvisible:false,
+        selectid: null,
+        pagination: {},
+        params: {
+          maxResultCount: 10,
+          skipCount: 0,
+          agencyLevelId: null,
+          status: null,
+          startDate: null,
+          endDate: null,
+          searchKey: null,
         },
         list: [{
-          id:1,
+          id: 1,
           name1: 'test'
         }],
-        levellist:[],
+        levellist: [],
         loading: false,
         columns: [{
           title: '代理编号',
@@ -95,12 +115,17 @@ import agentinfo from './agentinfo.vue'
         }, {
           title: '通过时间',
           dataIndex: 'creationTime'
-        }, {
-          title: '层级',
-          dataIndex: 'agencyLevelName'
-        }, {
+        },
+        //  {
+        //   title: '层级',
+        //   dataIndex: 'agencyLevelName'
+        // }, 
+        {
           title: '状态',
-          dataIndex: 'status'
+          dataIndex: 'status',
+          scopedSlots: {
+            customRender: 'status'
+          },
         }, {
           title: '操作',
           key: 'action',
@@ -111,41 +136,49 @@ import agentinfo from './agentinfo.vue'
       }
     },
     methods: {
-      onChange(data,datastr){
-        this.params.startDate=datastr[0]+' 00:00:00'
-        this.params.endDate=datastr[1]+' 23:59:59'
+      onChange(data, datastr) {
+        this.params.startDate = datastr[0] + ' 00:00:00'
+        this.params.endDate = datastr[1] + ' 23:59:59'
       },
-      pagechange(page){
-        this.params.maxResultCount=page.pageSize;
-        this.params.skipCount=(page.current-1)*page.pageSize;
+      pagechange(page) {
+        this.params.maxResultCount = page.pageSize;
+        this.params.skipCount = (page.current - 1) * page.pageSize;
         this.loadlist();
       },
       async loadlist() {
-        this.loading=true;
-        var ret=await this.$http.Get('/api/services/app/B_Agency/GetManagerList',this.params)
-        this.loading=false
-        if(ret.success){
-          this.list=ret.result.items;
+        this.loading = true;
+        var ret = await this.$http.Get('/api/services/app/B_Agency/GetManagerList', this.params)
+        this.loading = false
+        if (ret.success) {
+          this.total=ret.result.totalCount;
+          this.list = ret.result.items;
         }
       },
-      async loadlevel(){
-        this.loading=true
-        var ret=await this.$http.Get('/api/services/app/B_AgencyLevel/GetList',{
-           MaxResultCount:999,
-          SkipCount:0
+      async submit(){
+        var ret=await this.$refs.agentnew.submit();
+        if(ret){
+          this.createvisible=false;
+          this.loadlist();
+        }
+      },
+      async loadlevel() {
+        this.loading = true
+        var ret = await this.$http.Get('/api/services/app/B_AgencyLevel/GetList', {
+          MaxResultCount: 999,
+          SkipCount: 0
         })
-        this.loading=false
-        if(ret.success){
-          this.levellist=ret.result.items;
+        this.loading = false
+        if (ret.success) {
+          this.levellist = ret.result.items;
         }
       },
-      opendetail(row){
-        this.selectid=row.id
-        this.detailvisible=true;
-        
+      opendetail(row) {
+        this.selectid = row.id
+        this.detailvisible = true;
+
       },
     },
-    mounted(){
+    mounted() {
       this.loadlevel()
       this.loadlist()
     }

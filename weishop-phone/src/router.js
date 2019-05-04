@@ -182,6 +182,22 @@ const routes = [{
         }
       },
       {
+        name: 'outlog',
+        path:'outlog',
+        component: () => import('./view/user/outlog.vue'),
+        meta: {
+          title: '我的云仓提货'
+        }
+      },
+      {
+        name: 'inlog',
+        path:'inlog',
+        component: () => import('./view/user/inlog.vue'),
+        meta: {
+          title: '我的云仓进货'
+        }
+      },
+      {
         name: 'yuncangin',
         path:'yuncangin',
         component: () => import('./view/mall/yuncangin.vue'),

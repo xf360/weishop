@@ -13,7 +13,7 @@
         <h2 class="celltitle">云仓库存</h2>
         <van-list v-model="loading" :finished="finished" finished-text="加载完成" @load="onLoad()">
             <div class="yuncangbox" v-for="(item,index) in list" :key="index">
-                <div><img :src="api+'/api/AbpFile/Show?id='+item.file.id" width="56" height="56" /></div>
+                <div><img :src="api+'api/AbpFile/Show?id='+item.file.id" width="56" height="56" /></div>
                 <div>
                     <div class="yuncangtitle">{{item.title}}</div>
                     <div class="yuncangnum">可提取数量：{{item.canExtractCount}}箱</div>
@@ -41,20 +41,27 @@
         },
         data(){
             return {
+                api:api,
+                loading:false,
+                finished:false,
                 list:[]
             }
         },
         methods:{
             async onLoad(){
+                this.loading=true;
                 var ret=await this.$http.Get('/api/services/app/B_CloudWarehouse/GetCWInventoryListAsync',{
-                    categroyPropertyId:'',
+                    categroyPropertyId:1,
                     isActive:true,
                     searchKey:'',
                     maxResultCount:50,
                     skipCount:0
                 })
+                this.loading=false;
+                this.finished=true
                 if(ret.success){
-                    this.list=ret.result.items;
+                    this.list=ret.result;
+                    
                 }
             }
         }

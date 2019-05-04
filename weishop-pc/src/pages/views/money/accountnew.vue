@@ -1,21 +1,21 @@
 <template>
   <div>
-    <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="类型" fieldDecoratorId="info.type"
-      :fieldDecoratorOptions="{rules: [{ required: true, message: '请选择账户类型'}]}">
-      <a-select placeholder="请选择账户类型" style="width:250px;">
-        <a-select-option :value="0">
-          支付宝
-        </a-select-option>
-        <a-select-option :value="1">
-          银行卡
-        </a-select-option>
-        <!-- <a-select-option :value="2">
+    <a-form :autoFormCreate="(form) => this.form = form">
+      <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="类型" fieldDecoratorId="info.type"
+        :fieldDecoratorOptions="{rules: [{ required: true, message: '请选择账户类型'}]}">
+        <a-select placeholder="请选择账户类型" style="width:250px;">
+          <a-select-option :value="0">
+            支付宝
+          </a-select-option>
+          <a-select-option :value="1">
+            银行卡
+          </a-select-option>
+          <!-- <a-select-option :value="2">
           微信
         </a-select-option> -->
-        
-      </a-select>
-    </a-form-item>
-    <a-form :autoFormCreate="(form) => this.form = form">
+
+        </a-select>
+      </a-form-item>
       <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="账号" fieldDecoratorId="info.account"
         :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入账号。',whitespace: true}]}">
         <a-input placeholder="请输入账号。" />

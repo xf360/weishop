@@ -4,7 +4,7 @@
     <a-card>
       <div class="tools">
         <a-form layout="inline">
-          <a-form-item label="全部大类">
+          <!-- <a-form-item label="全部大类">
             <a-select style="width:100px" placeholder="选择分类" allowClear>
               <a-select-option :value="1">
                 第一类
@@ -14,8 +14,8 @@
               </a-select-option>
 
             </a-select>
-          </a-form-item>
-          <a-form-item label="全部小类">
+          </a-form-item> -->
+          <!-- <a-form-item label="全部小类">
             <a-select style="width:100px" placeholder="选择分类" allowClear>
               <a-select-option :value="1">
                 子分类1
@@ -27,8 +27,10 @@
                 子分类3
               </a-select-option>
             </a-select>
+          </a-form-item> -->
+          <a-form-item label="分类">
+            <a-cascader placeholder="选择分类" :options="pctree" v-model="params.categroyId" />
           </a-form-item>
-
           <a-form-item label="关键字">
             <a-input style="width:300px" placeholder="请输入商品编号、商品名称" />
           </a-form-item>
@@ -45,31 +47,57 @@
         </a-form>
       </div>
 
-      <a-table style="margin-top:20px"  :columns="columns" :dataSource="data"
-        :loading="loading" @change="pagechange" :pagination="pagination">
-        <a-table slot="expandedRowRender" :columns="stockcolumns"  :dataSource="stacklist" slot-scope="text" :pagination="false">
+      <a-table style="margin-top:20px" :columns="columns" :dataSource="list" :loading="loading" @change="pagechange"
+        :pagination="pagination" @expand="expand">
+        <a-table slot="expandedRowRender" :columns="stockcolumns" :dataSource="stacklist" slot-scope="text"
+          :pagination="false">
+          <span slot="status" slot-scope="text">
+            <span v-if="text===1">是</span>
+             <span v-if="text===0" style="color:#ff0000">否</span>
+          </span>
         </a-table>
+        
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="openaudit(record)">新增库存</a>
         </span>
       </a-table>
     </a-card>
     <a-modal title="商品" v-model="detailvisible" @ok="save" cancelText="取消" okText="确认">
-      <goodedit ref="detail" :id="selectid"></goodedit>
+      <a-form :autoFormCreate="(form) => this.form = form">
+        <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="新增库存" fieldDecoratorId="count"
+          :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入新增库存。'}]}">
+          <a-input-number style="width:150px;" :min="0" :max="999999" placeholder="请输入新增库存。" />
+        </a-form-item>
+        <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="是否回执" fieldDecoratorId="status"
+        :fieldDecoratorOptions="{rules: [{ required: true, message: '请选择是否回执'}]}">
+        <a-select placeholder="请选择是否回执">
+          <a-select-option :value="1">
+            是
+          </a-select-option>
+          <a-select-option :value="0">
+            否
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+      </a-form>
     </a-modal>
 
   </div>
 </template>
 <script>
-  import goodedit from './goodedit.vue'
+  import help from '../../../utils/help.js'
   export default {
-    components: {
-      goodedit
-    },
     data() {
       return {
+        labelcol: {
+          span: 5
+        },
+        wrappercol: {
+          span: 19
+        },
         detailvisible: false,
         selectid: null,
+        pctree: [],
         pagination: {},
         list: [],
         params: {
@@ -79,12 +107,7 @@
           categroyId: null,
           searchKey: null,
         },
-        stacklist:[{
-            createtime:'2018-03-29 12:23:23',
-            num:22,
-            needback:false,
-            createusername:'admin'
-        }],
+        stacklist: [],
         loading: false,
         columns: [{
           title: '商品编号',
@@ -108,17 +131,8 @@
           title: '商品小类',
           dataIndex: 'categroyIdName'
         }, {
-          title: '原价',
-          dataIndex: 'price'
-        }, {
-          title: '优惠价',
-          dataIndex: 'pirce1'
-        }, {
-          title: '商品图',
-          dataIndex: 'name10'
-        }, {
-          title: '状态',
-          dataIndex: 'status'
+          title: '剩余库存',
+          dataIndex: 'inventory'
         }, {
           title: '操作',
           key: 'action',
@@ -126,26 +140,47 @@
             customRender: 'action'
           },
         }],
-        stockcolumns:[{
+        stockcolumns: [{
           title: '时间',
-          dataIndex: 'createtime'
+          dataIndex: 'creationTime'
         }, {
           title: '新增库存',
-          dataIndex: 'num'
-        },{
+          dataIndex: 'count'
+        }, {
           title: '是否回执',
-          dataIndex: 'needback'
-        },{
+          dataIndex: 'status',
+          scopedSlots: {
+            customRender: 'status'
+          },
+        }, {
           title: '操作员',
-          dataIndex: 'createusername'
-        },]
+          dataIndex: 'confirmUserName'
+        }, ]
       }
     },
-    mounted(){
-      debugger;
-      this.loadlist()
+    mounted() {
+      this.loadlist();
+      this.loadCator();
     },
     methods: {
+      async expand(expanded, record){
+        if(expanded){
+          var ret= await this.$http.Get('/api/services/app/B_InventoryAddRecord/GetList',{
+            goodsid:record.id,
+            maxResultCount:99,
+            skipCount:0
+          });
+          if(ret.success){
+            this.stacklist=ret.result.items;
+          }
+        }
+      },
+      async loadCator() {
+        var ret = await this.$http.Get('/api/services/app/B_Categroy/GetList', this.cparams)
+        if (ret.success) {
+          this.pctree = help.list2tree(ret.result.items, null);
+        }
+      },
       pagechange(page) {
         this.params.maxResultCount = page.pageSize;
         this.params.skipCount = (page.current - 1) * page.pageSize;
@@ -168,7 +203,17 @@
         this.detailvisible = true
       },
       save() {
-        this.$refs.detail.submit();
+         this.form.validateFields(async (err, values) => {
+            if (!err) {
+              values.goodsid=this.selectid;
+              values.confirmUserId=this.$store.state.account.loginInfo.user.id;
+              var ret= await this.$http.Post('/api/services/app/B_InventoryAddRecord/Create',values);
+              if(ret.success){
+                this.detailvisible=false;
+                this.expand(true,{id:this.selectid});
+              }
+            }
+         })
       },
 
     }

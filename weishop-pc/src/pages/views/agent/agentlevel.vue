@@ -10,7 +10,10 @@
       <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
         :loading="loading">
         <span slot="action" slot-scope="text, record">
-          <a href="javascript:;" @click="del(record)">删除</a>
+          <a-popconfirm title="你确定要删除？" @confirm="del(record)">
+            <a-icon slot="icon" type="question-circle-o" style="color: red" />
+            <a href="#">删除</a>
+          </a-popconfirm>
         </span>
       </a-table>
     </a-card>
@@ -87,20 +90,26 @@
         this.addvisible = true;
         this.form.resetFields();
       },
+      async del(row){
+        var ret=await this.$http.Delete('/api/services/app/B_AgencyLevel/Delete',{id:row.id});
+        if(ret.success){
+          this.loadlist()
+        }
+      },
       async save() {
-        var vm=this;
+        var vm = this;
         await this.form.validateFields(async function (err, values) {
           if (err) {
             return;
           } else {
             vm.confirmLoading = true;
-            var ret=await vm.$http.Post('/api/services/app/B_AgencyLevel/Create',values);
+            var ret = await vm.$http.Post('/api/services/app/B_AgencyLevel/Create', values);
             vm.confirmLoading = false;
-            if(ret.success){
+            if (ret.success) {
               vm.addvisible = false;
               vm.loadlist();
             }
-            
+
           }
         });
 

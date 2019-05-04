@@ -2,7 +2,7 @@
     <div>
         <van-nav-bar title="地址列表" left-text="返回" right-text="添加" left-arrow @click-left="onClickLeft"
             @click-right="onClickRight" />
-        <van-address-list style="margin-top:50px" v-model="chosenAddressId" :list="list" @add="onAdd" @edit="onEdit" />
+        <van-address-list style="margin-top:50px" v-model="chosenAddressId" :list="list" @add="onAdd" @edit="onEdit" @select="select"/>
     </div>
 </template>
 <script>
@@ -16,25 +16,45 @@
     export default {
         data() {
             return {
-                list: [{
-                        id: '1',
-                        name: '张三',
-                        tel: '13000000000',
-                        address: '浙江省杭州市西湖区文三路 138 号东方通信大厦 7 楼 501 室'
-                    },
-                    {
-                        id: '2',
-                        name: '李四',
-                        tel: '1310000000',
-                        address: '浙江省杭州市拱墅区莫干山路 50 号'
-                    }
-                ],
+                chosenAddressId:'',
+                list: []
             }
         },
+        mounted(){
+            this.loadlist();
+        },
         methods: {
+            select(item,index){
+                 this.$store.commit('setaddress',item);
+            },
             onAdd() {},
-            onEdit() {
-                this.$router.push('/index/addressedit')
+            async loadlist(){
+                var userid=this.$store.state.loginInfo.user.id;
+                var ret= await this.$http.Get('/api/services/app/B_MyAddress/GetList',{
+                    userId:userid,
+                    maxResultCount:99,
+                    skipCount:0
+                });
+                if(ret.success){
+                    this.list=[];
+                    for(var i in ret.result.items){
+                        var addressstr=ret.result.items[i].provinces+
+                        ret.result.items[i].city+ret.result.items[i].county+
+                        ret.result.items[i].addres
+                        var tem={
+                            id:ret.result.items[i].id,
+                            //name:ret.result.items[i].name,
+                            name:'',
+                            tel:ret.result.items[i].tel,
+                            address:addressstr,
+                        }
+                        this.list.push(tem);
+                    }
+                    
+                }
+            },
+            onEdit(item,index) {
+                this.$router.push('/index/addressedit?id='+item.id)
             },
             onClickLeft() {
                 this.$router.go(-1)

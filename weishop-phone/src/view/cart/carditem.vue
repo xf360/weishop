@@ -6,7 +6,7 @@
             <div class="card-desc">{{desc}}</div>
             <div class="card-price">￥{{formatPrice}}</div>
             <div class="card-count">
-                <van-stepper :integer="true" :disable-input="true" :max="99" @change="change" :value="count" />
+                <van-stepper :integer="true" :disable-input="true" :min="0" :max="99" @change="change" :value="count" />
             </div>
         </div>
 
@@ -22,14 +22,15 @@
             [Stepper.name]: Stepper,
         },
         props: {
+            id:{
+                type:String,
+                required:true
+            },
             title: {
                 type: String
             },
             desc: {
                 type: String
-            },
-            num: {
-                type: Number
             },
             changeNum: {
                 type: Boolean,
@@ -49,7 +50,8 @@
         },
         computed:{
             formatPrice(){
-                 return ((this.price*this.tmpcount) / 100).toFixed(2);
+                return this.price*this.tmpcount
+                 //return ((this.price*this.tmpcount) / 100).toFixed(2);
             }
         },
         data(){
@@ -60,7 +62,7 @@
         methods:{
             change(value){
                 this.tmpcount=value;
-                this.$emit("countchange",value,this.price)
+                this.$emit("countchange",this.id,value,this.price)
             },
             click(){}
         }

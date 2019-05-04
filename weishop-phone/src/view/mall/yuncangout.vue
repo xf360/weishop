@@ -3,12 +3,12 @@
     <div>
         <van-nav-bar title="我的云仓-提货" left-arrow @click-left="$router.go(-1)"
             @click-right="onClickRight" />
-        <van-tabs>
+        <van-tabs @change="change">
             <van-tab :title="item.name" v-for="(item,index) in catory" :key="index"></van-tab>
         </van-tabs>
         <div style="background-color:#fff">
             <gooditem v-for="(item,index) in goods" :key="index" :title="item.name" :desc="item.spe"
-                :price="item.price" :oldprice="item.price1" :thumb="api+'/api/AbpFile/Show?id='+item.file.id" />
+              @addcart="addcart"  :id="item.id" :price="item.price" :oldprice="item.pirce1" :thumb="api+'api/AbpFile/Show?id='+item.file.id" />
         </div>
     </div>
 </template>
@@ -20,10 +20,11 @@
         Tabs,
         Panel,
         List,
-        PullRefresh
+        PullRefresh,
+        NavBar
     } from 'vant';
     import gooditem from '../goods/gooditem.vue'
-    Vue.use(Tab).use(Tabs).use(Panel).use(List).use(PullRefresh);
+    Vue.use(Tab).use(Tabs).use(Panel).use(List).use(PullRefresh).use(NavBar);
 
     export default {
         components: {
@@ -31,6 +32,7 @@
         },
         data() {
             return {
+                api:api,
                 goods: [],
                 catory: []
             }
@@ -39,9 +41,19 @@
             this.loadcate();
         },
         methods:{
+            change(index){
+                var cid=this.catory[index].id;
+                this.loadlist(cid);
+            },
+            addcart(id,count,price){
+                var good=this.goods.filter((item)=>item.id===id)[0]
+                good.number=count;
+                good.amout=price;
+                this.$store.commit('addgood',good)
+            },
+            onClickRight(){},
             async loadcate(){
-                var ret=await this.$http.Get('/api/services/app/B_Categroy/GetListByCategroyId',{
-                    categroyId:'',
+                var ret=await this.$http.Get('/api/services/app/B_Categroy/GetList',{
                     maxResultCount:20,
                     skipCount:0
                 });
@@ -56,7 +68,7 @@
                 if(!id){
                     return;
                 }
-                var ret=await this.$http.Get('',{
+                var ret=await this.$http.Get('/api/services/app/B_Goods/GetListByCategroyId',{
                     categroyId:id,
                     maxResultCount:20,
                     skipCount:0,

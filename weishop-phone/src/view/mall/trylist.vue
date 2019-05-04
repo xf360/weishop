@@ -4,7 +4,7 @@
         
             <van-list v-model="loading" :finished="finished" finished-text="加载完成" @load="onLoad()">
                 <gooditem v-for="(item,index) in goods" :key="index" :title="item.title" 
-                     :thumb="api+'/api/AbpFile/Show?id='+item.file.id" />
+                     :thumb="api+'api/AbpFile/Show?id='+item.file.id" />
             </van-list>
             <h2 class="celltitle" style="margin-top:50px">填写收货信息</h2>
                <van-address-edit  :area-list="areaList" show-set-default show-search-result
@@ -52,6 +52,7 @@ import { truncate } from 'fs';
         },
         data() {
             return {
+                api:api,
                 loading:false,
                 finished:false,
                 page:1,

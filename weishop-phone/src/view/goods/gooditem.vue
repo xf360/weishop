@@ -41,7 +41,7 @@
             price: {
                 type: Number
             },
-            oldpreice:{
+            oldprice:{
                 type:Number
             },
             thumb: {
@@ -55,14 +55,15 @@
         },
         computed:{
             formatPrice(){
-                 return ((this.price) / 100).toFixed(2);
+                 return this.price;
+                 //return ((this.price) / 100).toFixed(2);
             }
         },
         methods:{
             change(value){
                 //this.count=value;
                 if(value>0){
-                    this.$emit("addcart",this.id,value)
+                    this.$emit("addcart",this.id,value,this.price)
                 }else{
                     this.$emit("removecart",this.id)
                 }
