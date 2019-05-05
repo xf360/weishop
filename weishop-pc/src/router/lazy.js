@@ -32,8 +32,14 @@ const routers = new Router({
           children: [
             {
               path: '/dashboard/analysis',
-              name: '分析页',
+              name: '代理统计',
               component: () => import('@/demopages/dashboard/Analysis'),
+              icon: 'none'
+            },
+            {
+              path: '/dashboard/moneyanalysis',
+              name: '金额统计',
+              component: () => import('@/demopages/dashboard/MoneyAnalysis'),
               icon: 'none'
             }
           ]
@@ -186,6 +192,12 @@ const routers = new Router({
           component: PageView,
           icon: 'setting',
           children: [
+            {
+              path: '/system/categroy',
+              name: '分类管理',
+              component: () => import('@/pages/views/system/categroy.vue'),
+              icon: 'none'
+            },
             {
               path: '/system/user',
               name: '账户设置',

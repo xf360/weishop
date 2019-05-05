@@ -9,7 +9,7 @@
       </div>
       <div class="total"><span>{{total}}</span></div>
     </div>
-    <div class="chart-card-content">
+    <div class="chart-card-content" v-if="!hidecontent">
       <div class="content-fix">
         <slot></slot>
       </div>
@@ -23,7 +23,7 @@
 <script>
 export default {
   name: 'ChartCard',
-  props: ['title', 'total']
+  props: ['title', 'total','hidecontent']
 }
 </script>
 

@@ -47,12 +47,12 @@
         :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入商品原价。'}]}">
         <a-input-number :min="0" :max="999999" placeholder="请输入商品原价。" />
       </a-form-item>
-      <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="优惠价" fieldDecoratorId="info.pirce1"
+      <!-- <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="优惠价" fieldDecoratorId="info.pirce1"
         :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入商品优惠价。'}]}">
         <a-input-number :min="0" :max="999999" placeholder="请输入商品优惠价。" />
-      </a-form-item>
+      </a-form-item> -->
       <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="缩略图" extra="" fieldDecoratorId="info.file">
-        <a-upload  name="logo" :action="uploadurl" list-type="picture">
+        <a-upload accept=".jpg, .jpeg, .png" name="logo" :action="uploadurl" list-type="picture">
           <a-button>
             <a-icon type="upload" />选择文件
           </a-button>
@@ -67,7 +67,6 @@
     props: {
       id: {
         type: [String, Number],
-
       }
     },
     data() {
@@ -86,13 +85,12 @@
       }
     },
     mounted() {
-      
       this.detail();
       this.loadCator();
     },
     methods: {
       async loadCator() {
-        var ret = await this.$http.Get('/api/services/app/B_Categroy/GetList', this.cparams)
+        var ret = await this.$http.Get('/api/services/app/B_Categroy/GetList')
         if (ret.success) {
           this.pctree = help.list2tree(ret.result.items, null);
         }

@@ -2,38 +2,85 @@
   <div>
     <a-row style="margin: 0 -12px">
       <a-col :sm="24" :md="12" :xl="6">
-        <chart-card title="代理总人数" :total="allcount.agentCount" :hidecontent="true">
-          <a-tooltip title="代理总人数" slot="action">
+        <chart-card title="总销售额（元）" :total="allcount.agentCount" :hidecontent="true">
+          <a-tooltip title="总销售额（元）" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
         </chart-card>
       </a-col>
       <a-col :sm="24" :md="12" :xl="6">
-        <chart-card title="团队总数" :total="allcount.teamCount" :hidecontent="true">
-          <a-tooltip title="团队总数" slot="action">
+        <chart-card title="总充值金额（元）" :total="allcount.teamCount" :hidecontent="true">
+          <a-tooltip title="总充值金额（元）" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
         </chart-card>
       </a-col>
       <a-col :sm="24" :md="12" :xl="6">
-        <chart-card title="总访问量" :total="allcount.visitorCount" :hidecontent="true">
-          <a-tooltip title="总访问量" slot="action">
+        <chart-card title="总提现金额（元）" :total="allcount.visitorCount" :hidecontent="true">
+          <a-tooltip title="总提现金额（元）" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
         </chart-card>
       </a-col>
       <a-col :sm="24" :md="12" :xl="6">
-        <chart-card title="昨日访问量" :total="allcount.yesterdayCount" :hidecontent="true">
-          <a-tooltip title="昨日访问量" slot="action">
+        <chart-card title="总保证金额（元）" :total="allcount.yesterdayCount" :hidecontent="true">
+          <a-tooltip title="总保证金额（元）" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
         </chart-card>
       </a-col>
-    </a-row>
-    <a-row style="margin: 0 -12px">
-      <a-col :sm="24" :md="12" :xl="6" v-for="(item,index) in allcount.angentLevelCount" :key="index">
-        <chart-card :title="item.name" :total="item.count" :hidecontent="true">
-          <a-tooltip :title="item.name" slot="action">
+      <a-col :sm="24" :md="12" :xl="6">
+        <chart-card title="总奖励金额（元）" :total="allcount.yesterdayCount" :hidecontent="true">
+          <a-tooltip title="总奖励金额（元）" slot="action">
+            <a-icon type="info-circle-o" />
+          </a-tooltip>
+        </chart-card>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6">
+        <chart-card title="总推荐将金额（元）" :total="allcount.yesterdayCount" :hidecontent="true">
+          <a-tooltip title="总推荐将金额（元）" slot="action">
+            <a-icon type="info-circle-o" />
+          </a-tooltip>
+        </chart-card>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6">
+        <chart-card title="总提货奖金额（元）" :total="allcount.yesterdayCount" :hidecontent="true">
+          <a-tooltip title="总提货奖金额（元）" slot="action">
+            <a-icon type="info-circle-o" />
+          </a-tooltip>
+        </chart-card>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6">
+        <chart-card title="总销售返点奖金额（元）" :total="allcount.yesterdayCount" :hidecontent="true">
+          <a-tooltip title="总销售返点奖金额（元）" slot="action">
+            <a-icon type="info-circle-o" />
+          </a-tooltip>
+        </chart-card>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6">
+        <chart-card title="代理总余额（元）" :total="allcount.yesterdayCount" :hidecontent="true">
+          <a-tooltip title="代理总余额（元）" slot="action">
+            <a-icon type="info-circle-o" />
+          </a-tooltip>
+        </chart-card>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6">
+        <chart-card title="代理总货款（元）" :total="allcount.yesterdayCount" :hidecontent="true">
+          <a-tooltip title="代理总货款（元）" slot="action">
+            <a-icon type="info-circle-o" />
+          </a-tooltip>
+        </chart-card>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6">
+        <chart-card title="平台余额（元）" :total="allcount.yesterdayCount" :hidecontent="true">
+          <a-tooltip title="平台余额（元）" slot="action">
+            <a-icon type="info-circle-o" />
+          </a-tooltip>
+        </chart-card>
+      </a-col>
+      <a-col :sm="24" :md="12" :xl="6">
+        <chart-card title="平台留存金额（元）" :total="allcount.yesterdayCount" :hidecontent="true">
+          <a-tooltip title="平台留存金额（元）" slot="action">
             <a-icon type="info-circle-o" />
           </a-tooltip>
         </chart-card>
@@ -49,46 +96,50 @@
             </div>
             <a-range-picker :style="{width: '256px'}"></a-range-picker>
           </div>
-          <a-tab-pane loading="true" tab="新增代理人数" key="1">
-            <!-- <a-row>
-              <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
-                <bar title="新增代理人数" :data="linedata"/>
-              </a-col>
-              <a-col :xl="8" :lg="12" :md="12" :sm="24" :xs="24">
-                <ranking-list title="门店销售排行榜" :list="rankList"/>
-              </a-col>
-            </a-row> -->
+          <a-tab-pane loading="true" tab="销售额" key="1">
           </a-tab-pane>
-          <a-tab-pane tab="新增团队数" key="2">
+          <a-tab-pane tab="充值金额" key="2">
           </a-tab-pane>
-          <a-tab-pane tab="访问总量" key="3">
+          <a-tab-pane tab="提现金额" key="3">
           </a-tab-pane>
-          <a-tab-pane v-for="(item) in levellist" :tab="item.name" :key="item.id">
+          <a-tab-pane tab="保证金" key="4">
+          </a-tab-pane>
+          <a-tab-pane tab="奖励金额" key="5">
+          </a-tab-pane>
+          <a-tab-pane tab="提货奖" key="6">
+          </a-tab-pane>
+          <a-tab-pane tab="推荐奖" key="7">
+          </a-tab-pane>
+          <a-tab-pane tab="销售返点奖" key="8">
+          </a-tab-pane>
+          <a-tab-pane tab="代理余额" key="9">
+          </a-tab-pane>
+          <a-tab-pane tab="代理货款" key="10">
+          </a-tab-pane>
+          <a-tab-pane tab="平台余额" key="11">
+          </a-tab-pane>
+          <a-tab-pane tab="平台留存金额" key="12">
           </a-tab-pane>
         </a-tabs>
         <a-row>
           <a-col :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
-            <bar title="访问总量" :data="linedata" />
+            <bar title="充值金额" :data="linedata" />
           </a-col>
         </a-row>
       </div>
     </a-card>
     <a-row>
-      <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24">
-        <ranking-list title="团队人数排行榜" :list="rankList" />
+      <a-col :xl="6" :lg="6" :md="6" :sm="12" :xs="24">
+        <ranking-list title="销售排行榜" :list="rankList" />
       </a-col>
-      <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24">
-        <ranking-list title="推荐人数排行榜" :list="rankList" />
+      <a-col :xl="6" :lg="6" :md="6" :sm="12" :xs="24">
+        <ranking-list title="单人销售排行榜" :list="rankList" />
       </a-col>
-      <a-col :xl="8" :lg="8" :md="8" :sm="24" :xs="24">
-        <sales-data title="各级代理人数占比" :source="levelpersent" />
+      <a-col :xl="6" :lg="6" :md="6" :sm="12" :xs="24">
+        <ranking-list title="奖励领取排行榜" :list="rankList" />
       </a-col>
-    </a-row>
-    <a-row style="margin: 0 -12px">
-      <a-col style="padding: 0 12px" :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
-        <a-card :bordered="false" style="margin-top: 24px" title="热门搜索">
-          <a-table :dataSource="agentarealist" :columns="areacolumns" size="small" :pagination="false"></a-table>
-        </a-card>
+      <a-col :xl="6" :lg="6" :md="6" :sm="12" :xs="24">
+        <ranking-list title="充值排行榜" :list="rankList" />
       </a-col>
     </a-row>
   </div>
@@ -127,6 +178,7 @@
           teamCount: 50,
           visitorCount: 23434,
           yesterdayCount: 322,
+
           angentLevelCount: [{
               name: '一级代理',
               count: 233
