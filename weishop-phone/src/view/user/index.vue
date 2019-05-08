@@ -4,11 +4,14 @@
     <div class="userinfo">
       <div class="userheader">
         <!-- <div class="userborder"></div> -->
-        <img src="http://img0.imgtn.bdimg.com/it/u=3838364273,4038739803&fm=27&gp=0.jpg"/>
+        <img src="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1557236083&di=0ec8c16425acc4ba7c38a74ce1243fe6&src=http://img.zcool.cn/community/01460b57e4a6fa0000012e7ed75e83.png@1280w_1l_2o_100sh.png"/>
       </div>
-      <div class="username">
-        <div>王飞飞</div>
-        <div>销售额：￥500</div>
+      <div class="username" v-if="user">
+        <div>{{user.user.name}}</div>
+        <div>销售额：0</div>
+      </div>
+      <div class="username" v-else>
+         <div @click="$router.push('/login')">请先登陆</div>
       </div>
     </div>
     <van-row class="user-links" :gutter="1" type="flex" justify="center" align="center">
@@ -82,6 +85,11 @@
       [Icon.name]: Icon,
       [Cell.name]: Cell,
       [CellGroup.name]: CellGroup
+    },
+    computed:{
+      user(){
+        return this.$store.getters.user;
+      }
     },
     methods:{
       push(url){

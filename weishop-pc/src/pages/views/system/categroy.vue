@@ -166,7 +166,6 @@
         }
       },
       async loaddetail(row) {
-        debugger;
         this.loading = true;
         this.addvisible=true;
         var ret=await this.$http.Get('/api/services/app/B_Categroy/Get',{id:row.id});

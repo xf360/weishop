@@ -63,6 +63,9 @@ export default new Vuex.Store({
         },
        address:state=>{
            return state.cartaddress;
-       }
+       },
+       user:state=>{
+        return state.loginInfo;
+    },
     }
 })
