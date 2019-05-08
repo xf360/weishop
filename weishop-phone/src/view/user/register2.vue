@@ -8,7 +8,7 @@
         </van-cell-group>
         <h2 class="celltitle">填写内容</h2>
         <van-cell-group>
-            <van-cell title="代理等级" :value="info.agencyLevelName" />
+            <!-- <van-cell title="代理等级" :value="info.agencyLevelName" /> -->
             <van-field v-model="info.name" required clearable label="姓名：" placeholder="请输入姓名" />
             <van-field v-model="info.tel" required clearable label="联系电话：" placeholder="请输入联系电话" />
             <van-field v-model="info.vCode" required center clearable label="短信验证码" placeholder="请输入短信验证码">
@@ -127,9 +127,6 @@
                 userinfo:{},
                 payinfo:{},
                 info: {
-                    agencyLevelId: 'af7e1490-5654-4442-9330-cc274bec495b',
-                    agencyLevel: 1,
-                    agencyLevelName:'二级',
                     inviteUrlId: this.$route.query.id,
                     name: '',
                     tel: '',

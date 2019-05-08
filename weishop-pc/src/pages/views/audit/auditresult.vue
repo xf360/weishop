@@ -32,6 +32,7 @@
         required: true
       }
     },
+    
     methods: {
 
     }

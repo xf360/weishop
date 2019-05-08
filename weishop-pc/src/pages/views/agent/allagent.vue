@@ -69,7 +69,7 @@
 </template>
 <script>
   import agentinfo from './agentinfo.vue'
-  import agentnew from './agentnew.vue'
+  import agentnew from '../audit/agentauditnew.vue'
   export default {
     components: {
       agentinfo,

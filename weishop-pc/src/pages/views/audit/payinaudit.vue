@@ -53,9 +53,18 @@
         :show-icon="true" />
       <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange" :pagination="pagination">
+        <span slot="payType" slot-scope="text">
+          <span>{{text|payType}}</span>
+        </span>
+        <span slot="payDate" slot-scope="text">
+          <span>{{text|dateformat}}</span>
+        </span>
+        <span slot="creationTime" slot-scope="text">
+          <span>{{text|dateformat}}</span>
+        </span>
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="openaudit(record)">审核</a>
-          <a href="javascript:;" @click="detailvisible=true">查看</a>
+          <a href="javascript:;" @click=" selectid = record.id;detailvisible=true">查看</a>
         </span>
       </a-table>
     </a-card>
@@ -111,38 +120,46 @@
         loading: false,
         columns: [{
           title: '充值单号',
-          dataIndex: 'name1'
+          dataIndex: 'code'
         }, {
           title: '姓名',
-          dataIndex: 'name2'
+          dataIndex: 'userName'
         }, {
           title: '等级',
-          dataIndex: 'name4'
+          dataIndex: 'agencyLevelName'
         }, {
           title: '联系电话',
-          dataIndex: 'name5'
+          dataIndex: 'tel'
         }, {
           title: '打款方式',
-          dataIndex: 'name8'
+          dataIndex: 'payType',
+          scopedSlots: {
+            customRender: 'payType'
+          },
         }, {
           title: '打款金额',
-          dataIndex: 'name9'
+          dataIndex: 'payAmout'
         }, {
           title: '打款时间',
-          dataIndex: 'name10'
+          dataIndex: 'payDate',
+          scopedSlots: {
+            customRender: 'payDate'
+          },
         }, {
           title: '充值时间',
-          dataIndex: 'name11'
+          dataIndex: 'creationTime',
+          scopedSlots: {
+            customRender: 'creationTime'
+          },
         }, {
           title: '备注',
-          dataIndex: 'name12'
+          dataIndex: 'remark'
         }, {
           title: '状态',
-          dataIndex: 'name13'
+          dataIndex: 'status'
         }, {
           title: '操作',
           key: 'action',
-          dataIndex: 'name14',
           scopedSlots: {
             customRender: 'action'
           },
@@ -204,6 +221,7 @@
         this.$refs.reasoncom.form.validateFields(async (err, values) => {
           if (!err) {
             values.isPass = false;
+            values.id=this.selectid;
             var ret = await this.$http.Post('/api/services/app/B_PaymentPrepay/Audit', values);
             this.$message.success("操作成功", 3)
             this.reasonvisible = false;

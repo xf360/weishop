@@ -19,12 +19,13 @@
       <detail-list-item term="详细地址">{{info.address}}</detail-list-item>
       <detail-list-item term="身份证" :span="2">{{info.pNumber}}</detail-list-item>
       <detail-list-item term="头像">
-        <img height="50" width="50" :src="api+'/api/AbpFile/Show?id='+info.touxiangFile.id" />
+        <img height="50" width="50" :src="api+'api/AbpFile/Show?id='+info.touxiangFile.id" />
       </detail-list-item>
     </detail-list>
     <a-divider style="margin-bottom: 32px" />
     <detail-list title="转账信息" layout="grid" :col="2">
-      <detail-list-item term="打款方式">{{info.payType}}</detail-list-item>
+      <detail-list-item term="打款方式">{{info.payType|payType}}
+      </detail-list-item>
       <detail-list-item term="银行账户名">{{info.bankUserName}}</detail-list-item>
       <detail-list-item term="打款金额">￥{{info.payAmout}}</detail-list-item>
       <detail-list-item term="银行账户">{{info.payAcount}}</detail-list-item>
@@ -33,7 +34,14 @@
     <a-divider style="margin-bottom: 32px" />
     <detail-list layout="grid" :col="2">
       <detail-list-item term="打款凭证">
-        <img height="50" width="50" :src="api+'/api/AbpFile/Show?id='+info.credentFiles.id" />
+        <span v-if="info.credentFiles">
+          <img v-for="(item,index) in info.credentFiles" :key="index" :src="api+'api/AbpFile/Show?id='+item.id"
+            width="50" height="50" />
+        </span>
+        <span v-if="info.handleCredentFiles">
+          <img v-for="(item,index) in info.handleCredentFiles" :key="index" :src="api+'api/AbpFile/Show?id='+item.id"
+            width="50" height="50" />
+        </span>
       </detail-list-item>
 
     </detail-list>
@@ -65,29 +73,32 @@
       DetailList,
       DetailListItem
     },
-    data(){
-        return {
-            info:{}
-        }
+    data() {
+      return {
+        api: api,
+        info: {}
+      }
     },
     props: {
       id: {
-        type: [String,Number],
+        type: [String, Number],
         required: true
       }
     },
-    mounted(){
-        this.loaddetail()
+    mounted() {
+      this.loaddetail()
     },
     methods: {
       async loaddetail() {
-        if(!this.id){
+        if (!this.id) {
           return;
         }
         this.loading = true
-        var ret=await this.$http.Get('/api/services/app/B_AgencyApply/Get',{id:this.id});
+        var ret = await this.$http.Get('/api/services/app/B_AgencyApply/Get', {
+          id: this.id
+        });
         this.loading = false
-        this.info=ret.result;
+        this.info = ret.result;
       },
     }
   }

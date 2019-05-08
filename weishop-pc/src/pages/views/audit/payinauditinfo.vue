@@ -12,7 +12,9 @@
           <detail-list-item term="开户姓名">{{info.bankUserName}}</detail-list-item>
           <detail-list-item term="银行账户">{{info.payAcount}}</detail-list-item>
            <detail-list-item term="打款凭证" :span="2">
-             <img :src="api+'/api/AbpFile/Show?id='+info.credentFiles.id" width="50" height="50"/>
+             <span v-if="info.credentFiles">
+             <img v-for="(item,index) in info.credentFiles" :key="index" :src="api+'api/AbpFile/Show?id='+item.id" width="50" height="50"/>
+           </span>
            </detail-list-item>
     </detail-list>
     
@@ -46,6 +48,7 @@
     },
     data(){
         return {
+          api:api,
             info:{}
         }
     },

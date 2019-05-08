@@ -51,9 +51,15 @@
       <a-alert style="margin-top:20px" :message="`待审核人数：${static.waitAuditCount}，已通过人数：${static.passCount}，未通过人数:${static.noPassCount}。`" type="info" :show-icon="true" />
       <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange"  :pagination="pagination">
+        <span slot="payType" slot-scope="text">
+          <span>{{text|payType}}</span>
+        </span>
+        <span slot="payDate" slot-scope="text">
+          <span>{{text|dateformat}}</span>
+        </span>
         <span slot="action" slot-scope="text, record">
-          <a href="javascript:;" @click="openaudit(record)">审核</a>
-          <a href="javascript:;" @click="detailvisible=true">查看</a>
+          <a v-if="record.status===0" href="javascript:;" @click="openaudit(record)">审核</a>
+          <a href="javascript:;" @click=" selectid = record.id;detailvisible=true">查看</a>
         </span>
       </a-table>
     </a-card>
@@ -110,41 +116,46 @@
         loading: false,
         columns: [{
           title: '邀请代理',
-          dataIndex: 'name1'
+          dataIndex: 'invitUserName'
         }, {
           title: '邀请代理电话',
-          dataIndex: 'name2'
+          dataIndex: 'invitUserTel'
         }, {
           title: '代理姓名',
-          dataIndex: 'name3'
+          dataIndex: 'name'
         }, {
           title: '等级',
-          dataIndex: 'name4'
+          dataIndex: 'agencyLevelName'
         }, {
           title: '联系电话',
-          dataIndex: 'name5'
+          dataIndex: 'tel'
         }, {
           title: '微信号',
-          dataIndex: 'name6'
+          dataIndex: 'wxId'
         }, {
           title: '身份证号',
-          dataIndex: 'name7'
+          dataIndex: 'pNumber'
         }, {
           title: '打款方式',
-          dataIndex: 'name8'
+          dataIndex: 'payType',
+          scopedSlots: {
+            customRender: 'payType'
+          },
         }, {
           title: '打款金额',
-          dataIndex: 'name9'
+          dataIndex: 'payAmout'
         }, {
           title: '打款日期',
-          dataIndex: 'name10'
+          dataIndex: 'payDate',
+           scopedSlots: {
+            customRender: 'payDate'
+          },
         }, {
           title: '状态',
-          dataIndex: 'name11'
+          dataIndex: 'statusTitle'
         }, {
           title: '操作',
           key: 'action',
-          dataIndex: 'name12',
           scopedSlots: {
             customRender: 'action'
           },
@@ -210,10 +221,13 @@
        this.$refs.reasoncom.form.validateFields(async (err, values) => {
             if (!err) {
               values.isPass=false;
+              values.id=this.selectid;
               var ret = await this.$http.Post('/api/services/app/B_AgencyApply/Audit', values);
               this.$message.success("操作成功", 3)
                this.reasonvisible=false;
-              this.loadlist()
+               this.detailvisible=false;
+              this.loadlist();
+              this.loadstatic();
             } else {
               
             }
