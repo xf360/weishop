@@ -33,7 +33,11 @@
             }
         },
         methods: {
-            onSubmit(){},
+            onSubmit(){
+                window.localStorage.removeItem("token");
+                this.$router.push('/login')
+                this.$notify('已成功退出');
+            },
             onClickLeft() {
                 this.$router.go(-1)
             },

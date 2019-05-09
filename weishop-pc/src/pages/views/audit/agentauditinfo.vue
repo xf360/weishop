@@ -8,13 +8,13 @@
     <a-divider style="margin-bottom: 32px" />
     <detail-list title="代理详情" layout="grid" :col="2">
       <detail-list-item term="代理编号">{{info.agencyLevelCode}}</detail-list-item>
-      <detail-list-item term="国家地区">{{info.country}}</detail-list-item>
+      <detail-list-item term="国家地区">中国</detail-list-item>
       <detail-list-item term="代理等级">{{info.agencyLevelName}}</detail-list-item>
-      <detail-list-item term="省份">{{info.provinces}}</detail-list-item>
+      <detail-list-item term="省份">{{info.provinces|areaname(1)}}</detail-list-item>
       <detail-list-item term="姓名">{{info.name}}</detail-list-item>
-      <detail-list-item term="城市">{{info.city}}</detail-list-item>
+      <detail-list-item term="城市">{{info.city|areaname(2)}}</detail-list-item>
       <detail-list-item term="联系电话">{{info.tel}}</detail-list-item>
-      <detail-list-item term="区县">{{info.county}}</detail-list-item>
+      <detail-list-item term="区县">{{info.county|areaname(3)}}</detail-list-item>
       <detail-list-item term="微信号">{{info.wxId}}</detail-list-item>
       <detail-list-item term="详细地址">{{info.address}}</detail-list-item>
       <detail-list-item term="身份证" :span="2">{{info.pNumber}}</detail-list-item>
@@ -26,10 +26,11 @@
     <detail-list title="转账信息" layout="grid" :col="2">
       <detail-list-item term="打款方式">{{info.payType|payType}}
       </detail-list-item>
-      <detail-list-item term="银行账户名">{{info.bankUserName}}</detail-list-item>
-      <detail-list-item term="打款金额">￥{{info.payAmout}}</detail-list-item>
-      <detail-list-item term="银行账户">{{info.payAcount}}</detail-list-item>
-      <detail-list-item term="开户银行">{{info.bankName}}</detail-list-item>
+       <detail-list-item term="打款金额">￥{{info.payAmout}}</detail-list-item>
+      <detail-list-item v-if="info.payType===0" term="支付宝号">{{info.payAcount}}</detail-list-item>
+      <detail-list-item v-if="info.payType===1" term="银行账户名">{{info.bankUserName}}</detail-list-item>
+      <detail-list-item v-if="info.payType===1" term="银行账户">{{info.payAcount}}</detail-list-item>
+      <detail-list-item v-if="info.payType===1" term="开户银行">{{info.bankName}}</detail-list-item>
     </detail-list>
     <a-divider style="margin-bottom: 32px" />
     <detail-list layout="grid" :col="2">
@@ -38,6 +39,11 @@
           <img v-for="(item,index) in info.credentFiles" :key="index" :src="api+'api/AbpFile/Show?id='+item.id"
             width="50" height="50" />
         </span>
+      </detail-list-item>
+
+    </detail-list>
+    <detail-list layout="grid" :col="2">
+      <detail-list-item term="手持证件">
         <span v-if="info.handleCredentFiles">
           <img v-for="(item,index) in info.handleCredentFiles" :key="index" :src="api+'api/AbpFile/Show?id='+item.id"
             width="50" height="50" />

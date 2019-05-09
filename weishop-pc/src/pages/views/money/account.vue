@@ -38,6 +38,14 @@
       </div>
       <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange"  :pagination="pagination">
+         <span slot="type" slot-scope="text">
+   <span v-if="text===0">支付宝</span>
+   <span v-if="text===1">银行转账</span>
+ </span>
+ <span slot="status" slot-scope="text">
+   <span v-if="text===0">上线</span>
+   <span v-if="text===1">下线</span>
+ </span>
         <span slot="action" slot-scope="text, record">
           <a-popconfirm v-if="record.status===1" style="width:250px"  title="上线后，该账户信息将显示在货款充值页面，是否确定上线？" @confirm="() => onDelete(record.key)" okText='确认' cancelText='取消'>
             <a href="javascript:;">上线</a>
@@ -77,7 +85,10 @@
         loading: false,
         columns: [{
           title: '类型',
-          dataIndex: 'type'
+          dataIndex: 'type',
+          scopedSlots: {
+            customRender: 'type'
+          },
         },  {
           title: '账户',
           dataIndex: 'account'
@@ -95,7 +106,10 @@
           dataIndex: 'remark'
         },  {
           title: '状态',
-          dataIndex: 'status'
+          dataIndex: 'status',
+          scopedSlots: {
+            customRender: 'status'
+          },
         }, {
           title: '操作',
           key: 'action',

@@ -21,7 +21,7 @@
             <van-field v-model="info.pNumber" required clearable label="身份证号：" placeholder="请输入身份证号" />
             <van-cell title="国家：">
                 <template slot="right-icon">
-                    <select v-model="info.country" style="width:250px">
+                    <select required v-model="info.country" style="width:250px">
                         <option value="001">中国</option>
                         <option value="002">中国香港</option>
                         <option value="003">中国澳门</option>
@@ -31,10 +31,10 @@
             </van-cell>
             <van-field @click="areaclick" v-model="info.areaname" required readonly="readonly" clearable label="地区："
                 placeholder="省/市/区" />
-            <van-field v-model="info.address" clearable label="详细地址：" placeholder="请输入详细地址" />
+            <van-field v-model="info.address" clearable label="详细地址：" required placeholder="请输入详细地址" />
             <van-cell title="打款方式：">
                 <template slot="right-icon">
-                    <select v-model="info.payType" style="width:250px" @change="loadpay()">
+                    <select v-model="info.payType" required style="width:250px" @change="loadpay()">
                         <option :value="0">支付宝</option>
                         <option :value="1">银行转账</option>
                     </select>
@@ -71,19 +71,21 @@
             </van-cell>
         </van-cell-group>
         <h2 class="celltitle">请打款至</h2>
+        <div v-for="(item,index) in payinfo" :key="index">
         <van-cell-group v-if="info.payType==0">
-            <van-cell title="支付宝账号" :value="payinfo.account" />
-            <van-cell title="支付宝实名" :value="payinfo.bankUserName" />
-            <van-cell title="如有疑问联系微信客服" :value="payinfo.wxName" />
+            <van-cell title="支付宝账号" :value="item.account" />
+            <van-cell title="支付宝实名" :value="item.bankUserName" />
+            <van-cell title="如有疑问联系微信客服" :value="item.wxName" />
         </van-cell-group>
         <van-cell-group v-if="info.payType==1">
-            <van-cell title="开户银行" :value="payinfo.bankName" />
-            <van-cell title="银行户名" :value="payinfo.bankUserName" />
-            <van-cell title="银行账号" :value="payinfo.account" />
-            <van-cell title="如有疑问联系微信客服" :value="payinfo.wxName" />
+            <van-cell title="开户银行" :value="item.bankName" />
+            <van-cell title="银行户名" :value="item.bankUserName" />
+            <van-cell title="银行账号" :value="item.account" />
+            <van-cell title="如有疑问联系微信客服" :value="item.wxName" />
         </van-cell-group>
+        </div>
         <center style="margin:10px;">
-            <van-button type="primary" style="width:150px" @click="submit">提交</van-button>
+            <van-button type="primary" style="width:150px" @click="submit" :disabled="disabled">提交</van-button>
         </center>
         <van-popup v-model="show" position="bottom">
             <van-area :area-list="areaList" @confirm="areaok" @cancel="show=false;" />
@@ -124,8 +126,9 @@
                 show: false,
                 areaList: area,
                 timeshow: false,
+                disabled:false,
                 userinfo:{},
-                payinfo:{},
+                payinfo:[],
                 info: {
                     inviteUrlId: this.$route.query.id,
                     name: '',
@@ -194,7 +197,7 @@
                     skipCount:0
                 })
                 if(ret.success&&ret.result.items.length>0){
-                    this.payinfo=ret.result.items[0];
+                    this.payinfo=ret.result.items;
                 }
             },
             async submit() {
@@ -254,6 +257,7 @@
                     Toast.fail('银行户名不能为空。');
                     return;
                 }
+                this.disabled=true;
                 var ret = await this.$http.Post('/api/services/app/B_AgencyApply/Create', this.info);
                 if (ret.success) {
                     Dialog.alert({
@@ -261,6 +265,8 @@
                     }).then(() => {
                         this.$router.push('login')
                     });
+                }else{
+                    this.disabled=false;
                 }
             },
             timeok(val) {

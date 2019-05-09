@@ -49,7 +49,9 @@
           this.form.validateFields(async (err, values) => {
             if (!err) {
               var ret = await this.$http.Post('/api/services/app/B_AgencyDisableRecord/Create', values);
-              this.$message.success("操作成功", 3)
+              if (ret.success) {
+                this.$message.success("操作成功", 3)
+              }
               resolve(ret.success);
             } else {
               resolve(false);

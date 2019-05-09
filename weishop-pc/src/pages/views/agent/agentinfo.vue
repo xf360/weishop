@@ -9,18 +9,18 @@
     <a-divider style="margin-bottom: 32px" />
     <detail-list title="代理详情" layout="grid" :col="2">
       <detail-list-item term="代理编号">{{info.agenCyCode}}</detail-list-item>
-      <detail-list-item term="国家地区">{{info.county}}</detail-list-item>
+      <detail-list-item term="国家">中国</detail-list-item>
       <detail-list-item term="代理等级">{{info.agencyLevelName}}</detail-list-item>
-      <detail-list-item term="省份">{{info.provinces}}</detail-list-item>
+      <detail-list-item term="省份">{{info.provinces|areaname(1)}}</detail-list-item>
       <detail-list-item term="姓名">{{info.userName}}</detail-list-item>
-      <detail-list-item term="城市">{{info.city}}</detail-list-item>
+      <detail-list-item term="城市">{{info.city | areaname(2)}}</detail-list-item>
       <detail-list-item term="联系电话">{{info.phoneNumber}}</detail-list-item>
-      <detail-list-item term="区县">-</detail-list-item>
-      <detail-list-item term="微信号">-</detail-list-item>
+      <detail-list-item term="区县">{{info.county|areaname(3)}}</detail-list-item>
+      <detail-list-item term="微信号">{{info.wxId}}</detail-list-item>
       <detail-list-item term="详细地址">{{info.address}}</detail-list-item>
-      <detail-list-item term="身份证" :span="2">-</detail-list-item>
+      <detail-list-item term="身份证" :span="2">{{info.pNumber}}</detail-list-item>
       <detail-list-item term="头像">
-        <img height="50" width="50" src="" />
+        <img height="50" width="50" :src="api+'api/AbpFile/Show?id='+info.file.id" />
       </detail-list-item>
     </detail-list>
     <a-divider style="margin-bottom: 32px" />
@@ -54,6 +54,7 @@
     },
     data(){
         return {
+          api: api,
             lockshow:false,
             info:{}
         }

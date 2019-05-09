@@ -5,8 +5,8 @@
             <van-tab title="直属代理">
 
             </van-tab>
-            <van-tab title="分销商">
-            </van-tab>
+            <!-- <van-tab title="分销商">
+            </van-tab> -->
         </van-tabs>
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh()" style="top:50px">
             <van-list>

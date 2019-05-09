@@ -223,7 +223,9 @@
             values.isPass = false;
             values.id=this.selectid;
             var ret = await this.$http.Post('/api/services/app/B_PaymentPrepay/Audit', values);
-            this.$message.success("操作成功", 3)
+            if(ret.success){
+              this.$message.success("操作成功", 3)
+              }
             this.reasonvisible = false;
             this.loadlist()
           } else {

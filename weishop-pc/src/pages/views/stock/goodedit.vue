@@ -71,7 +71,7 @@
     },
     data() {
       return {
-        uploadurl:api+'api/AbpFile/Post',
+        uploadurl: api + 'api/AbpFile/Post',
         labelcol: {
           span: 5
         },
@@ -114,16 +114,20 @@
                 values.info.categroyIdP = values.info.categroy[0];
                 values.info.categroyId = values.info.categroy[1];
               }
-              if(values.info.file&&values.info.file.fileList){
-                values.info.file=values.info.file.fileList[0].response.result.data[0]
+              if (values.info.file && values.info.file.fileList) {
+                values.info.file = values.info.file.fileList[0].response.result.data[0]
               }
               if (this.id) {
                 var ret = await this.$http.Put('/api/services/app/B_Goods/Update', values.info);
-                this.$message.success("操作成功", 3)
+                if (ret.success) {
+                  this.$message.success("操作成功", 3)
+                }
                 resolve(ret.success);
               } else {
                 var ret = await this.$http.Post('/api/services/app/B_Goods/Create', values.info);
-                this.$message.success("操作成功", 3)
+                if (ret.success) {
+                  this.$message.success("操作成功", 3)
+                }
                 resolve(ret.success);
               }
             } else {

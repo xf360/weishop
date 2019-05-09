@@ -43,6 +43,9 @@
       <a-alert style="margin-top:20px" :message="`代理人数：${total}。`" type="info" :show-icon="true" />
       <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange" :pagination="pagination">
+        <span slot="creationTime" slot-scope="text">
+          <span>{{text|dateformat}}</span>
+        </span>
         <span slot="status" slot-scope="text">
           <span v-if="text===0">正常</span>
           <span v-if="text===1">封号</span>
@@ -114,7 +117,10 @@
           dataIndex: 'wxId'
         }, {
           title: '通过时间',
-          dataIndex: 'creationTime'
+          dataIndex: 'creationTime',
+          scopedSlots: {
+            customRender: 'creationTime'
+          },
         },
         //  {
         //   title: '层级',

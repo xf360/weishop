@@ -48,14 +48,16 @@
           </a-form-item>
         </a-form>
       </div>
-      <a-alert style="margin-top:20px" :message="`待审核人数：${static.waitAuditCount}，已通过人数：${static.passCount}，未通过人数:${static.noPassCount}。`" type="info" :show-icon="true" />
+      <a-alert style="margin-top:20px"
+        :message="`待审核人数：${static.waitAuditCount}，已通过人数：${static.passCount}，未通过人数:${static.noPassCount}。`" type="info"
+        :show-icon="true" />
       <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
-        :loading="loading" @change="pagechange"  :pagination="pagination">
+        :loading="loading" @change="pagechange" :pagination="pagination">
         <span slot="payType" slot-scope="text">
           <span>{{text|payType}}</span>
         </span>
         <span slot="payDate" slot-scope="text">
-          <span>{{text|dateformat}}</span>
+          <span>{{text|dateformat('yyyy-MM-dd')}}</span>
         </span>
         <span slot="action" slot-scope="text, record">
           <a v-if="record.status===0" href="javascript:;" @click="openaudit(record)">审核</a>
@@ -92,26 +94,26 @@
     data() {
       return {
         reasonvisible: false,
-        detailvisible:false,
-        auditvisible:false,
-        selectid:'',
+        detailvisible: false,
+        auditvisible: false,
+        selectid: '',
         list: [],
-        levellist:[],
-        pagination:{},
-        static:{
-          waitAuditCount:0,
-          passCount:0,
-          noPassCount:0,
+        levellist: [],
+        pagination: {},
+        static: {
+          waitAuditCount: 0,
+          passCount: 0,
+          noPassCount: 0,
         },
-        params:{
-          payType:null,
-          agencyLevelId:null,
-          status:null,
-          payDateStart:null,
-          payDateEnd:null,
-          searchKey:null,
-          maxResultCount:10,
-          skipCount:0,
+        params: {
+          payType: null,
+          agencyLevelId: null,
+          status: null,
+          payDateStart: null,
+          payDateEnd: null,
+          searchKey: null,
+          maxResultCount: 10,
+          skipCount: 0,
         },
         loading: false,
         columns: [{
@@ -147,7 +149,7 @@
         }, {
           title: '打款日期',
           dataIndex: 'payDate',
-           scopedSlots: {
+          scopedSlots: {
             customRender: 'payDate'
           },
         }, {
@@ -162,76 +164,78 @@
         }]
       }
     },
-    mounted(){
+    mounted() {
       this.loadlist();
       this.loadlevel();
       this.loadstatic();
     },
     methods: {
-      async loadlevel(){
-        this.loading=true
-        var ret=await this.$http.Get('/api/services/app/B_AgencyLevel/GetList',{
-           MaxResultCount:999,
-          SkipCount:0
+      async loadlevel() {
+        this.loading = true
+        var ret = await this.$http.Get('/api/services/app/B_AgencyLevel/GetList', {
+          MaxResultCount: 999,
+          SkipCount: 0
         })
-        this.loading=false
-        if(ret.success){
-          this.levellist=ret.result.items;
+        this.loading = false
+        if (ret.success) {
+          this.levellist = ret.result.items;
         }
       },
-      async loadstatic(){
-        var ret=await this.$http.Get('/api/services/app/B_AgencyApply/GetCount');
-        if(ret.success){
-          this.static=ret.result;
+      async loadstatic() {
+        var ret = await this.$http.Get('/api/services/app/B_AgencyApply/GetCount');
+        if (ret.success) {
+          this.static = ret.result;
         }
       },
-      pagechange(page){
-        this.params.maxResultCount=page.pageSize;
-        this.params.skipCount=(page.current-1)*page.pageSize;
+      pagechange(page) {
+        this.params.maxResultCount = page.pageSize;
+        this.params.skipCount = (page.current - 1) * page.pageSize;
         this.loadlist();
       },
       async loadlist() {
-        this.loading=true
-        var ret=await this.$http.Get('/api/services/app/B_AgencyApply/GetList',this.params);
-        this.loading=false
-        if(ret.success){
-          this.list=ret.result.items;
+        this.loading = true
+        var ret = await this.$http.Get('/api/services/app/B_AgencyApply/GetList', this.params);
+        this.loading = false
+        if (ret.success) {
+          this.list = ret.result.items;
         }
       },
-      
-      openaudit(row){
-        this.selectid=row.id
-        this.auditvisible=true
+
+      openaudit(row) {
+        this.selectid = row.id
+        this.auditvisible = true
       },
-      onChange(data,datastr) {
-         this.params.payDateStart=datastr[0]+' 00:00:00'
-        this.params.payDateEnd=datastr[1]+' 23:59:59'
+      onChange(data, datastr) {
+        this.params.payDateStart = datastr[0] + ' 00:00:00'
+        this.params.payDateEnd = datastr[1] + ' 23:59:59'
       },
-      async auditpass(){
-        var ret=await this.$http.Post('/api/services/app/B_AgencyApply/Audit',{
-          id:this.selectid,
-          isPass:true
+      async auditpass() {
+        var ret = await this.$http.Post('/api/services/app/B_AgencyApply/Audit', {
+          id: this.selectid,
+          isPass: true
         })
-        if(ret.success){
-          this.auditvisible=false;
+        if (ret.success) {
+          this.auditvisible = false;
           this.loadlist();
         }
-      },//审核通过
-      async handleReasonOk(){//审核不通过并提交原因
-       this.$refs.reasoncom.form.validateFields(async (err, values) => {
-            if (!err) {
-              values.isPass=false;
-              values.id=this.selectid;
-              var ret = await this.$http.Post('/api/services/app/B_AgencyApply/Audit', values);
+      }, //审核通过
+      async handleReasonOk() { //审核不通过并提交原因
+        this.$refs.reasoncom.form.validateFields(async (err, values) => {
+          if (!err) {
+            values.isPass = false;
+            values.id = this.selectid;
+            var ret = await this.$http.Post('/api/services/app/B_AgencyApply/Audit', values);
+            if (ret.success) {
               this.$message.success("操作成功", 3)
-               this.reasonvisible=false;
-               this.detailvisible=false;
-              this.loadlist();
-              this.loadstatic();
-            } else {
-              
             }
-          });
+            this.reasonvisible = false;
+            this.detailvisible = false;
+            this.loadlist();
+            this.loadstatic();
+          } else {
+
+          }
+        });
 
       }
     }

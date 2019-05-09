@@ -3,7 +3,7 @@
     <a-form :autoFormCreate="(form) => this.form = form">
       <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="类型" fieldDecoratorId="info.type"
         :fieldDecoratorOptions="{rules: [{ required: true, message: '请选择账户类型'}]}">
-        <a-select placeholder="请选择账户类型" style="width:250px;">
+        <a-select v-model="type" placeholder="请选择账户类型" style="width:250px;">
           <a-select-option :value="0">
             支付宝
           </a-select-option>
@@ -20,8 +20,8 @@
         :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入账号。',whitespace: true}]}">
         <a-input placeholder="请输入账号。" />
       </a-form-item>
-      <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="银行名称" fieldDecoratorId="info.bankName"
-        :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入银行名称。'}]}">
+      <a-form-item v-if="type===1" :label-col="labelcol" :wrapper-col="wrappercol" label="银行名称" fieldDecoratorId="info.bankName"
+        >
         <a-input placeholder="请输入银行名称。" />
       </a-form-item>
       <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="户名" fieldDecoratorId="info.bankUserName"
@@ -53,7 +53,8 @@
         },
         wrappercol: {
           span: 19
-        }
+        },
+        type:0
       }
     },
     methods: {
@@ -62,7 +63,9 @@
           this.form.validateFields(async (err, values) => {
             if (!err) {
               var ret = await this.$http.Post('/api/services/app/B_ManagerPayAccount/Create', values.info);
+              if(ret.success){
               this.$message.success("操作成功", 3)
+              }
               resolve(ret.success);
             } else {
               resolve(false);

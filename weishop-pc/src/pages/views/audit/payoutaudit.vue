@@ -203,7 +203,9 @@
           if (!err) {
             values.isPass = false;
             var ret = await this.$http.Post('/api/services/app/B_Withdrawal/Audit', values);
-            this.$message.success("操作成功", 3)
+            if(ret.success){
+              this.$message.success("操作成功", 3)
+              }
             this.reasonvisible = false;
             this.loadlist()
           } else {

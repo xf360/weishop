@@ -77,7 +77,9 @@
               values.city = values.area[1];
               values.county = values.area[2];
               var ret = await this.$http.Post('/api/services/app/B_Agency/Create', values);
+              if(ret.success){
               this.$message.success("操作成功", 3)
+              }
               resolve(ret.success);
             } else {
               resolve(false);

@@ -88,7 +88,7 @@
                     payAcount: "",
                     payDate: "",
                     status: 0,
-                    remark: "string",
+                    remark: "",
                     credentFiles: []
                 }
             }

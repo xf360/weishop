@@ -83,8 +83,7 @@
                 var ret = await this.$http.Post('/api/services/app/B_InOrder/OrderIn', this.info);
                 if (ret.success) {
                     await Dialog.alert({
-                        title: '标题',
-                        message: '下单成功'
+                        title: '下单成功'
                     })
                     this.$router.go(-1)
                 }

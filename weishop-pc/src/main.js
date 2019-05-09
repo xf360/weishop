@@ -9,42 +9,114 @@ import Viser from 'viser-vue'
 // import '@/mock'
 import fetch from './utils/fetch'
 import store from './store'
+import area from './utils/area'
 
 Vue.prototype.$http = fetch
 Vue.config.productionTip = false
 Vue.use(Viser)
 Vue.use(Antd)
 
+// type:0,所有  type:1 省   type:2市 type:3县
+Vue.filter('areaname', function (value, type) {
+  if (!value) {
+    return ''
+  }
+  if (!type) {
+    type = 0
+  }
+  var province = null
+  var city = null
+  var country = null
+  var ret = ''
+  switch (type) {
+    case 0:
+      var pcode = value.substr(0, 2) + '0000'
+      province = area.filter((ite) => ite.value === pcode)[0]
+      if (province) {
+        ret = province.label
+        var ccode = value.substr(0, 4) + '00'
+        city = province.children.filter((ite) => ite.value === ccode)[0]
+        if (city) {
+          ret = ret + city.label
+          country = city.children.filter((ite) => ite.value === value)[0]
+          if (country) {
+            ret = ret + country.label
+          }
+        }
+        return ret
+      } else {
+        return ''
+      }
+    case 1:
+      province = area.filter((ite) => ite.value === value)[0]
+      if (province) {
+        return province.label
+      } else {
+        return ''
+      }
+    case 2:
+      pcode = value.substr(0, 2) + '0000'
+      province = area.filter((ite) => ite.value === pcode)[0]
+      if (province) {
+        ccode = value.substr(0, 4) + '00'
+        city = province.children.filter((ite) => ite.value === ccode)[0]
+        if (city) {
+          return city.label
+        }
+        return ''
+      } else {
+        return ''
+      }
+    case 3:
+      pcode = value.substr(0, 2) + '0000'
+      province = area.filter((ite) => ite.value === pcode)[0]
+      if (province) {
+        ccode = value.substr(0, 4) + '00'
+        city = province.children.filter((ite) => ite.value === ccode)[0]
+        if (city) {
+          country = city.children.filter((ite) => ite.value === value)[0]
+          if (country) {
+            return country.label
+          }
+        }
+        return ''
+      } else {
+        return ''
+      }
+  }
+  return ''
+})
+
 Vue.filter('payType', function (value) {
   switch (value) {
     case 0:
-      return '支付宝';
+      return '支付宝'
     case 1:
-      return '银行转账';
+      return '银行转账'
     default:
-      return '未知';
+      return '未知'
   }
-});
+})
 Vue.filter('dateformat', function (value, fmt) {
   if (value instanceof Date) {
-    value = `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()} ${value.getHours()}:${value.getMinutes()}:${value.getSeconds()}`;
+    value = `${value.getFullYear()}-${value.getMonth() + 1}-${value.getDate()} ${value.getHours()}:${value.getMinutes()}:${value.getSeconds()}`
   }
   if (value === '-') {
-    return '-';
+    return '-'
   }
   if (!value) {
-    return '';
+    return ''
   }
   if (!fmt) {
-    fmt = 'yyyy-MM-dd hh:mm:ss';
+    fmt = 'yyyy-MM-dd hh:mm:ss'
   }
   // var date = new Date(value);
   // if (!date) {
-  var timestr = value.replace(/-/g, '/').replace('T', ' ');
+  var timestr = value.replace(/-/g, '/').replace('T', ' ')
   if (timestr.indexOf('.') !== -1) {
-    timestr = timestr.slice(0, timestr.indexOf('.'));
+    timestr = timestr.slice(0, timestr.indexOf('.'))
   }
-  var date = new Date(timestr); // 获取一个时间对象  注意：如果是uinx时间戳记得乘以1000。比如php函数time()获得的时间戳就要乘于1000
+  var date = new Date(timestr) // 获取一个时间对象  注意：如果是uinx时间戳记得乘以1000。比如php函数time()获得的时间戳就要乘于1000
   // }
 
   // value = Date.parse(value)
@@ -59,13 +131,13 @@ Vue.filter('dateformat', function (value, fmt) {
     's+': date.getSeconds(), // 秒
     'q+': Math.floor((date.getMonth() + 3) / 3), // 季度
     'S': date.getMilliseconds() // 毫秒
-  };
-  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
-  for (var k in o) {
-    if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
   }
-  return fmt;
-});
+  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+  for (var k in o) {
+    if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)))
+  }
+  return fmt
+})
 // eslint-disable-next-line no-new
 new Vue({
   el: '#app',
@@ -75,5 +147,5 @@ new Vue({
     App
   },
   template: '<App/>',
-  mounted() {}
+  mounted () {}
 })
