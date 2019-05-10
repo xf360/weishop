@@ -5,10 +5,10 @@
             <div v-for="(item,index) in list" :key="index" class="logbox">
                 <div>
                     <span v-if="item.inOrOut===1" style="font-size:18px;font-weight: bold;">出仓</span>
-                    <span v-if="item.inOrOut===0" style="font-size:18px;font-weight: bold;">入仓</span>
-                    <span style="float:right">{{item.makeTime}}</span></div>
-                <div>收货方：-</div>
-                <div><span>{{item.goodsName}}</span><span style="float:right">-箱</span></div>
+                    <span v-if="item.inOrOut===2" style="font-size:18px;font-weight: bold;">入仓</span>
+                    <span style="float:right">{{item.creationTime}}</span></div>
+                <div>收货方：{{item.relationUserName}}</div>
+                <div><span>{{item.categroyName}}</span><span style="float:right">{{item.number}}箱</span></div>
             </div>
         </van-list>
     </div>
@@ -36,7 +36,7 @@
         methods: {
             async onLoad() {
                 this.loading=true;
-                var ret= await this.$http.Get('/api/services/app/B_CloudWarehouse/GetCWInOutDetailListAsync',
+                var ret= await this.$http.Get('/api/services/app/B_CWDetail/GetList',
                 {
                     maxResultCount:20,
                     skipCount:0

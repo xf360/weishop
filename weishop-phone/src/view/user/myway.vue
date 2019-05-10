@@ -73,7 +73,7 @@
                     value: ''
                 },
                 params: {
-                    UserId: '',
+                    userId: '',
                     type: 1,
                     agencyLevelId: null,
                     maxResultCount: 50,
@@ -121,6 +121,7 @@
                 this.loadlist();
             },
             async loadlist() {
+                this.params.userId=this.$store.getters.user.id;
                 var ret = await this.$http.Get('/api/services/app/B_Agency/GetList', this.params);
                 if (ret.success) {
                     this.datalist = ret.result.items;

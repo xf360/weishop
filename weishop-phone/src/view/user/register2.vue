@@ -65,7 +65,7 @@
             </van-cell>
             <van-cell>
                 <template slot="title">
-                    <span class="custom-text">手持证件（1张）：</span>
+                    <span class="custom-text">手持证件（1-2张）：</span>
                     <uploader :limit="2" v-model="info.handleCredentFiles"></uploader>
                 </template>
             </van-cell>
@@ -91,7 +91,8 @@
             <van-area :area-list="areaList" @confirm="areaok" @cancel="show=false;" />
         </van-popup>
         <van-popup v-model="timeshow" position="bottom">
-            <van-datetime-picker :formatter="formatter" type="date" @confirm="timeok" @cancel="timeshow=false;" />
+            <van-datetime-picker 
+            :min-date="minDate" :formatter="formatter" type="date" @confirm="timeok" @cancel="timeshow=false;" />
         </van-popup>
     </div>
 </template>
@@ -129,6 +130,7 @@
                 disabled:false,
                 userinfo:{},
                 payinfo:[],
+                minDate: new Date(),
                 info: {
                     inviteUrlId: this.$route.query.id,
                     name: '',
@@ -152,7 +154,8 @@
                     touxiangFile: {},
                     credentFiles: [],
                     handleCredentFiles: [],
-                    payDate: (new Date()).toLocaleDateString()
+                    payDate: (new Date()).toLocaleDateString(),
+                    paytime: (new Date()).toLocaleDateString(),
                 }
             }
         },

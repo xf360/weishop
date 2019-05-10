@@ -7,7 +7,7 @@
             </div>
         </div>
         <van-uploader class="uploader" name="headerimg" :after-read="onRead" :before-read="onBefore" accept="image/gif, image/jpeg">
-            <van-icon  name="plus" />
+            <van-icon  name="plus" v-if="filelist.length<limit" />
             <!-- <img src="" width="50" height="50"/> -->
         </van-uploader>
     </div>

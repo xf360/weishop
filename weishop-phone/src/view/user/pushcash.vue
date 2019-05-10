@@ -2,23 +2,20 @@
     <div>
         <van-nav-bar title="货款充值" right-text="明细" left-arrow @click-left="onClickLeft" @click-right="onClickRight" />
         <van-cell-group>
-            <van-radio-group v-model="info.payType">
-                <van-cell title="支付宝" clickable @click="info.payType = 0;loadpay()">
-                    <van-radio :name="0" />
-                </van-cell>
-                <!-- <van-cell title="微信" clickable @click="info.paytype = 2">
-                    <van-radio :name="2" />
-                </van-cell> -->
-                <van-cell title="银行转账" clickable @click="info.payType = 1;loadpay()">
-                    <van-radio :name="1" />
-                </van-cell>
-
-            </van-radio-group>
+            <van-cell title="打款方式：">
+                <template slot="right-icon">
+                    <select v-model="info.payType" required style="width:250px" @change="loadpay()">
+                        <option :value="0">支付宝</option>
+                        <option :value="1">银行转账</option>
+                    </select>
+                </template>
+            </van-cell>
         </van-cell-group>
         <van-cell-group v-if="info.payType===0">
             <van-field v-model="info.payAcount" required clearable label="支付宝账户" placeholder="请输入支付宝账户" />
             <van-field v-model="info.payAmout" type="number" required clearable label="金额" placeholder="请输入金额" />
-            <van-field v-model="info.payDate" required clearable label="日期" placeholder="请输入日期" />
+            <van-field @click="timeclick" v-model="info.payDate" required readonly="readonly" clearable label="请输入日期"
+                placeholder="打款日期" />
             <van-field v-model="info.remark" required clearable label="备注" placeholder="请输入备注" />
         </van-cell-group>
         <van-cell-group v-if="info.payType===1">
@@ -26,7 +23,8 @@
             <van-field v-model="info.bankUserName" required label="开户姓名" placeholder="请输入开户姓名" />
             <van-field v-model="info.payAcount" required clearable label="卡号" placeholder="请输入银行卡号" />
             <van-field v-model="info.payAmout" type="number" required clearable label="金额" placeholder="请输入金额" />
-            <van-field v-model="info.payDate" required clearable label="日期" placeholder="请输入日期" />
+            <van-field @click="timeclick" v-model="info.payDate" required readonly="readonly" clearable label="请输入日期"
+                placeholder="打款日期" />
             <van-field v-model="info.remark" required clearable label="备注" placeholder="请输入备注" />
         </van-cell-group>
         <h2 class="celltitle">请打款至</h2>
@@ -44,6 +42,13 @@
         <div class="loginbt">
             <van-button block type="primary" @click="onSubmit">确认充值</van-button>
         </div>
+        <van-popup v-model="timeshow" position="bottom">
+            <van-datetime-picker ref="timepicker" 
+            :formatter="formatter" type="date" @confirm="timeok" @cancel="timeshow=false;"
+            v-model="info.payDate"
+            :min-date="minDate"
+             />
+        </van-popup>
     </div>
 </template>
 <style>
@@ -69,24 +74,28 @@
         Field,
         CellGroup,
         Button,
+        Popup,
         RadioGroup,
+        DatetimePicker,
         Radio,
         Toast,
         Dialog
     } from 'vant';
 
-    Vue.use(Cell).use(Dialog).use(RadioGroup).use(Toast).use(Radio).use(CellGroup).use(Field).use(NavBar).use(Button);
+    Vue.use(Cell).use(Dialog).use(Popup).use(DatetimePicker).use(RadioGroup).use(Toast).use(Radio).use(CellGroup).use(Field).use(NavBar).use(Button);
     export default {
         data() {
             return {
+                timeshow:false,
                 payinfo:{},
+                minDate: new Date(),
                 info: {
                     payType: 0,
                     payAmout: 0,
                     bankName: "",
                     bankUserName: "",
                     payAcount: "",
-                    payDate: "",
+                    payDate: (new Date()).toLocaleDateString(),
                     status: 0,
                     remark: "",
                     credentFiles: []
@@ -97,6 +106,13 @@
             this.loadpay();
         },
         methods: {
+            timeclick() {
+                this.timeshow = true;
+            },
+            timeok(val) {
+                this.info.payDate = val.toLocaleDateString();
+                this.timeshow = false;
+            },
             onClickLeft() {
                 this.$router.go(-1)
             },
