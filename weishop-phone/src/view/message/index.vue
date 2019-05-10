@@ -6,9 +6,7 @@
                     <van-list v-model="loading" :finished="finished" finished-text="加载完成"
                         @load="loadmessage(0)">
                         <van-panel v-for="(item ,index) in messagedata" :key="index" :title="item.title" :desc="item.creationTime"
-                            :status="item.status">
-
-                            <p>订单编码：{{item.code}}</p>
+                            :status="item.statusTitle">
                             <p>{{item.content}}</p>
 
                         </van-panel>
@@ -21,8 +19,8 @@
                     <van-list v-model="loading" :finished="finished" finished-text="加载完成"
                         @load="loadnotice(0)">
                         <van-panel v-for="(item ,index) in noticedata" :key="index" :title="item.title" 
-                            :status="item.creationTime">
-                            <p>{{item.status}}</p>
+                            :status="item.creationTime.replace('T',' ')">
+                            <p>{{item.statusTitle}}</p>
 
                         </van-panel>
                     </van-list>

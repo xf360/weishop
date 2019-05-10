@@ -6,7 +6,7 @@
                 <div>
                     <span v-if="item.inOrOut===1" style="font-size:18px;font-weight: bold;">出仓</span>
                     <span v-if="item.inOrOut===2" style="font-size:18px;font-weight: bold;">入仓</span>
-                    <span style="float:right">{{item.creationTime}}</span></div>
+                    <span style="float:right">{{item.creationTime|dateformat}}</span></div>
                 <div>收货方：{{item.relationUserName}}</div>
                 <div><span>{{item.categroyName}}</span><span style="float:right">{{item.number}}箱</span></div>
             </div>

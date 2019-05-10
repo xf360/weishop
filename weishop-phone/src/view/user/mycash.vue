@@ -1,21 +1,21 @@
 <template>
     <div>
         <van-nav-bar title="我的钱包" right-text="提现" left-arrow @click-left="onClickLeft" @click-right="onClickRight" />
-        <van-tabs>
+        <van-tabs @change="change">
             <van-tab title="余额">
                 <van-pull-refresh v-model="refreshing" @refresh="onRefresh()" style="top:50px">
                 <van-list>
                     <div class="box">
-                        <div class="left">￥5000</div>
-                        <div>保证金：<span class="right">￥1000</span></div>
+                        <div class="left">￥{{cashinfo.blance}}</div>
+                        <div>保证金：<span class="right">￥{{cashinfo.deposit}}</span></div>
                     </div>
 
-                    <van-panel v-for="(item,index) in datalist" :key="index" :title="`类型:${item.typename}`"
-                        :desc="item.createtime" :status="item.statueTitle">
+                    <van-panel v-for="(item,index) in banlcelist" :key="index" :title="`类型:${item.type===0?'支出':'充值'}`"
+                        :desc="item.createTime" :status="item.status">
                         <div class="cont">
-                            <p style="color:green" v-if="item.way==1">金额：+ {{item.money}}</p>
-                            <p style="color:red" v-if="item.way==0">金额：- {{item.money}}</p>
-                            <p>订单号:{{item.no}}</p>
+                            <p style="color:green" v-if="item.type==1">金额：+ {{item.money}}</p>
+                            <p style="color:red" v-if="item.type==0">金额：- {{item.money}}</p>
+                            <p>订单号:{{item.orderNo}}</p>
                         </div>
                     </van-panel>
 
@@ -26,17 +26,17 @@
                 <van-pull-refresh v-model="refreshing" @refresh="onRefresh()" style="top:50px">
                 <van-list>
                     <div class="box">
-                        <div class="left">￥5000</div>
+                        <div class="left">￥{{cashinfo.goodPayment}}</div>
                     </div>
                     <van-cell-group>
                         <van-cell title="货款充值" icon="location-o" is-link @click="chongzhi"/>
                     </van-cell-group>
-                    <van-panel v-for="(item,index) in datalist" :key="index" :title="`类型:${item.typename}`"
-                        :status="item.createtime">
+                    <van-panel v-for="(item,index) in goodpaymentlist" :key="index" :title="`类型:${item.type===0?'支出':'充值'}`"
+                        :status="item.createTime">
                         <div class="cont">
-                            <p style="color:green" v-if="item.way==1">金额：+ {{item.money}}</p>
-                            <p style="color:red" v-if="item.way==0">金额：- {{item.money}}</p>
-                            <p>订单号:{{item.no}}</p>
+                            <p style="color:green" v-if="item.type==1">金额：+ {{item.money}}</p>
+                            <p style="color:red" v-if="item.type==0">金额：- {{item.money}}</p>
+                            <p>订单号:{{item.orderNo}}</p>
                         </div>
                     </van-panel>
 
@@ -93,36 +93,56 @@
         data() {
             return {
                 refreshing:false,
-                datalist: [{
-                    type: 0,
-                    typename: '下单支出',
-                    createtime: '2019-03-09 12:23:34',
-                    money: 150,
-                    way: 0,
-                    no: '3243423432432',
-                    statueTitle: '已完成'
-                }, {
-                    type: 0,
-                    typename: '订单货款',
-                    createtime: '2019-03-09 12:23:34',
-                    money: 120,
-                    way: 1,
-                    no: '3243423432432',
-                    statueTitle: '已完成'
-                }, {
-                    type: 0,
-                    typename: '订单货款',
-                    createtime: '2019-03-09 12:23:34',
-                    money: 120,
-                    way: 1,
-                    no: '3243423432432',
-                    statueTitle: '已完成'
-                }]
+                cashinfo:{
+                    blance:0,
+                    deposit:0,
+                    goodPayment:0
+                },
+                banlcelist:[],
+                goodpaymentlist:[]
             }
+        },
+        mounted(){
+            this.getcashinfo();
+            this.getbancelist();
         },
         methods: {
             onRefresh(){
 
+            },
+            change(index){
+                switch(index){
+                    case 0:
+                    this.getbancelist();
+                    break;
+                    case 1:
+                    this.getGoodPaymentList();
+                    break;
+                }
+            },
+            async getcashinfo(){
+                var ret= await this.$http.Get('/api/services/app/B_Order/Get');
+                if(ret.success){
+                    this.cashinfo=ret.result;
+                }
+            },
+            async getbancelist(){
+                var ret= await this.$http.Get('/api/services/app/B_Order/GetBlanceList',{
+                    maxResultCount:99,
+                    skipCount:0
+                });
+                if(ret.success){
+                    this.banlcelist=ret.result.items;
+                }
+            },
+            async getGoodPaymentList(){
+                 var ret= await this.$http.Get('/api/services/app/B_Order/GetGoodPaymentList',{
+                    maxResultCount:99,
+                    skipCount:0
+                });
+                if(ret.success){
+                    this.goodpaymentlist=ret.result.items;
+                }
             },
             onClickLeft() {
                 this.$router.go(-1)
