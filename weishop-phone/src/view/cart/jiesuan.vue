@@ -93,12 +93,6 @@
                 refreshing: false,
                 loading: false,
                 finished: false,
-                // address: {
-                //     id: '2',
-                //     name: '李四',
-                //     tel: '1310000000',
-                //     address: '浙江省杭州市拱墅区莫干山路 50 号'
-                // },
 
             }
         },
@@ -108,6 +102,7 @@
                 this.$store.dispatch('getaddress', userid)
             }
             this.gettotalPrice();
+            this.loadlist();
         },
         computed: {
             goods() {
@@ -118,6 +113,32 @@
             }
         },
         methods: {
+            async loadlist(){
+                var userid=this.$store.state.loginInfo.user.id;
+                var ret= await this.$http.Get('/api/services/app/B_MyAddress/GetList',{
+                    userId:userid,
+                    maxResultCount:99,
+                    skipCount:0
+                });
+                if(ret.success){
+                    this.list=[];
+                    for(var i in ret.result.items){
+                        var addressstr=ret.result.items[i].provinces+
+                        ret.result.items[i].city+ret.result.items[i].county+
+                        ret.result.items[i].addres
+                        var tem={
+                            id:ret.result.items[i].id,
+                            //name:ret.result.items[i].name,
+                            name:'',
+                            tel:ret.result.items[i].tel,
+                            address:addressstr,
+                        }
+                        if(ret.result.items[i].isDefault){
+                             this.$store.commit('setaddress',tem);
+                        }
+                    }
+                }
+            },
             gettotalPrice() {
                 var total = 0;
                 for (var i in this.goods) {

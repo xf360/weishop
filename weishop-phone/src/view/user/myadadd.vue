@@ -3,8 +3,8 @@
         <van-nav-bar title="新增邀请链接" left-arrow @click-left="onClickLeft" />
         <van-cell-group>
             <van-cell title="代理等级" :value="agentlevelselect.name" is-link @click="selectagent" />
-            <van-cell title="期限" :value="daysselect.name" is-link @click="selectdays" />
-            <van-field v-model="info.availableCount" required type="number" label="使用次数"  placeholder="请输入使用次数" />
+            <!-- <van-cell title="期限" :value="daysselect.name" is-link @click="selectdays" />
+            <van-field v-model="info.availableCount" required type="number" label="使用次数"  placeholder="请输入使用次数" /> -->
         </van-cell-group>
         <van-actionsheet v-model="agentshow" :actions="agentlist" cancel-text="取消" @select="onSelect"
             @cancel="onCancel" />
@@ -53,9 +53,8 @@
                 },
                 info: {
                     agencyLevel: '',
-                    validityDataType: 1,
-                    availableCount: 0,
-                    url: "d"
+                    validityDataType: 30,
+                    availableCount: 999,
                 }
             }
         },

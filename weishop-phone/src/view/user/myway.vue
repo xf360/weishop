@@ -1,13 +1,13 @@
 <template>
     <div id="myway">
         <van-nav-bar title="我的渠道" left-arrow @click-left="onClickLeft" />
-        <van-tabs @change="change">
+        <!-- <van-tabs @change="change">
             <van-tab title="直属代理">
 
             </van-tab>
-            <!-- <van-tab title="分销商">
-            </van-tab> -->
-        </van-tabs>
+            <van-tab title="分销商">
+            </van-tab>
+        </van-tabs> -->
         <van-pull-refresh v-model="refreshing" @refresh="onRefresh()" style="top:50px">
             <van-list>
                 <van-cell-group>
@@ -39,11 +39,6 @@
 
     .userbox img {
         border-radius: 20px;
-    }
-
-    #myway .van-cell__left-icon,
-    .van-cell__right-icon {
-        line-height: 72px;
     }
 </style>
 
@@ -100,7 +95,7 @@
                 this.loadlist()
             },
             onRefresh() {
-
+                this.loadlist();
             },
             onClickLeft() {
                 this.$router.go(-1)
@@ -122,7 +117,9 @@
             },
             async loadlist() {
                 this.params.userId=this.$store.getters.user.id;
+                this.refreshing=true;
                 var ret = await this.$http.Get('/api/services/app/B_Agency/GetList', this.params);
+                 this.refreshing=false;
                 if (ret.success) {
                     this.datalist = ret.result.items;
                 }

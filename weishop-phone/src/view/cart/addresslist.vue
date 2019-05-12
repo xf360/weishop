@@ -2,7 +2,7 @@
     <div>
         <van-nav-bar title="地址列表" left-text="返回" right-text="添加" left-arrow @click-left="onClickLeft"
             @click-right="onClickRight" />
-        <van-address-list style="margin-top:50px" v-model="chosenAddressId" :list="list" @add="onAdd" @edit="onEdit" @select="select"/>
+        <van-address-list style="position: fixed;top: 45px;left: 0px;right: 0px;" v-model="chosenAddressId" :list="list" @add="onAdd" @edit="onEdit" @select="select"/>
     </div>
 </template>
 <script>

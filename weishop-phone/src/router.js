@@ -44,6 +44,34 @@ const routes = [{
     }
   },
   {
+    name: 'mysale',
+    component: () => import('./view/user/mysale.vue'),
+    meta: {
+      title: '我的销售'
+    }
+  },
+  {
+    name: 'changepwd',
+    component: () => import('./view/user/changepwd.vue'),
+    meta: {
+      title: '修改密码'
+    }
+  },
+  {
+    name: 'changeheader',
+    component: () => import('./view/user/changeheader.vue'),
+    meta: {
+      title: '修改密码'
+    }
+  },
+  {
+    name: 'mysalesub',
+    component: () => import('./view/user/mysalesub.vue'),
+    meta: {
+      title: '我的销售明细'
+    }
+  },
+  {
     name: 'getcash',
     component: () => import('./view/user/getcash.vue'),
     meta: {

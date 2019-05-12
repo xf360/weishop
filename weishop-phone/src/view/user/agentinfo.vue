@@ -13,7 +13,7 @@
             <van-cell title="城市" :value="info.city" />
             <van-cell title="区县" :value="info.county" />
             <van-cell title="地址" :value="info.address" />
-            <van-cell title="加入时间" :value="info.signData" />
+            <van-cell title="加入时间" :value="info.signData|dateformat" />
         </van-cell-group>
     </div>
 </template>

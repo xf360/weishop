@@ -6,10 +6,11 @@
         <van-tabs @change="change">
             <van-tab :title="item.name" v-for="(item,index) in catory" :key="index"></van-tab>
         </van-tabs>
-        <div style="background-color:#fff">
+        <div v-if="goods&&goods.length>0" style="background-color:#fff">
             <gooditem v-for="(item,index) in goods" :key="index" :title="item.name" :desc="item.spe"
               @addcart="addcart"  :id="item.id" :price="item.price" :oldprice="item.pirce1" :thumb="api+'api/AbpFile/Show?id='+item.file.id" />
         </div>
+        <div v-else><center>暂无数据</center></div>
     </div>
 </template>
 
@@ -53,7 +54,7 @@
             },
             onClickRight(){},
             async loadcate(){
-                var ret=await this.$http.Get('/api/services/app/B_Categroy/GetList',{
+                var ret=await this.$http.Get('/api/services/app/B_Categroy/GetCWCategroyList',{
                     maxResultCount:20,
                     skipCount:0
                 });

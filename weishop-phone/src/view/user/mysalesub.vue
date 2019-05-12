@@ -1,6 +1,6 @@
 <template>
     <div>
-        <van-nav-bar title="我的销售" left-arrow @click-left="$router.go(-1)" />
+        <van-nav-bar title="我的销售明细" left-arrow @click-left="$router.go(-1)" />
         <div class="selectmonth">
             <div class="nav" @click="pre">
                 <van-icon name="arrow-left" />
@@ -27,6 +27,9 @@
                 <div>{{saleinfo.discount}}</div>
             </div>
         </div>
+         <div class="allsale">
+            业绩品类：{{saleinfo.categroyName}}
+        </div>
         <div class="allsale">
             总销售额
             <div class="all">{{saleinfo.totalSales}}</div>
@@ -39,12 +42,9 @@
                         <div class="listbox">
                             <img :src="api+'api/AbpFile/Show?id='+item.file.id" height="70" width="70"/>
                             <div class="info">
-                                <div>名称：{{item.categroyName}}</div>
-                                <div>销售额：{{item.sales}}</div>
-                                <div>销售折扣：{{item.discount}}</div>
-                            </div>
-                            <div class="right" @click="getsub(item.categroyId)">
-                                <van-icon name="arrow" />
+                                <div>名称：{{item.agencyName}}</div>
+                                <div>级别：{{item.agencyLeavelName}}</div>
+                                <div>业绩：{{item.sales}}</div>
                             </div>
                         </div>
                     </template>
@@ -162,7 +162,7 @@
                     discount: 0,
                     categroyName: '',
                 },
-                salelist:[],
+                salelist:[]
             }
         },
         mounted() {
@@ -170,19 +170,25 @@
             this.getsalelist();
         },
         methods: {
-            getsub(id){
-                this.$router.push('/mysalesub?id='+id)
-            },
             async getsaleinfo() {
+                debugger;
+                if(!this.$route.query.id){
+                    return;
+                }
+                this.parmars.categroyId=this.$route.query.id
                 var ret = await this.$http.Get('/api/services/app/B_AgencySales/Get', this.parmars);
                 if (ret.success) {
                     ret.saleinfo = ret.result;
                 }
             },
             async getsalelist(){
+                 if(!this.$route.query.id){
+                    return;
+                }
+                this.listparmar.categroyId=this.$route.query.id
                 this.listparmar.salesDateYear=this.parmars.year;
                 this.listparmar.salesDateMonth=this.parmars.month;
-                var ret = await this.$http.Get('/api/services/app/B_AgencySales/GetList', this.listparmar);
+                var ret = await this.$http.Get('/api/services/app/B_AgencySales/GetListByCategroyId', this.listparmar);
                 if (ret.success) {
                     ret.salelist = ret.result.items;
                 }

@@ -25,9 +25,9 @@
           :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入类别名称，不可重复。',whitespace: true}]}">
           <a-input placeholder="请输入类别名称，不可重复。" />
         </a-form-item>
-        <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="属性" fieldDecoratorId="level"
+        <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="属性" fieldDecoratorId="firestLevelCategroyPropertyId"
           :fieldDecoratorOptions="{rules: [{ required: true, message: '请选择属性'}]}">
-          <a-select placeholder="请选择属性">
+          <a-select :disabled="selectid" placeholder="请选择属性">
             <a-select-option :value="1">
               进提货
             </a-select-option>
@@ -40,7 +40,7 @@
           </a-select>
         </a-form-item>
         <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="父级" fieldDecoratorId="p_Id">
-          <a-cascader changeOnSelect  placeholder="请选择父级" :options="pctree" />
+          <a-cascader changeOnSelect placeholder="请选择父级" :options="pctree" />
         </a-form-item>
         <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="单位" fieldDecoratorId="unit"
           :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入单位。',whitespace: true}]}">
@@ -53,7 +53,7 @@
         <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="备注" fieldDecoratorId="remark">
           <a-input placeholder="请输入备注。" />
         </a-form-item>
-        <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="缩略图" extra="" fieldDecoratorId="file">
+        <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="缩略图" extra="" fieldDecoratorId="upfile">
           <a-upload name="logo" accept=".jpg, .jpeg, .png" :action="uploadurl" list-type="picture">
             <a-button>
               <a-icon type="upload" />选择文件
@@ -70,7 +70,8 @@
     data() {
       return {
         pctree: [],
-        uploadurl:api+'api/AbpFile/Post',
+        selectid:null,
+        uploadurl: api + 'api/AbpFile/Post',
         confirmLoading: false,
         labelcol: {
           span: 5
@@ -109,11 +110,11 @@
     },
     mounted() {
       this.loadlist();
-     
+
     },
     methods: {
       async loadCator() {
-        var ret = await this.$http.Get('/api/services/app/B_Categroy/GetList')
+        var ret = await this.$http.Get('/api/services/app/B_Categroy/GetCWCategroyList')
         if (ret.success) {
           this.pctree = help.list2tree(ret.result.items, null);
         }
@@ -121,6 +122,7 @@
       opennew() {
         this.loadCator();
         this.addvisible = true;
+        this.selectid=null;
         this.form.resetFields();
       },
       async del(row) {
@@ -137,18 +139,37 @@
           if (err) {
             return;
           } else {
-            if(values.p_Id&&values.p_Id.length>0){
-              values.p_Id=values[values.p_Id.length-1];
+            if (values.p_Id && values.p_Id.length > 0) {
+              values.p_Id = values[values.p_Id.length - 1];
+            } else {
+              values.p_Id = null;
+            }
+            debugger;
+            if (values.upfile&&values.upfile.fileList) {
+              values.file = values.upfile.fileList[0].response.result.data[0]
             }else{
-              values.p_Id=null;
+              vm.$message.error("请上传图片。", 3)
+              return;
             }
+            debugger;
             vm.confirmLoading = true;
-            var ret = await vm.$http.Post('/api/services/app/B_Categroy/Create', values);
-            vm.confirmLoading = false;
-            if (ret.success) {
-              vm.addvisible = false;
-              vm.loadlist();
+            values.id=vm.selectid;
+            if (!values.id) {
+              var ret = await vm.$http.Post('/api/services/app/B_Categroy/Create', values);
+              vm.confirmLoading = false;
+              if (ret.success) {
+                vm.addvisible = false;
+                vm.loadlist();
+              }
+            } else {
+              var ret = await vm.$http.Put('/api/services/app/B_Categroy/Update', values);
+              vm.confirmLoading = false;
+              if (ret.success) {
+                vm.addvisible = false;
+                vm.loadlist();
+              }
             }
+
 
           }
         });
@@ -156,7 +177,7 @@
       },
       async loadlist() {
         this.loading = true;
-        var ret = await this.$http.Get('/api/services/app/B_Categroy/GetList', {
+        var ret = await this.$http.Get('/api/services/app/B_Categroy/GetCWCategroyList', {
           MaxResultCount: 10,
           SkipCount: 0
         })
@@ -167,11 +188,14 @@
       },
       async loaddetail(row) {
         this.loading = true;
-        this.addvisible=true;
-        var ret=await this.$http.Get('/api/services/app/B_Categroy/Get',{id:row.id});
+        this.addvisible = true;
+        var ret = await this.$http.Get('/api/services/app/B_Categroy/Get', {
+          id: row.id
+        });
         this.loading = false;
-        if(ret.success){
-          var info=ret.result;
+        if (ret.success) {
+          var info = ret.result;
+          this.selectid=info.id;
           this.form.setFieldsValue(info);
         }
       },

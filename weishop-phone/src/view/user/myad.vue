@@ -3,15 +3,18 @@
         <van-nav-bar title="我要邀请" right-text="添加" left-arrow @click-left="onClickLeft" @click-right="onClickRight" />
         <van-swipe-cell :right-width="65" @click="del">
             <van-cell-group>
-                <van-cell v-for="(item,index) in datalist" :key="index" is-link @click="agentinfo(item)">
+                <van-cell v-for="(item,index) in datalist" :key="index" @click="agentinfo(item)">
                     <div slot="title" class="userbox">
                         <!-- <img :id="item.id" :src="qrcode(item.id)" width="70" height="70" /> -->
                         <qrcode value="Hello, World!" :options="{ size: 70 }"></qrcode>
                         <div>
                             代理级别：{{item.agencyLevelName}}<br />
-                            有效期：{{item.validityDataType}}<br />
-                            可用次数：{{item.availableCount}}
+                            <!-- 有效期：{{item.validityDataType}}<br />
+                            可用次数：{{item.availableCount}} -->
                         </div>
+                        <div class="right" @click="getsub(item.categroyId)">
+                                <van-icon name="arrow" />
+                            </div>
                     </div>
                 </van-cell>
             </van-cell-group>
@@ -22,9 +25,11 @@
 <style>
     .userbox {
         display: grid;
-        grid-template-columns: 80px auto;
+        grid-template-columns: 80px auto 20px;
     }
-
+    .userbox .right{
+        line-height: 70px;
+    }
     #myad .van-swipe-cell__right {
         line-height: 62px;
         background-color: #ff0000;
@@ -33,10 +38,6 @@
         ;
     }
 
-    #myad .van-cell__left-icon,
-    .van-cell__right-icon {
-        line-height: 72px;
-    }
 </style>
 <script>
     import Vue from 'vue';
@@ -47,9 +48,10 @@
         SwipeCell,
         Dialog,
         CellGroup,
+        Icon
     } from 'vant';
 
-    Vue.use(Cell).use(CellGroup).use(NavBar).use(SwipeCell).use(Dialog);
+    Vue.use(Cell).use(CellGroup).use(NavBar).use(SwipeCell).use(Dialog).use(Icon);
 Vue.component(VueQrcode.name, VueQrcode);
     export default {
         data() {

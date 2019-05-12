@@ -1,8 +1,8 @@
 <template>
     <!-- 云仓进货 -->
     <div>
-        <van-nav-bar title="我的云仓-进货" right-text="明细" left-arrow @click-left="$router.go(-1)"
-            @click-right="onClickRight" />
+        <van-nav-bar title="我的云仓-进货"  left-arrow @click-left="$router.go(-1)"
+             />
         <div style="background-color:#fff">
             <gooditem v-for="(item,index) in goods" :key="index" :title="item.name" :desc="item.remark"
               :id="item.id"  :price="item.price" :thumb="api+'api/AbpFile/Show?id='+item.file.id" @addcart="addcart"/>
@@ -41,18 +41,7 @@
         data() {
             return {
                 api:api,
-                goods: [{
-                    id: "9b2f8915-618d-4ac7-3bd6-08d6cfccd5e7",
-                    name: "生发产品",
-                    p_Id: null,
-                    price: 100,
-                    unit: "套",
-                    tag: null,
-                    remark: "备注",
-                    status: 0,
-                    creationTime: "2019-05-03T22:01:06.57",
-                    file:{}
-                }],
+                goods: [],
                 info: {
                     categroyId: '2572e5ee-1c05-43a4-3bd7-08d6cfccd5e7',
                     number: 0,
@@ -61,24 +50,25 @@
                 }
             }
         },
+        mounted(){
+            this.getgoods();
+        },
         methods: {
+            async getgoods(){
+                var ret=await this.$http.Get('/api/services/app/B_Categroy/GetCWCategroyList',{
+
+                });
+                if(ret.success){
+                    this.goods=ret.result.items;
+                }
+            },
             addcart(id,value,price){
                 debugger;
                 this.info.categroyId=id;
                 this.info.number=value;
                 this.info.goodsPayment=value*price;
             },
-            async loadCategroy() {
-                var ret = await this.$http.Get('/api/services/app/B_Categroy/GetList', {
-                    MaxResultCount: 100,
-                    SkipCount: 0
-                });
-                if (ret.success && ret.result.items.length > 0) {
-                    for (var i in ret.result.items) {
-                        //if(ret.result.items[i].p_Id)
-                    }
-                }
-            },
+
             async submit() {
                 var ret = await this.$http.Post('/api/services/app/B_InOrder/OrderIn', this.info);
                 if (ret.success) {

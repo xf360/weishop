@@ -5,7 +5,7 @@
                 <van-pull-refresh v-model="refreshing" @refresh="onRefresh(0)">
                     <van-list v-model="loading" :finished="finished" finished-text="加载完成"
                         @load="loadmessage(0)">
-                        <van-panel v-for="(item ,index) in messagedata" :key="index" :title="item.title" :desc="item.creationTime"
+                        <van-panel v-for="(item ,index) in messagedata" :key="index" :title="item.title" :desc="item.creationTime | dateformat"
                             :status="item.statusTitle">
                             <p>{{item.content}}</p>
 
@@ -19,7 +19,7 @@
                     <van-list v-model="loading" :finished="finished" finished-text="加载完成"
                         @load="loadnotice(0)">
                         <van-panel v-for="(item ,index) in noticedata" :key="index" :title="item.title" 
-                            :status="item.creationTime.replace('T',' ')">
+                            :status="item.creationTime | dateformat">
                             <p>{{item.statusTitle}}</p>
 
                         </van-panel>
