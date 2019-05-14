@@ -49,9 +49,9 @@
         </a-form>
       </div>
        <a-alert style="margin-top:20px"
-        :message="`待审核人数：${static.waitAuditCount}，已通过人数：${static.passCount}，未通过人数:${static.noPassCount}。已审核金额：${static.passAmout}，未审核金额：${static.waitAmout}。`" type="info"
+        :message="`待打款人数：${static.waitAuditCount}，已打款人数：${static.passCount}，未打款人数:${static.noPassCount}。已打款金额：${static.passAmout}，未打款金额：${static.waitAmout}。`" type="info"
         :show-icon="true" />
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange" :pagination="pagination">
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="openaudit(record)">打款</a>

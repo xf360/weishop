@@ -37,7 +37,7 @@
           </a-form-item>
         </a-form>
       </div>
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange"  :pagination="pagination">
         <span slot="status" slot-scope="text">
           <span v-if="text===0">草稿</span>

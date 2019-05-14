@@ -27,7 +27,7 @@
         </a-form>
       </div>
 
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
         :loading="loading" @change="pagechange"  :pagination="pagination">
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="opendetail(record)">查看</a>

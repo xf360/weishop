@@ -32,7 +32,7 @@
         </a-form>
       </div>
 
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange" :pagination="pagination">
         <span slot="status" slot-scope="text">
           <span v-if="text===0">上架</span>
@@ -49,7 +49,7 @@
       </a-table>
     </a-card>
     <a-modal title="商品" v-model="detailvisible" @ok="save" cancelText="取消" okText="确认">
-      <goodedit ref="detail" :id="selectid"></goodedit>
+      <goodedit v-if="detailvisible" ref="detail" :id="selectid"></goodedit>
     </a-modal>
 
   </div>
@@ -106,12 +106,6 @@
         }, {
           title: '原价',
           dataIndex: 'price'
-        }, {
-          title: '优惠价',
-          dataIndex: 'pirce1'
-        }, {
-          title: '商品图',
-          dataIndex: 'name10'
         }, {
           title: '状态',
           dataIndex: 'status',
@@ -171,6 +165,7 @@
           id: row.id
         });
         if (ret.success) {
+          this.$message.success('操作成功。');
           this.loadlist();
         }
       },

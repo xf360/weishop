@@ -41,7 +41,7 @@
         </a-form>
       </div>
       <a-alert style="margin-top:20px" :message="`代理人数：${total}。`" type="info" :show-icon="true" />
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange" :pagination="pagination">
         <span slot="creationTime" slot-scope="text">
           <span>{{text|dateformat}}</span>

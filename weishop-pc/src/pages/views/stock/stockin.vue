@@ -27,7 +27,7 @@
         </a-form>
       </div>
 
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange"  :pagination="pagination">
         <span slot="status" slot-scope="text">
           <span v-if="text===1">上级缺货</span>
@@ -115,7 +115,7 @@
       },
       async loadlist() {
         this.loading=true
-        var ret=await this.$http.Get('/api/services/app/B_InOrder/GetB_InOrderListAsync',this.params);
+        var ret=await this.$http.Get('/api/services/app/B_InOrder/GetList',this.params);
         this.loading=false;
         if(ret.success){
           this.list=ret.result;

@@ -42,7 +42,7 @@
         </a-form>
       </div>
       <a-alert style="margin-top:20px" message="一级代理人数：11。" type="info" :show-icon="true" />
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
         :loading="loading">
         <div slot="sub" slot-scope="text, record">
             <a href='#/agent/sub'>{{record.sub}}</a>

@@ -14,7 +14,7 @@
         </div>
       </a-alert>
     </div>
-    <a-table
+    <a-table :locale="{emptyText: '暂无数据'}"
       :bordered="bordered"
       :loading="loading"
       :columns="columns"

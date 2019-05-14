@@ -98,19 +98,19 @@
       :activeTabKey="activeTabKey"
       @tabChange="(key) => {this.activeTabKey = key}"
     >
-      <a-table
+      <a-table :locale="{emptyText: '暂无数据'}"
         v-if="activeTabKey === '1'"
         :columns="operationColumns"
         :dataSource="operation1"
         :pagination="false"
       />
-      <a-table
+      <a-table :locale="{emptyText: '暂无数据'}"
         v-if="activeTabKey === '2'"
         :columns="operationColumns"
         :dataSource="operation2"
         :pagination="false"
       />
-      <a-table
+      <a-table :locale="{emptyText: '暂无数据'}"
         v-if="activeTabKey === '3'"
         :columns="operationColumns"
         :dataSource="operation3"

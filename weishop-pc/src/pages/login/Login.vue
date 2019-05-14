@@ -4,7 +4,7 @@
       <div class="top">
         <div class="header">
           <img alt="logo" class="logo" src="static/img/vue-antd-logo.png" />
-          <span class="title">{{systemName}}</span>
+          <span class="title">成都润百恩科技有限公司分销管理系统</span>
         </div>
         <div class="desc"></div>
       </div>
@@ -91,9 +91,7 @@
       }
     },
     computed: {
-      systemName() {
-        return this.$store.state.setting.systemName
-      },
+      
       linkList() {
         return this.$store.state.setting.footerLinks
       },

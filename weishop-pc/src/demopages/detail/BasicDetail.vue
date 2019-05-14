@@ -17,7 +17,7 @@
         </detail-list>
         <a-divider style="margin-bottom: 32px"/>
         <div class="title">退货商品</div>
-        <a-table
+        <a-table :locale="{emptyText: '暂无数据'}"
           style="margin-bottom: 24px"
           :columns="goodsColumns"
           :dataSource="goodsData"
@@ -25,7 +25,7 @@
         >
         </a-table>
         <div class="title">退货进度</div>
-        <a-table
+        <a-table :locale="{emptyText: '暂无数据'}"
           :columns="scheduleColumns"
           :dataSource="scheduleData"
           :pagination="false"

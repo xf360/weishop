@@ -87,7 +87,7 @@
     <a-row style="margin: 0 -12px">
       <a-col style="padding: 0 12px" :xl="24" :lg="24" :md="24" :sm="24" :xs="24">
         <a-card :bordered="false" style="margin-top: 24px" title="热门搜索">
-          <a-table :dataSource="agentarealist" :columns="areacolumns" size="small" :pagination="false"></a-table>
+          <a-table :locale="{emptyText: '暂无数据'}" :dataSource="agentarealist" :columns="areacolumns" size="small" :pagination="false"></a-table>
         </a-card>
       </a-col>
     </a-row>

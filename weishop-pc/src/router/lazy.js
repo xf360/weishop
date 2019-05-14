@@ -32,7 +32,7 @@ const routers = new Router({
           children: [
             {
               path: '/dashboard/analysis',
-              name: '代理统计',
+              name: '数据统计',
               component: () => import('@/demopages/dashboard/Analysis'),
               icon: 'none'
             },
@@ -180,7 +180,7 @@ const routers = new Router({
           children: [
             {
               path: '/notice/all',
-              name: '全部通知',
+              name: '全部公告',
               component: () => import('@/pages/views/notice/allnotice.vue'),
               icon: 'none'
             }

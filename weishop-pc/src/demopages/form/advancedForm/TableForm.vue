@@ -1,6 +1,6 @@
 <template>
   <form :autoFormCreate="(form) => this.form = form">
-    <a-table
+    <a-table :locale="{emptyText: '暂无数据'}"
       :columns="columns"
       :dataSource="dataSource"
       :pagination="false"

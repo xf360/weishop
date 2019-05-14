@@ -51,7 +51,7 @@
       <a-alert style="margin-top:20px"
         :message="`待审核人数：${static.waitAuditCount}，已通过人数：${static.passCount}，未通过人数:${static.noPassCount}。`" type="info"
         :show-icon="true" />
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange" :pagination="pagination">
         <span slot="payType" slot-scope="text">
           <span>{{text|payType}}</span>

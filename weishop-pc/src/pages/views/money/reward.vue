@@ -2,7 +2,7 @@
   <!-- 等级金额 -->
   <div>
     <a-card>
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange"  :pagination="pagination">
         <template slot="first" slot-scope="text, record">
           <a-input-number :min="0" :max="99999" v-if="record.editable" style="margin: -5px 0" :value="text"

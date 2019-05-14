@@ -32,10 +32,10 @@
             <a-cascader placeholder="选择分类" :options="pctree" v-model="params.categroyId" />
           </a-form-item>
           <a-form-item label="关键字">
-            <a-input style="width:300px" placeholder="请输入商品编号、商品名称" />
+            <a-input v-model="params.searchKey" style="width:300px" placeholder="请输入商品编号、商品名称" />
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" @click="loadlist">
+            <a-button  type="primary" @click="loadlist">
               搜索
             </a-button>
           </a-form-item>
@@ -47,13 +47,15 @@
         </a-form>
       </div>
 
-      <a-table style="margin-top:20px" :columns="columns" :dataSource="list" :loading="loading" @change="pagechange"
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" :columns="columns" :dataSource="list" :loading="loading" @change="pagechange"
         :pagination="pagination" @expand="expand">
-        <a-table slot="expandedRowRender" :columns="stockcolumns" :dataSource="stacklist" slot-scope="text"
+        <a-table :locale="{emptyText: '暂无数据'}" slot="expandedRowRender" :columns="stockcolumns" :dataSource="stacklist" slot-scope="text"
           :pagination="false">
-          <span slot="status" slot-scope="text">
-            <span v-if="text===1">是</span>
-             <span v-if="text===0" style="color:#ff0000">否</span>
+          <span slot="creationTime" slot-scope="text">
+          <span>{{text|dateformat}}</span>
+        </span>
+          <span slot="status" slot-scope="text,record">
+            <a-switch checkedChildren="开" unCheckedChildren="关" defaultChecked :checked="text" @change="statuschange(record)"/>
           </span>
         </a-table>
         
@@ -142,7 +144,10 @@
         }],
         stockcolumns: [{
           title: '时间',
-          dataIndex: 'creationTime'
+          dataIndex: 'creationTime',
+          scopedSlots: {
+            customRender: 'creationTime'
+          },
         }, {
           title: '新增库存',
           dataIndex: 'count'
@@ -163,17 +168,32 @@
       this.loadCator();
     },
     methods: {
+      statuschange(val){
+        debugger;
+        this.comfirm(val.id);
+      },
+      async comfirm(id){
+        var ret=await this.$http.Post('/api/services/app/B_InventoryAddRecord/Confirm',{id:id});
+        if(ret.success){
+          this.$message.success('操作成功。');
+          this.getstacklist();
+        }
+      },
       async expand(expanded, record){
         if(expanded){
-          var ret= await this.$http.Get('/api/services/app/B_InventoryAddRecord/GetList',{
-            goodsid:record.id,
+          debugger;
+          this.getstacklist(record.id)
+        }
+      },
+      async getstacklist(id){
+        var ret= await this.$http.Get('/api/services/app/B_InventoryAddRecord/GetList',{
+            goodsid:id,
             maxResultCount:99,
             skipCount:0
           });
           if(ret.success){
             this.stacklist=ret.result.items;
           }
-        }
       },
       async loadCator() {
         var ret = await this.$http.Get('/api/services/app/B_Categroy/GetList', this.cparams)

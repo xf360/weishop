@@ -5,7 +5,7 @@
       <div class="tools">
 
         <a-form layout="inline">
-         
+
           <a-form-item label="等级">
             <a-select style="width:100px" placeholder="选择等级" allowClear>
               <a-select-option :value="1">
@@ -19,8 +19,8 @@
               </a-select-option>
             </a-select>
           </a-form-item>
-         
-         
+
+
           <a-form-item label="关键字">
             <a-input style="width:300px" placeholder="请输入代理姓名、代理编号搜索" />
           </a-form-item>
@@ -31,18 +31,25 @@
           </a-form-item>
         </a-form>
       </div>
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
-        :loading="loading">
+      <a-alert style="margin-top:20px" :message="`总保证金金额：0，总充值金额：0，总提现金额：0，总奖励金额：0。`" type="info" :show-icon="true" />
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns"
+        :rowKey="record => record.id" :dataSource="list" :loading="loading" @change="pagechange"
+        :pagination="pagination">
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="opendetail(record)">查看</a>
         </span>
       </a-table>
     </a-card>
     <a-modal title="详情" v-model="detailvisible" :width="800">
-      
+      <a-select defaultValue="lucy" style="width: 120px">
+        <a-select-option value="">全部类型</a-select-option>
+      </a-select>
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="detailcolumns"
+      :rowKey="record => record.id" :dataSource="list" :loading="loading" @change="detailpagechange"
+        :pagination="pagination"></a-table>
       <template slot="footer">
-        
-        <a-button key="submit" type="primary" >确认</a-button>
+
+        <a-button key="submit" type="primary">确认</a-button>
       </template>
     </a-modal>
   </div>
@@ -50,70 +57,80 @@
 <script>
   export default {
     components: {
-      
+
     },
     data() {
       return {
-        detailvisible:false,
-        selectid:null,
-        data: [{
-          id:1,
+        pagination: {},
+        detailparams:{},
+        params: {
+          searchKey: null,
+          maxResultCount: 10,
+          skipCount: 0,
+        },
+        detailvisible: false,
+        selectid: null,
+        list: [{
+          id: 1,
           name1: 'test'
         }],
         loading: false,
         columns: [{
           title: '代理编号',
-          dataIndex: 'name1'
-        },  {
+          dataIndex: 'agencyCode'
+        }, {
           title: '代理姓名',
-          dataIndex: 'name3'
+          dataIndex: 'agencyName'
         }, {
           title: '代理等级',
-          dataIndex: 'name5'
+          dataIndex: 'agencyLevelName'
         }, {
           title: '保证金',
-          dataIndex: 'name6'
-        }, {
-          title: '订单金额',
-          dataIndex: 'name7'
+          dataIndex: 'deposite'
         }, {
           title: '充值金额',
-          dataIndex: 'name8'
-        },  {
-          title: '提现金额',
-          dataIndex: 'name8'
-        },  {
-          title: '奖励金额',
-          dataIndex: 'name10'
+          dataIndex: 'orderInAmout'
         }, {
-          title: '下级代理订单金额',
-          dataIndex: 'name10'
-        },{
+          title: '提现金额',
+          dataIndex: 'withdrawalAmout'
+        }, {
+          title: '奖励金额',
+          dataIndex: 'inviteAmout'
+        }, {
           title: '操作',
           key: 'action',
-          dataIndex: 'name12',
           scopedSlots: {
             customRender: 'action'
           },
         }]
       }
     },
+    mounted() {
+      this.loadlist();
+    },
     methods: {
+      pagechange(page) {
+        this.params.maxResultCount = page.pageSize;
+        this.params.skipCount = (page.current - 1) * page.pageSize;
+        this.loadlist();
+      },
       async loadlist() {
-        this.loading=true
-        //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
-        this.loading=false
+        this.loading = true
+        var ret = await this.$http.Get('/api/services/app/B_Order/GetAgencyMoneyStatic', this.params);
+        this.loading = false;
+        if (ret.success) {
+          this.list = ret.result.items;
+        }
       },
-      async loaddetail(){
-        this.loading=true
+      async loaddetail() {
+        this.loading = true
         //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
-        this.loading=false
+        this.loading = false
       },
-      opendetail(row){
-        this.selectid=row.id
-        this.detailvisible=true
+      opendetail(row) {
+        this.selectid = row.id
+        this.detailvisible = true
       },
     }
   }
-
 </script>

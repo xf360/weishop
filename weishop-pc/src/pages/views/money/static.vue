@@ -54,8 +54,8 @@
           </a-form-item>
         </a-form>
       </div>
-      <a-alert style="margin-top:20px" message="总金额：￥11，入账金额：￥22，出账金额:￥33，总笔数：33，入账笔数：11，出账笔数：22。" type="info" :show-icon="true" />
-      <a-table style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
+      <a-alert style="margin-top:20px" message="总金额：11，入账金额：22，出账金额:33，总笔数：33，入账笔数：11，出账笔数：22。" type="info" :show-icon="true" />
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="data"
         :loading="loading">
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="opendetail(record)">查看</a>

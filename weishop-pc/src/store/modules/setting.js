@@ -4,8 +4,8 @@ export default {
     isMobile: false,
     theme: 'dark',
     layout: 'side',
-    systemName: '综合管理系统',
-    copyright: '容和通科技',
+    systemName: '分销管理系统',
+    copyright: 'XXXX科技',
     footerLinks: [
       { link: 'http://www.rhpass.com', name: '首页' }
     ],

@@ -22,7 +22,7 @@
         <mini-area style="height: 45px" />
       </a-col>
     </a-row>
-    <a-table
+    <a-table :locale="{emptyText: '暂无数据'}"
       :dataSource="searchData"
       :columns="columns" size="small"
       :pagination="{style: { marginBottom: 0 }, pageSize: 5}"
