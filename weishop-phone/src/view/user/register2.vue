@@ -132,6 +132,7 @@
                 payinfo:[],
                 minDate: new Date(),
                 info: {
+                    agencyLevelId:'8180b6f8-5339-47a7-9c51-9fa175d87a3a', 
                     inviteUrlId: this.$route.query.id,
                     name: '',
                     tel: '',
@@ -258,6 +259,18 @@
                 }
                 if (!this.info.bankUserName && this.info.payType === 2) {
                     Toast.fail('银行户名不能为空。');
+                    return;
+                }
+                if (!this.info.touxiangFile||!this.info.touxiangFile.id) {
+                    Toast.fail('请上传头像');
+                    return;
+                }
+                if (!this.info.credentFiles||this.info.credentFiles.length===0) {
+                    Toast.fail('请上传打款凭证');
+                    return;
+                }
+                if (!this.info.handleCredentFiles||this.info.handleCredentFiles.length===0) {
+                    Toast.fail('请上传手持证件');
                     return;
                 }
                 this.disabled=true;
