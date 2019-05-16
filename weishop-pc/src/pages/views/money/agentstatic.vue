@@ -70,10 +70,7 @@
         },
         detailvisible: false,
         selectid: null,
-        list: [{
-          id: 1,
-          name1: 'test'
-        }],
+        list: [],
         loading: false,
         columns: [{
           title: '代理编号',

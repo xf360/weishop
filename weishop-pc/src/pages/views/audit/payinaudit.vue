@@ -56,6 +56,11 @@
         <span slot="payType" slot-scope="text">
           <span>{{text|payType}}</span>
         </span>
+        <span slot="status" slot-scope="text">
+          <span v-if="text===0">待审核</span>
+          <span v-if="text===1">已通过</span>
+          <span v-if="text===2">未通过</span>
+        </span>
         <span slot="payDate" slot-scope="text">
           <span>{{text|dateformat}}</span>
         </span>
@@ -63,7 +68,7 @@
           <span>{{text|dateformat}}</span>
         </span>
         <span slot="action" slot-scope="text, record">
-          <a href="javascript:;" @click="openaudit(record)">审核</a>
+          <a href="javascript:;" v-if="record.status===0" @click="openaudit(record)">审核</a>
           <a href="javascript:;" @click=" selectid = record.id;detailvisible=true">查看</a>
         </span>
       </a-table>
@@ -101,6 +106,7 @@
         auditvisible: false,
         selectid: null,
         list: [],
+        pagination:{},
         levellist: [],
         static: {
           waitAuditCount: 0,
@@ -156,7 +162,10 @@
           dataIndex: 'remark'
         }, {
           title: '状态',
-          dataIndex: 'status'
+          dataIndex: 'status',
+          scopedSlots: {
+            customRender: 'status'
+          },
         }, {
           title: '操作',
           key: 'action',
@@ -215,6 +224,7 @@
         if (ret.success) {
           this.auditvisible = false;
           this.loadlist();
+          this.loadstatic();
         }
       }, //审核通过
       async handleReasonOk() { //审核不通过并提交原因
@@ -227,7 +237,8 @@
               this.$message.success("操作成功", 3)
               }
             this.reasonvisible = false;
-            this.loadlist()
+            this.loadlist();
+            this.loadstatic();
           } else {
 
           }

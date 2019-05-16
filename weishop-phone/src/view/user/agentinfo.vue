@@ -9,9 +9,9 @@
             <van-cell title="编号" :value="info.agenCyCode" />
             <van-cell title="手机" :value="info.phoneNumber" />
             <van-cell title="代理级别" :value="info.agencyLevelName" />
-            <van-cell title="省份" :value="info.provinces" />
-            <van-cell title="城市" :value="info.city" />
-            <van-cell title="区县" :value="info.county" />
+            <van-cell title="省份" :value="info.provinces|area" />
+            <van-cell title="城市" :value="info.city|area" />
+            <van-cell title="区县" :value="info.county|area" />
             <van-cell title="地址" :value="info.address" />
             <van-cell title="加入时间" :value="info.signData|dateformat" />
         </van-cell-group>

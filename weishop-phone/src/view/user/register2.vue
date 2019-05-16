@@ -40,7 +40,7 @@
                     </select>
                 </template>
             </van-cell>
-            <van-field v-model="info.payAmout" required readonly="readonly" label="打款金额：" />
+            <van-field v-model="info.payAmout" required label="打款金额：" />
             <van-field v-if="info.payType===0" v-model="info.payAcount" required clearable label="支付宝："
                 placeholder="请输入支付宝号" />
             <van-field v-if="info.payType===1" v-model="info.bankName" required clearable label="开户银行："
@@ -131,6 +131,7 @@
                 userinfo:{},
                 payinfo:[],
                 minDate: new Date(),
+                agentinfo:{},
                 info: {
                     agencyLevelId:'8180b6f8-5339-47a7-9c51-9fa175d87a3a', 
                     inviteUrlId: this.$route.query.id,
@@ -147,7 +148,7 @@
                     county: '',
                     address: '',
                     payType: 0,
-                    payAmout: 10000,
+                    payAmout: 0,
                     payAcount: '',
                     bankUserName: '',
                     areaname: '',
@@ -190,7 +191,16 @@
                 }
                 var ret= await this.$http.Get('/api/services/app/B_InviteUrl/Get',{id:this.info.inviteUrlId})
                 if(ret.success){
+                    debugger;
                     this.userinfo=ret.result;
+                    if(ret.result.agencyLevelId){
+                        var ret2=await this.$http.Get('/api/services/app/B_AgencyLevel/Get',{id:ret.result.agencyLevelId});
+                        if(ret2.success){
+                            debugger;
+                            this.agentinfo=ret2.result;
+                            this.info.payAmout=ret2.result.firstRechargeAmout+ret2.result.deposit;
+                        }
+                    }
                 }
             },
             async loadpay(){
@@ -247,6 +257,10 @@
                 }
                 if (!this.info.payAmout) {
                     Toast.fail('打款金额不能为空。');
+                    return;
+                }
+                if(this.info.payAmout<this.agentinfo.firstRechargeAmout+this.agentinfo.deposit){
+                     Toast.fail(`打款金额不能小于首充金额+保证金【${this.agentinfo.firstRechargeAmout+this.agentinfo.deposit}】元。`);
                     return;
                 }
                 if (!this.info.payAcount) {

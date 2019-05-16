@@ -166,7 +166,7 @@ const routers = new Router({
             },
             {
               path: '/money/account',
-              name: '账户设置',
+              name: '账号设置',
               component: () => import('@/pages/views/money/account.vue'),
               icon: 'none'
             }
@@ -200,7 +200,7 @@ const routers = new Router({
             },
             {
               path: '/system/user',
-              name: '账户设置',
+              name: '账号设置',
               component: () => import('@/pages/views/system/user.vue'),
               icon: 'none'
             }

@@ -16,6 +16,12 @@
             <van-field v-model="info.payAmout" type="number" required clearable label="金额" placeholder="请输入金额" />
             <van-field @click="timeclick" v-model="info.payDate" required readonly="readonly" clearable label="请输入日期"
                 placeholder="打款日期" />
+            <van-cell>
+                <template slot="title">
+                    <span class="custom-text">打款凭证（1-2张）：</span>
+                    <uploader :limit="2" v-model="info.credentFiles"></uploader>
+                </template>
+            </van-cell>
             <van-field v-model="info.remark" required clearable label="备注" placeholder="请输入备注" />
         </van-cell-group>
         <van-cell-group v-if="info.payType===1">
@@ -25,6 +31,12 @@
             <van-field v-model="info.payAmout" type="number" required clearable label="金额" placeholder="请输入金额" />
             <van-field @click="timeclick" v-model="info.payDate" required readonly="readonly" clearable label="请输入日期"
                 placeholder="打款日期" />
+            <van-cell>
+                <template slot="title">
+                    <span class="custom-text">打款凭证（1-2张）：</span>
+                    <uploader :limit="2" v-model="info.credentFiles"></uploader>
+                </template>
+            </van-cell>
             <van-field v-model="info.remark" required clearable label="备注" placeholder="请输入备注" />
         </van-cell-group>
         <h2 class="celltitle">请打款至</h2>
@@ -43,11 +55,8 @@
             <van-button block type="primary" @click="onSubmit">确认充值</van-button>
         </div>
         <van-popup v-model="timeshow" position="bottom">
-            <van-datetime-picker ref="timepicker" 
-            :formatter="formatter" type="date" @confirm="timeok" @cancel="timeshow=false;"
-            v-model="info.payDate"
-            :min-date="minDate"
-             />
+            <van-datetime-picker ref="timepicker"  type="date" @confirm="timeok"
+                @cancel="timeshow=false;" v-model="info.payDate" :min-date="minDate" />
         </van-popup>
     </div>
 </template>
@@ -57,6 +66,7 @@
         padding: 20px;
         text-align: center;
     }
+
     .celltitle {
         font-size: 14px;
         padding: 10px;
@@ -81,13 +91,17 @@
         Toast,
         Dialog
     } from 'vant';
-
-    Vue.use(Cell).use(Dialog).use(Popup).use(DatetimePicker).use(RadioGroup).use(Toast).use(Radio).use(CellGroup).use(Field).use(NavBar).use(Button);
+    import uploader from '../../components/uploader.vue'
+    Vue.use(Cell).use(Dialog).use(Popup).use(DatetimePicker).use(RadioGroup).use(Toast).use(Radio).use(CellGroup).use(
+        Field).use(NavBar).use(Button);
     export default {
+        components: {
+            uploader
+        },
         data() {
             return {
-                timeshow:false,
-                payinfo:{},
+                timeshow: false,
+                payinfo: {},
                 minDate: new Date(),
                 info: {
                     payType: 0,
@@ -102,7 +116,7 @@
                 }
             }
         },
-        mounted(){
+        mounted() {
             this.loadpay();
         },
         methods: {
@@ -119,37 +133,34 @@
             onClickRight() {
                 this.$router.push('/pushcashlist')
             },
-             async loadpay(){
-                
-                var ret= await this.$http.Get('/api/services/app/B_ManagerPayAccount/GetList',{
-                    type:this.info.payType,
-                    maxResultCount:10,
-                    skipCount:0
+            async loadpay() {
+
+                var ret = await this.$http.Get('/api/services/app/B_ManagerPayAccount/GetList', {
+                    type: this.info.payType,
+                    maxResultCount: 10,
+                    skipCount: 0
                 })
-                if(ret.success&&ret.result.items.length>0){
-                    this.payinfo=ret.result.items[0];
+                if (ret.success && ret.result.items.length > 0) {
+                    this.payinfo = ret.result.items[0];
                 }
             },
             async onSubmit() {
-                if(!this.info.payAmout&&this.info.payAmout<=0)
-                {
+                if (!this.info.payAmout && this.info.payAmout <= 0) {
                     Toast.fail('金额不能为空');
                     return;
                 }
-                if(!this.info.payAcount)
-                {
+                if (!this.info.payAcount) {
                     Toast.fail('支付账户不能为空');
                     return;
                 }
-                if(!this.info.payDate)
-                {
+                if (!this.info.payDate) {
                     Toast.fail('支付日期不能为空');
                     return;
                 }
-                var ret=await this.$http.Post('/api/services/app/B_PaymentPrepay/Create',this.info);
-                if(ret.success){
+                var ret = await this.$http.Post('/api/services/app/B_PaymentPrepay/Create', this.info);
+                if (ret.success) {
                     Dialog.alert({
-                        message: '恭喜你充值成功，请等待管理员审核。'
+                        message: '您的充值已提交，请等待管理员审核。'
                     }).then(() => {
                         this.$router.go(-1)
                     });

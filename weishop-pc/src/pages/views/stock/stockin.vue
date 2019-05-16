@@ -29,6 +29,9 @@
 
       <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange"  :pagination="pagination">
+        <span slot="creationTime" slot-scope="text">
+          <span>{{text|dateformat}}</span>
+        </span>
         <span slot="status" slot-scope="text">
           <span v-if="text===1">上级缺货</span>
           <span v-if="text===2">已完成</span>
@@ -71,7 +74,10 @@
           dataIndex: 'orderNo'
         }, {
           title: '下单时间',
-          dataIndex: 'creationTime'
+          dataIndex: 'creationTime',
+          scopedSlots: {
+            customRender: 'creationTime'
+          },
         }, {
           title: '代理姓名',
           dataIndex: 'userName'

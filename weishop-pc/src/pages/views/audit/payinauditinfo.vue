@@ -14,8 +14,9 @@
       <detail-list-item term="支付宝账户" v-if="info.payType===0">{{info.payAcount}}</detail-list-item>
       <detail-list-item term="打款凭证" :span="2">
         <span v-if="info.credentFiles">
-          <img v-for="(item,index) in info.credentFiles" :key="index" :src="api+'api/AbpFile/Show?id='+item.id"
-            width="50" height="50" />
+          <div v-for="(item,index) in info.credentFiles" :key="index">
+            <img :src="api+'api/AbpFile/Show?id='+item.id" @click="showbig(item.id)" width="50" height="50" />
+          </div>
         </span>
       </detail-list-item>
     </detail-list>
@@ -38,6 +39,9 @@
         {{info.auditRemark}}
       </detail-list-item>
     </detail-list>
+    <a-modal :visible="showimg" :footer="null" @cancel="showimg=false">
+      <img alt="example" style="width: 100%" :src="showimgurl" />
+    </a-modal>
   </div>
 </template>
 <script>
@@ -50,6 +54,8 @@
     },
     data() {
       return {
+        showimg: false,
+        showimgurl: '',
         api: api,
         info: {}
       }
@@ -64,6 +70,10 @@
       this.loaddetail()
     },
     methods: {
+      showbig(id){
+        this.showimgurl= api+'api/AbpFile/Show?id='+id;
+        this.showimg=true;
+      },
       async loaddetail() {
         if (!this.id) {
           return;
@@ -79,4 +89,5 @@
       },
     }
   }
+
 </script>
