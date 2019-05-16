@@ -43,7 +43,7 @@ Vue.use(Notify);
         } else {
           content = error.response.data.error.details
         }
-        Notify(error.response.data.error.message);
+        Notify(error.response.data.error.message+ ':' +error.response.data.error.details);
         break
       case 401:
         window.localStorage.removeItem('token')

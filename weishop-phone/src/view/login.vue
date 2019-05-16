@@ -2,10 +2,10 @@
     <div>
         <div class="title">会员登陆</div>
         <van-cell-group>
-            <van-field v-model="parm.userNameOrEmailAddress" required clearable label="手机号" placeholder="请输入用户名" />
+            <van-field v-model="parm.userNameOrEmailAddress" required clearable label="手机号" placeholder="请输入手机号" />
 
             <van-field v-model="parm.password" type="password" label="密码" placeholder="请输入密码" required />
-            <a class="findpw">忘记密码</a>
+            <!-- <a class="findpw">忘记密码</a> -->
         </van-cell-group>
         <div class="loginbt">
             <van-button block type="primary" :loading="result.loading" @click="onSubmit">登陆</van-button>

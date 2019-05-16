@@ -14,7 +14,7 @@
                 </van-pull-refresh>
             </van-tab>
 
-            <van-tab title="系统消息">
+            <van-tab title="公司公告">
                 <van-pull-refresh v-model="refreshing" @refresh="onRefresh(0)">
                     <van-list v-model="loading" :finished="finished" finished-text="加载完成"
                         @load="loadnotice(0)">

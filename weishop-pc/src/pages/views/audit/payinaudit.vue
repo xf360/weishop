@@ -10,10 +10,10 @@
               <!-- <a-select-option :value="1">
                 微信
               </a-select-option> -->
-              <a-select-option :value="1">
+              <a-select-option :value="0">
                 支付宝
               </a-select-option>
-              <a-select-option :value="2">
+              <a-select-option :value="1">
                 银行卡转账
               </a-select-option>
             </a-select>
