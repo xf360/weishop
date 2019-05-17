@@ -114,7 +114,7 @@
     },
     methods: {
       async loadCator() {
-        var ret = await this.$http.Get('/api/services/app/B_Categroy/GetCWCategroyList')
+        var ret = await this.$http.Get('/api/services/app/B_Categroy/GetList')
         if (ret.success) {
           this.pctree = help.list2tree(ret.result.items, null);
         }
@@ -177,13 +177,13 @@
       },
       async loadlist() {
         this.loading = true;
-        var ret = await this.$http.Get('/api/services/app/B_Categroy/GetCWCategroyList', {
+        var ret = await this.$http.Get('/api/services/app/B_Categroy/GetList', {
           MaxResultCount: 10,
           SkipCount: 0
         })
         this.loading = false;
         if (ret.success) {
-          this.data = ret.result.items;
+          this.data= help.list2treetable(ret.result.items, null);
         }
       },
       async loaddetail(row) {
