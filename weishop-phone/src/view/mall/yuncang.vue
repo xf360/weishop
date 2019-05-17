@@ -60,7 +60,7 @@
                 this.loading=false;
                 this.finished=true
                 if(ret.success){
-                    this.list=ret.result;
+                    this.list=ret.result.items;
                     
                 }
             }
