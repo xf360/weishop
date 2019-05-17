@@ -102,7 +102,9 @@
             id: this.id
           });
           if (ret.success) {
+            debugger;
             this.info = ret.result;
+            this.form.setFieldsValue({info:this.info});
           }
         }
       },
@@ -117,6 +119,7 @@
               if (values.info.file && values.info.file.fileList) {
                 values.info.file = values.info.file.fileList[0].response.result.data[0]
               }
+              values.info.id=this.id;
               if (this.id) {
                 var ret = await this.$http.Put('/api/services/app/B_Goods/Update', values.info);
                 if (ret.success) {

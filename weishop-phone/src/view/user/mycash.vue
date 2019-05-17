@@ -1,6 +1,6 @@
 <template>
     <div>
-        <van-nav-bar title="我的钱包" right-text="提现" left-arrow @click-left="onClickLeft" @click-right="onClickRight" />
+        <van-nav-bar title="我的钱包" :right-text="righttext" left-arrow @click-left="onClickLeft" @click-right="onClickRight" />
         <van-tabs @change="change">
             <van-tab title="余额">
                 <van-pull-refresh v-model="refreshing" @refresh="onRefresh()" style="top:50px">
@@ -93,6 +93,7 @@
         data() {
             return {
                 refreshing:false,
+                righttext:'提现',
                 cashinfo:{
                     blance:0,
                     deposit:0,
@@ -113,9 +114,11 @@
             change(index){
                 switch(index){
                     case 0:
+                        this.righttext='提现';
                     this.getbancelist();
                     break;
                     case 1:
+                        this.righttext='';
                     this.getGoodPaymentList();
                     break;
                 }

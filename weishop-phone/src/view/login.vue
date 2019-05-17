@@ -58,6 +58,10 @@
             async onSubmit(e) {
                 e.preventDefault()
                 var vm = this;
+                if(!this.parm.userNameOrEmailAddress||!this.parm.password){
+                    this.$notify('请输入用户名密码');
+                    return;
+                }
                 var res = await this.$http.Post('/api/TokenAuth/Authenticate', this.parm);
                 if (res.success) {
                     var token = res.result.accessToken

@@ -47,10 +47,10 @@
    <span v-if="text===1">下线</span>
  </span>
         <span slot="action" slot-scope="text, record">
-          <a-popconfirm v-if="record.status===1" style="width:250px"  title="上线后，该账户信息将显示在货款充值页面，是否确定上线？" @confirm="() => onDelete(record.key)" okText='确认' cancelText='取消'>
+          <a-popconfirm v-if="record.status===1" style="width:250px"  title="上线后，该账户信息将显示在货款充值页面，是否确定上线？" @confirm="() => upordown(record.id)" okText='确认' cancelText='取消'>
             <a href="javascript:;">上线</a>
           </a-popconfirm>
-          <a-popconfirm v-if="record.status===0"  title="下线后，该账户信息将不显示在货款充值页面，是否确定下线？" @confirm="() => onDelete(record.key)" okText='确认' cancelText='取消'>
+          <a-popconfirm v-if="record.status===0"  title="下线后，该账户信息将不显示在货款充值页面，是否确定下线？" @confirm="() => upordown(record.id)" okText='确认' cancelText='取消'>
             <a href="javascript:;">下线</a>
           </a-popconfirm>
         </span>
@@ -134,6 +134,13 @@
         this.loading=false
         if(ret.success){
           this.list=ret.result.items;
+        }
+      },
+      async upordown(id){
+        var ret=await this.$http.Post('/api/services/app/B_ManagerPayAccount/UpOrDown',{id:id});
+        if(ret.success){
+          this.$message.success('操作成功。');
+          this.loadlist();
         }
       },
       async create(){

@@ -70,6 +70,7 @@
     },
     methods: {
       async loaddetail() {
+        debugger;
         this.loading = true
         var ret=await this.$http.Get('/api/services/app/B_Agency/Get',{id:this.id})
         this.loading = false

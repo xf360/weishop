@@ -19,7 +19,7 @@
             <van-field v-model="info.wxId" required clearable label="微信号：" placeholder="请输入微信号" />
 
             <van-field v-model="info.pNumber" required clearable label="身份证号：" placeholder="请输入身份证号" />
-            <van-cell title="国家：">
+            <van-cell class="van-cell--required" title="国家：">
                 <template slot="right-icon">
                     <select required v-model="info.country" style="width:250px">
                         <option value="001">中国</option>
@@ -32,7 +32,7 @@
             <van-field @click="areaclick" v-model="info.areaname" required readonly="readonly" clearable label="地区："
                 placeholder="省/市/区" />
             <van-field v-model="info.address" clearable label="详细地址：" required placeholder="请输入详细地址" />
-            <van-cell title="打款方式：">
+            <van-cell class="van-cell--required" title="打款方式：">
                 <template slot="right-icon">
                     <select v-model="info.payType" required style="width:250px" @change="loadpay()">
                         <option :value="0">支付宝</option>
@@ -51,19 +51,19 @@
                 placeholder="请输入银行账户" />
             <van-field @click="timeclick" v-model="info.paytime" required readonly="readonly" clearable label="打款日期："
                 placeholder="打款日期" />
-            <van-cell>
+            <van-cell class="van-cell--required">
                 <template slot="title">
                     <span class="custom-text">头像：</span>
                     <uploader :limit="1" v-model="info.touxiangFile"></uploader>
                 </template>
             </van-cell>
-            <van-cell>
+            <van-cell class="van-cell--required">
                 <template slot="title">
                     <span class="custom-text">打款凭证（1-2张）：</span>
                     <uploader :limit="2" v-model="info.credentFiles"></uploader>
                 </template>
             </van-cell>
-            <van-cell>
+            <van-cell class="van-cell--required">
                 <template slot="title">
                     <span class="custom-text">手持证件（1-2张）：</span>
                     <uploader :limit="2" v-model="info.handleCredentFiles"></uploader>
@@ -72,12 +72,12 @@
         </van-cell-group>
         <h2 class="celltitle">请打款至</h2>
         <div v-for="(item,index) in payinfo" :key="index">
-        <van-cell-group v-if="info.payType==0">
+        <van-cell-group v-if="info.payType==0" title="支付宝">
             <van-cell title="支付宝账号" :value="item.account" />
             <van-cell title="支付宝实名" :value="item.bankUserName" />
             <van-cell title="如有疑问联系微信客服" :value="item.wxName" />
         </van-cell-group>
-        <van-cell-group v-if="info.payType==1">
+        <van-cell-group v-if="info.payType==1" title="银行卡">
             <van-cell title="开户银行" :value="item.bankName" />
             <van-cell title="银行户名" :value="item.bankUserName" />
             <van-cell title="银行账号" :value="item.account" />
@@ -130,7 +130,7 @@
                 disabled:false,
                 userinfo:{},
                 payinfo:[],
-                minDate: new Date(),
+                minDate: new Date(2019, 5, 1),
                 agentinfo:{},
                 info: {
                     agencyLevelId:'8180b6f8-5339-47a7-9c51-9fa175d87a3a', 
@@ -191,12 +191,10 @@
                 }
                 var ret= await this.$http.Get('/api/services/app/B_InviteUrl/Get',{id:this.info.inviteUrlId})
                 if(ret.success){
-                    debugger;
                     this.userinfo=ret.result;
                     if(ret.result.agencyLevelId){
                         var ret2=await this.$http.Get('/api/services/app/B_AgencyLevel/Get',{id:ret.result.agencyLevelId});
                         if(ret2.success){
-                            debugger;
                             this.agentinfo=ret2.result;
                             this.info.payAmout=ret2.result.firstRechargeAmout+ret2.result.deposit;
                         }
@@ -291,7 +289,7 @@
                 var ret = await this.$http.Post('/api/services/app/B_AgencyApply/Create', this.info);
                 if (ret.success) {
                     Dialog.alert({
-                        message: '恭喜你注册成功，请等待管理员审核。'
+                        message: '恭喜你提交成功，请等待管理员审核。'
                     }).then(() => {
                         this.$router.push('login')
                     });

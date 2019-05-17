@@ -34,6 +34,7 @@
         data(){
             return {
                 filelist:[],
+                files:[],
             }
         },
         methods:{
@@ -47,8 +48,10 @@
             del(index){
                 if(this.filelist.length==1){
                     this.filelist=[];
+                    this.files=[];
                 }else{
                 this.filelist=this.filelist.slice(index)
+                this.files=this.files.slice(index)
                 }
             },
             async onRead(file) {
@@ -56,10 +59,11 @@
                 let formData = new FormData();
                 formData.append(this.name, file.file);
                 var ret=await this.$http.Post('/api/AbpFile/Post',formData);
+                 this.files.push(ret.result.data[0])
                 if(this.limit==1){
-                    this.$emit("input",ret.result.data[0])
+                    this.$emit("input",this.files[0])
                 }else{
-                    this.$emit("input",ret.result.data)
+                    this.$emit("input",this.files)
                 }
                 
             },

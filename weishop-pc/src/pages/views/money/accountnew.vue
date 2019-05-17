@@ -32,7 +32,8 @@
         :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入微信客服。'}]}">
         <a-input placeholder="请输入微信客服。" />
       </a-form-item>
-      <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="备注" fieldDecoratorId="info.remark">
+      <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="备注" fieldDecoratorId="info.remark"
+      :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入备注。'}]}">
         <a-textarea placeholder="请输入备注" :autosize="{ minRows: 2, maxRows: 6 }" />
       </a-form-item>
     </a-form>
