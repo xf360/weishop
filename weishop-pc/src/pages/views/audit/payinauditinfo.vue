@@ -40,7 +40,7 @@
       </detail-list-item>
     </detail-list>
     <a-modal :visible="showimg" :footer="null" @cancel="showimg=false">
-      <img alt="example" style="width: 100%" :src="showimgurl" />
+      <img v-if="showimg" alt="example" style="width: 100%" :src="showimgurl" />
     </a-modal>
   </div>
 </template>

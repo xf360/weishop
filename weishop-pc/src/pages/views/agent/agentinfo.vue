@@ -50,10 +50,10 @@
       </detail-list-item>
       </detail-list>
     <a-modal title="封号" v-model="lockshow" @ok="handleLockOk" cancelText="取消" okText="确认">
-      <lockaccount ref="lockaccount" :id='id'></lockaccount>
+      <lockaccount v-if="lockshow" ref="lockaccount" :id='id'></lockaccount>
     </a-modal>
     <a-modal :visible="showimg" :footer="null" @cancel="showimg=false">
-      <img alt="example" style="width: 100%" :src="showimgurl" />
+      <img v-if="showimg" alt="example" style="width: 100%" :src="showimgurl" />
     </a-modal>
   </div>
 </template>

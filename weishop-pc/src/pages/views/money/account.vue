@@ -57,7 +57,7 @@
       </a-table>
     </a-card>
     <a-modal title="新建账户" v-model="createvisible" :width="800">
-      <accountnew :id="selectid" ref="accountnew"></accountnew>
+      <accountnew v-if="createvisible" :id="selectid" ref="accountnew"></accountnew>
       <template slot="footer">
         <a-button key="back" @click="createvisible=false">取消</a-button>
         <a-button key="submit" type="primary" :loading="loading" @click="create">确认</a-button>

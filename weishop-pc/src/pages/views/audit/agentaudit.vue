@@ -36,7 +36,7 @@
             </a-select>
           </a-form-item>
           <a-form-item label="打款日期">
-            <a-range-picker style="width:250px" @change="onChange" />
+            <a-range-picker placeholder="选择时间" style="width:250px" @change="onChange" />
           </a-form-item>
           <a-form-item label="关键字">
             <a-input v-model="params.searchKey" style="width:300px" placeholder="请输入代理姓名、电话、微信、身份证搜索" />
@@ -66,7 +66,7 @@
       </a-table>
     </a-card>
     <a-modal title="审核不通过" v-model="reasonvisible" @ok="handleReasonOk" cancelText="取消" okText="确认">
-      <auditresult :id="selectid" ref="reasoncom"></auditresult>
+      <auditresult :id="selectid" v-if="reasonvisible" ref="reasoncom"></auditresult>
     </a-modal>
     <a-modal title="审核" v-model="auditvisible" :width="800">
       <agengtinfo v-if="auditvisible" :id="selectid"></agengtinfo>

@@ -23,7 +23,7 @@
             </a-select>
           </a-form-item>
           <a-form-item label="通过日期">
-            <a-range-picker style="width:250px" @change="onChange" />
+            <a-range-picker  placeholder="选择时间" style="width:250px" @change="onChange" />
           </a-form-item>
           <a-form-item label="关键字">
             <a-input v-model="params.searchKey" style="width:300px" placeholder="请输入代理姓名、电话、微信、身份证搜索" />
@@ -62,7 +62,7 @@
       </template>
     </a-modal>
     <a-modal title="新建代理" v-model="createvisible" :width="800">
-      <agentnew ref="agentnew"></agentnew>
+      <agentnew ref="agentnew" v-if="createvisible"></agentnew>
       <template slot="footer">
         <a-button  @click="createvisible=false">关闭</a-button>
          <a-button type="primary" @click="submit">保存</a-button>
@@ -72,6 +72,7 @@
 </template>
 <script>
   import agentinfo from './agentinfo.vue'
+  // import agentinfo from '../audit/agentauditinfo.vue'
   import agentnew from '../audit/agentauditnew.vue'
   export default {
     components: {
@@ -94,10 +95,7 @@
           endDate: null,
           searchKey: null,
         },
-        list: [{
-          id: 1,
-          name1: 'test'
-        }],
+        list: [],
         levellist: [],
         loading: false,
         columns: [{

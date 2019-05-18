@@ -19,7 +19,7 @@
             </a-select>
           </a-form-item>
           <a-form-item label="发布时间">
-             <a-range-picker style="width:250px" @change="onChange" />
+             <a-range-picker placeholder="选择时间" style="width:250px" @change="onChange" />
           </a-form-item>
                 
           <a-form-item label="关键字">
@@ -57,14 +57,14 @@
       </a-table>
     </a-card>
     <a-modal title="新建通知" v-model="createvisible" :width="800">
-      <noticenew ref="noticenew" :id="selectid"></noticenew>
+      <noticenew v-if="createvisible" ref="noticenew" :id="selectid"></noticenew>
       <template slot="footer">
         <a-button key="back" @click="createvisible=false">取消</a-button>
         <a-button key="submit" type="primary" :loading="loading" @click="create">确认</a-button>
       </template>
     </a-modal>
     <a-modal title="通知详情" v-model="detailvisible" :width="800">
-      <noticedetail ref="noticedetail" :id="selectid"></noticedetail>
+      <noticedetail v-if="detailvisible" ref="noticedetail" :id="selectid"></noticedetail>
       <template slot="footer">
         <a-button key="back" @click="detailvisible=false">取消</a-button>
       </template>

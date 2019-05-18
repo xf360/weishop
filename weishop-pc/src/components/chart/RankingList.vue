@@ -6,7 +6,7 @@
         <a>本周</a>
         <a>本月</a>
       </div>
-      <a-range-picker style="width:220px;"></a-range-picker>
+      <a-range-picker placeholder="选择时间" style="width:220px;"></a-range-picker>
     </div>
     <ul class="list">
       <li :key="index" v-for="(item, index) in list">

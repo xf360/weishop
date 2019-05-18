@@ -36,7 +36,7 @@
             </a-select>
           </a-form-item>
           <a-form-item label="打款日期">
-            <a-range-picker style="width:250px" @change="onChange" />
+            <a-range-picker placeholder="选择时间" style="width:250px" @change="onChange" />
           </a-form-item>
           <a-form-item label="关键字">
             <a-input v-model="params.searchKey" style="width:300px" placeholder="请输入代理姓名、电话、微信、身份证搜索" />
@@ -60,7 +60,7 @@
       </a-table>
     </a-card>
     <a-modal title="审核" v-model="auditvisible" :width="800">
-      <depoistaudit :id="selectid" ref="depoistaudit"></depoistaudit>
+      <depoistaudit v-if="auditvisible" :id="selectid" ref="depoistaudit"></depoistaudit>
       <template slot="footer">
         <a-button key="back">取消</a-button>
         <a-button key="submit" type="primary" :loading="loading" @click="auditpass">确认</a-button>
@@ -148,6 +148,10 @@
       this.loadstatic();
     },
     methods: {
+      onChange(data, datastr) {
+        this.params.startDate = datastr[0] + ' 00:00:00'
+        this.params.endDate = datastr[1] + ' 23:59:59'
+      },
        async loadlevel() {
         this.loading = true
         var ret = await this.$http.Get('/api/services/app/B_AgencyLevel/GetList', {

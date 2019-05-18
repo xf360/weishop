@@ -41,12 +41,24 @@
       </a-table>
     </a-card>
     <a-modal title="详情" v-model="detailvisible" :width="800">
-      <a-select defaultValue="lucy" style="width: 120px">
-        <a-select-option value="">全部类型</a-select-option>
+      <a-select :defaultValue="null" style="width: 120px">
+        <a-select-option :value="null">全部类型</a-select-option>
+        <a-select-option value="">进货</a-select-option>
+        <a-select-option value="">提货</a-select-option>
+        <a-select-option value="">提现</a-select-option>
+        <a-select-option value="">充值</a-select-option>
+        <a-select-option value="">团队管理奖金</a-select-option>
+        <a-select-option value="">保证金</a-select-option>
+        <a-select-option value="">推荐奖金</a-select-option>
       </a-select>
       <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="detailcolumns"
-      :rowKey="record => record.id" :dataSource="list" :loading="loading" @change="detailpagechange"
-        :pagination="pagination"></a-table>
+      :rowKey="record => record.id" :dataSource="detaillist" :loading="loading" @change="detailpagechange"
+        :pagination="pagination">
+        <span slot="creationTime" slot-scope="text">
+          <span>{{text|dateformat('yyyy-MM-dd')}}</span>
+        </span>
+        
+        </a-table>
       <template slot="footer">
 
         <a-button key="submit" type="primary">确认</a-button>
@@ -71,7 +83,21 @@
         detailvisible: false,
         selectid: null,
         list: [],
+        detaillist:[],
         loading: false,
+        detailcolumns:[{
+          title: '时间',
+          dataIndex: 'creationTime',
+          scopedSlots: {
+            customRender: 'creationTime'
+          },
+        },{
+          title: '类型',
+          dataIndex: 'businessTitle'
+        },{
+          title: '金额',
+          dataIndex: 'amout'
+        },],
         columns: [{
           title: '代理编号',
           dataIndex: 'agencyCode'
@@ -124,8 +150,17 @@
         //var ret=await this.$http.Get('/api/services/app/User/Get',{id:1})
         this.loading = false
       },
-      opendetail(row) {
-        this.selectid = row.id
+      async opendetail(row) {
+        this.selectid = row.userId
+        var ret= await this.$http.Get('/api/services/app/B_Order/GetAgencyMoneyDetailList',{
+          businessType:0,
+          userId:row.userId,
+          maxResultCount:99,
+          skipCount:0
+        })
+        if(ret.success){
+          this.detaillist=ret.result.items;
+        }
         this.detailvisible = true
       },
     }
