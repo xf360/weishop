@@ -39,7 +39,7 @@
       <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange"  :pagination="pagination">
          <span slot="type" slot-scope="text">
-   <span v-if="text===0">支付宝</span>
+   <span v-if="text===0">支付宝{{text}}</span>
    <span v-if="text===1">银行转账</span>
  </span>
  <span slot="status" slot-scope="text">

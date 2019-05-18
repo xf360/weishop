@@ -19,7 +19,7 @@
       <detail-list-item term="详细地址">{{info.address}}</detail-list-item>
       <detail-list-item term="身份证" :span="2">{{info.pNumber}}</detail-list-item>
       <detail-list-item term="头像">
-        <img height="50" width="50" :src="api+'api/AbpFile/Show?id='+info.touxiangFile.id" />
+        <img height="50" width="50" :src="api+'api/AbpFile/Show?id='+info.touxiangFile.id" @click="showbig(info.touxiangFile.id)"/>
       </detail-list-item>
     </detail-list>
     <a-divider style="margin-bottom: 32px" />

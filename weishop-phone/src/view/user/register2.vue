@@ -19,7 +19,7 @@
             <van-field v-model="info.wxId" required clearable label="微信号：" placeholder="请输入微信号" />
 
             <van-field v-model="info.pNumber" required clearable label="身份证号：" placeholder="请输入身份证号" />
-            <van-cell class="van-cell--required" title="国家：">
+            <!-- <van-cell class="van-cell--required" title="国家：">
                 <template slot="right-icon">
                     <select required v-model="info.country" style="width:250px">
                         <option value="001">中国</option>
@@ -28,7 +28,7 @@
                         <option value="004">中国台湾</option>
                     </select>
                 </template>
-            </van-cell>
+            </van-cell> -->
             <van-field @click="areaclick" v-model="info.areaname" required readonly="readonly" clearable label="地区："
                 placeholder="省/市/区" />
             <van-field v-model="info.address" clearable label="详细地址：" required placeholder="请输入详细地址" />
@@ -72,12 +72,12 @@
         </van-cell-group>
         <h2 class="celltitle">请打款至</h2>
         <div v-for="(item,index) in payinfo" :key="index">
-        <van-cell-group v-if="info.payType==0" title="支付宝">
+        <van-cell-group v-if="item.type==0&&item.status==0" title="支付宝">
             <van-cell title="支付宝账号" :value="item.account" />
             <van-cell title="支付宝实名" :value="item.bankUserName" />
             <van-cell title="如有疑问联系微信客服" :value="item.wxName" />
         </van-cell-group>
-        <van-cell-group v-if="info.payType==1" title="银行卡">
+        <van-cell-group v-if="item.type==1&&item.status==0" title="银行卡">
             <van-cell title="开户银行" :value="item.bankName" />
             <van-cell title="银行户名" :value="item.bankUserName" />
             <van-cell title="银行账号" :value="item.account" />
@@ -130,7 +130,7 @@
                 disabled:false,
                 userinfo:{},
                 payinfo:[],
-                minDate: new Date(2019, 5, 1),
+                minDate: new Date(2019, 4, 1),
                 agentinfo:{},
                 info: {
                     agencyLevelId:'8180b6f8-5339-47a7-9c51-9fa175d87a3a', 
