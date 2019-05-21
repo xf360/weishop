@@ -4,10 +4,10 @@
         <van-tabs @change="change">
             <van-tab title="余额">
                 <!-- <van-pull-refresh v-model="refreshing" @refresh="onRefresh()" style="top:50px"> -->
-                <van-list>
+                <!-- <van-list style="margin-top:50px"> -->
                     <div class="box">
                         <div class="left">￥{{cashinfo.blance}}</div>
-                        <div>保证金：<span class="right">￥{{cashinfo.deposit}}</span></div>
+                        <div class="right">保证金：<span class="mon">￥{{cashinfo.deposit}}</span></div>
                     </div>
 
                     <van-panel v-for="(item,index) in banlcelist" :key="index" :title="`类型:${item.type===0?'支出':'充值'}`"
@@ -19,10 +19,10 @@
                         </div>
                     </van-panel>
 
-                </van-list>
+                <!-- </van-list> -->
             </van-tab>
             <van-tab title="货款">
-                <van-list>
+                <!-- <van-list> -->
                     <div class="box">
                         <div class="left">￥{{cashinfo.goodPayment}}</div>
                     </div>
@@ -37,15 +37,15 @@
                             <p>订单号:{{item.orderNo}}</p>
                         </div>
                     </van-panel>
-                </van-list>
+                <!-- </van-list> -->
             </van-tab>
         </van-tabs>
     </div>
 </template>
 <style>
     .box {
-        display: grid;
-        grid-template-columns: 50% 50%;
+        /* display: grid;
+        grid-template-columns: 50% 50%; */
         text-align: center;
         padding: 20px;
         background-color: #ffffff;
@@ -55,10 +55,14 @@
         color: #ff0000;
         font-size: 20px;
         font-weight: bold;
-
+        display:inline-block;
+        width: 40%
     }
-
     .box .right {
+         width: 40%;
+        display:inline-block;
+    }
+    .box .mon {
         color: #ff0000;
         font-size: 20px;
         font-weight: bold;
