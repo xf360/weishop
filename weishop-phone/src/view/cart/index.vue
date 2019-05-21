@@ -35,7 +35,7 @@
     data() {
       return {
         totalPrice:0,
-        api: api,
+        api:this.$http.api,
       };
     },
 

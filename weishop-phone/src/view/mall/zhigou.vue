@@ -54,7 +54,7 @@
         },
         data() {
             return {
-                api:api,
+                api:this.$http.api,
                 refreshing: false,
                 loading: false,
                 finished: true,

@@ -6,7 +6,7 @@ import { Notify } from 'vant';
 Vue.use(Notify);
 import { router } from './router';
 import store from './store/index.js';
-Vue.prototype.$http = fetch
+Vue.prototype.$http = fetch;
 import area from './utils/area.js'
 
 Vue.filter('area', function (code) {

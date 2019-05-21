@@ -85,7 +85,7 @@
         },
         data() {
             return {
-                api: api,
+                api:this.$http.api,
                 result: {
                     loading: false
                 },

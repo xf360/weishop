@@ -143,7 +143,7 @@
     export default {
         data() {
             return {
-                api:api,
+                api:this.$http.api,
                 parmars: {
                     year: (new Date).getFullYear(),
                     month: (new Date).getUTCMonth() + 1,

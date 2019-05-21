@@ -33,7 +33,7 @@
         },
         data() {
             return {
-                api:api,
+                api:this.$http.api,
                 goods: [],
                 catory: []
             }
@@ -54,7 +54,12 @@
             },
             onClickRight(){},
             async loadcate(){
-                var ret=await this.$http.Get('/api/services/app/B_Categroy/GetCWCategroyList',{
+                var id=this.$route.query.id;
+                if(!id){
+                    return;
+                }
+                var ret=await this.$http.Get('/api/services/app/B_Categroy/GetListByCategroyId',{
+                    categroyId:id,
                     maxResultCount:20,
                     skipCount:0
                 });

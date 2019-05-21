@@ -52,7 +52,7 @@ import { truncate } from 'fs';
         },
         data() {
             return {
-                api:api,
+                api:this.$http.api,
                 loading:false,
                 finished:false,
                 page:1,

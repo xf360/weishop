@@ -3,8 +3,9 @@ import { Notify } from 'vant';
 Vue.use(Notify);
   import axios from 'axios'
   import qs from 'qs'
-  
-  axios.defaults.baseURL = api
+  var api='http://47.105.211.64:8055/'
+  axios.defaults.baseURL = api;
+
   axios.defaults.timeout = 30000
   axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
   // 添加请求拦截器
@@ -136,6 +137,7 @@ Vue.use(Notify);
           reject(error.data)
         })
       })
-    }
+    },
+    api:api,
   }
   

@@ -30,7 +30,7 @@
     export default {
         data(){
             return {
-                api:api,
+                api:this.$http.api,
                 info:{
                    
                 }

@@ -45,7 +45,7 @@
         },
         data() {
             return {
-                api: api,
+                api:this.$http.api,
                 list:[],
                 status: null,
                 catory: [{

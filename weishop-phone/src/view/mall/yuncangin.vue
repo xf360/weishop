@@ -9,7 +9,7 @@
         <van-cell-group>
             <van-cell title="可用货款" :value="selfinfo.goodsPayment" />
             <van-cell title="可用余额" :value="selfinfo.balance" />
-            <van-cell title="订单总额" value="0" />
+            <van-cell title="订单总额" :value="info.all" />
             <van-cell title="支付方式" value="货款+余额" />
             <van-cell title="货款支付" :value="info.goodsPayment" />
             <van-cell title="余额支付" :value="info.balance" />
@@ -39,17 +39,18 @@
         },
         data() {
             return {
-                api: api,
+                api:this.$http.api,
                 goods: [],
                 selfinfo:{
-                    goodsPayment:0,
+                    goodsPayment:0,//可用获取
                     balance:0,
                 },
                 info: {
-                    categroyId: '2572e5ee-1c05-43a4-3bd7-08d6cfccd5e7',
+                    categroyId: '',
                     number: 0,
-                    goodsPayment: 0,
-                    balance: 0
+                    goodsPayment: 0,//货款支付
+                    balance: 0,//余额支付
+                    all:0,
                 }
             }
         },
@@ -59,18 +60,34 @@
         },
         methods: {
             async getgoods() {
-                var ret = await this.$http.Get('/api/services/app/B_Categroy/GetCWCategroyList', {
-
-                });
-                if (ret.success) {
-                    this.goods = ret.result.items;
+                var id=this.$route.query.id;
+                if(!id){
+                    return;
+                }
+                var ret=await this.$http.Get('/api/services/app/B_CloudWarehouse/GetCWInventoryListAsync',{
+                    categroyPropertyId:1,
+                    categroyId:id,
+                    isActive:true,
+                    searchKey:'',
+                    maxResultCount:50,
+                    skipCount:0
+                })
+                if(ret.success){
+                    this.goods=ret.result.items;
                 }
             },
             addcart(id, value, price) {
                 debugger;
                 this.info.categroyId = id;
                 this.info.number = value;
-                this.info.goodsPayment = value * price;
+                this.info.all=value * price;
+                if(this.selfinfo.goodsPayment>=this.info.all){
+                    this.info.goodsPayment=this.info.all;
+                }
+                else{
+                    this.info.goodsPayment=this.info.all;
+                    this.info.balance=this.info.all-this.selfinfo.goodsPayment;
+                }
             },
             async getinfo() {
                 var ret = await this.$http.Get('/api/services/app/B_Agency/GetSelf');

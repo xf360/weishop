@@ -4,10 +4,10 @@
         <van-nav-bar title="我的云仓" right-text="明细" left-arrow @click-left="$router.go(-1)" @click-right="$router.push('yuncanglog')" />
         <van-row style="text-align:center;padding:10px; background-color: #fff;">
             <van-col span="12">
-                <van-button type="primary" style="width:150px" @click="$router.push('yuncangin')">进货</van-button>
+                <van-button type="primary" style="width:150px" @click="$router.push('/index/yuncangin?id='+$route.query.id)">进货</van-button>
             </van-col>
             <van-col span="12">
-                <van-button type="primary" style="width:150px" @click="$router.push('yuncangout')">提货</van-button>
+                <van-button type="primary" style="width:150px" @click="$router.push('/index/yuncangout?id='+$route.query.id)">提货</van-button>
             </van-col>
         </van-row>
         <h2 class="celltitle">云仓库存</h2>
@@ -41,7 +41,7 @@
         },
         data(){
             return {
-                api:api,
+                api:this.$http.api,
                 loading:false,
                 finished:false,
                 list:[]
@@ -49,16 +49,21 @@
         },
         methods:{
             async onLoad(){
+                var id=this.$route.query.id;
+                if(!id){
+                    return;
+                }
                 this.loading=true;
                 var ret=await this.$http.Get('/api/services/app/B_CloudWarehouse/GetCWInventoryListAsync',{
                     categroyPropertyId:1,
+                    categroyId:id,
                     isActive:true,
                     searchKey:'',
                     maxResultCount:50,
                     skipCount:0
                 })
                 this.loading=false;
-                this.finished=true
+                this.finished=true;
                 if(ret.success){
                     this.list=ret.result.items;
                     

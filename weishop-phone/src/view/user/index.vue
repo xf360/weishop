@@ -5,9 +5,9 @@
     <div class="userinfo">
       <div class="userheader">
         <!-- <div class="userborder"></div> -->
-        <img :src="api+'api/AbpFile/Show?id='+info.file.id" />
+        <img v-if="info&&info.file" :src="api+'api/AbpFile/Show?id='+info.file.id" />
       </div>
-      <div>{{info.userName}}【{{info.agencyLevelName}}】
+      <div v-if="info">{{info.userName}}【{{info.agencyLevelName}}】
         <div>销售额：0</div>
       </div>
 
@@ -86,7 +86,7 @@
     },
     data() {
       return {
-        api: api,
+        api:this.$http.api,
         info: {
           userName: '',
           agencyLevelName: '',
