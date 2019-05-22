@@ -12,7 +12,7 @@
             <van-field v-model="info.name" required clearable label="姓名：" placeholder="请输入姓名" />
             <van-field v-model="info.tel" required clearable label="联系电话：" placeholder="请输入联系电话" />
             <van-field v-model="info.vCode" required center clearable label="短信验证码" placeholder="请输入短信验证码">
-                <van-button slot="button" size="small" type="primary">发送验证码</van-button>
+                <van-button slot="button" :disabled="sendwaiting>0" size="small" type="primary" @click="send">发送验证码{{sendwaiting}}</van-button>
             </van-field>
             <van-field v-model="info.pwd" type="password" label="密码" placeholder="请输入密码" required />
             <van-field v-model="info.pwd2" type="password" label="确认密码" placeholder="请再次输入密码" required />
@@ -72,17 +72,17 @@
         </van-cell-group>
         <h2 class="celltitle">请打款至</h2>
         <div v-for="(item,index) in payinfo" :key="index">
-        <van-cell-group v-if="item.type==0&&item.status==0" title="支付宝">
-            <van-cell title="支付宝账号" :value="item.account" />
-            <van-cell title="支付宝实名" :value="item.bankUserName" />
-            <van-cell title="如有疑问联系微信客服" :value="item.wxName" />
-        </van-cell-group>
-        <van-cell-group v-if="item.type==1&&item.status==0" title="银行卡">
-            <van-cell title="开户银行" :value="item.bankName" />
-            <van-cell title="银行户名" :value="item.bankUserName" />
-            <van-cell title="银行账号" :value="item.account" />
-            <van-cell title="如有疑问联系微信客服" :value="item.wxName" />
-        </van-cell-group>
+            <van-cell-group v-if="item.type==0&&item.status==0" title="支付宝">
+                <van-cell title="支付宝账号" :value="item.account" />
+                <van-cell title="支付宝实名" :value="item.bankUserName" />
+                <van-cell title="如有疑问联系微信客服" :value="item.wxName" />
+            </van-cell-group>
+            <van-cell-group v-if="item.type==1&&item.status==0" title="银行卡">
+                <van-cell title="开户银行" :value="item.bankName" />
+                <van-cell title="银行户名" :value="item.bankUserName" />
+                <van-cell title="银行账号" :value="item.account" />
+                <van-cell title="如有疑问联系微信客服" :value="item.wxName" />
+            </van-cell-group>
         </div>
         <center style="margin:10px;">
             <van-button type="primary" style="width:150px" @click="submit" :disabled="disabled">提交</van-button>
@@ -91,8 +91,8 @@
             <van-area :area-list="areaList" @confirm="areaok" @cancel="show=false;" />
         </van-popup>
         <van-popup v-model="timeshow" position="bottom">
-            <van-datetime-picker 
-            :min-date="minDate" :formatter="formatter" type="date" @confirm="timeok" @cancel="timeshow=false;" />
+            <van-datetime-picker :min-date="minDate" :formatter="formatter" type="date" @confirm="timeok"
+                @cancel="timeshow=false;" />
         </van-popup>
     </div>
 </template>
@@ -127,13 +127,14 @@
                 show: false,
                 areaList: area,
                 timeshow: false,
-                disabled:false,
-                userinfo:{},
-                payinfo:[],
+                disabled: false,
+                userinfo: {},
+                payinfo: [],
                 minDate: new Date(2019, 4, 1),
-                agentinfo:{},
+                agentinfo: {},
+                sendwaiting:'',
                 info: {
-                    agencyLevelId:'8180b6f8-5339-47a7-9c51-9fa175d87a3a', 
+                    agencyLevelId: '8180b6f8-5339-47a7-9c51-9fa175d87a3a',
                     inviteUrlId: this.$route.query.id,
                     name: '',
                     tel: '',
@@ -162,6 +163,29 @@
             }
         },
         methods: {
+            async send() {
+                debugger;
+                if (!this.info.tel) {
+                    Toast.fail('请先填写手机号。');
+                    return;
+                }
+                var ret = await this.$http.Post('/api/services/app/B_AgencyApply/SendSms', {
+                    phone: this.info.tel
+                });
+                if (ret.success) {
+                    Toast.success('短信已发送。');
+                    this.sendwaiting = 60;
+                    var vm = this;
+                    let s = setInterval(function () {
+                        vm.sendwaiting--;
+                        if (vm.sendwaiting <= 0) {
+                            vm.sendwaiting='';
+                            clearInterval(s);
+                        }
+                    }, 1000)
+                }
+                return;
+            },
             formatter(type, value) {
                 if (type === 'year') {
                     return `${value}年`;
@@ -184,32 +208,36 @@
                 this.info.county = val[2].code;
                 this.show = false;
             },
-            async loadinfo(){
+            async loadinfo() {
                 if (!this.info.inviteUrlId) {
                     Toast.fail('无效的邀请链接，请重新扫描二维码注册。');
                     return;
                 }
-                var ret= await this.$http.Get('/api/services/app/B_InviteUrl/Get',{id:this.info.inviteUrlId})
-                if(ret.success){
-                    this.userinfo=ret.result;
-                    if(ret.result.agencyLevelId){
-                        var ret2=await this.$http.Get('/api/services/app/B_AgencyLevel/Get',{id:ret.result.agencyLevelId});
-                        if(ret2.success){
-                            this.agentinfo=ret2.result;
-                            this.info.payAmout=ret2.result.firstRechargeAmout+ret2.result.deposit;
+                var ret = await this.$http.Get('/api/services/app/B_InviteUrl/Get', {
+                    id: this.info.inviteUrlId
+                })
+                if (ret.success) {
+                    this.userinfo = ret.result;
+                    if (ret.result.agencyLevelId) {
+                        var ret2 = await this.$http.Get('/api/services/app/B_AgencyLevel/Get', {
+                            id: ret.result.agencyLevelId
+                        });
+                        if (ret2.success) {
+                            this.agentinfo = ret2.result;
+                            this.info.payAmout = ret2.result.firstRechargeAmout + ret2.result.deposit;
                         }
                     }
                 }
             },
-            async loadpay(){
-                
-                var ret= await this.$http.Get('/api/services/app/B_ManagerPayAccount/GetList',{
-                    type:this.info.payType,
-                    maxResultCount:10,
-                    skipCount:0
+            async loadpay() {
+
+                var ret = await this.$http.Get('/api/services/app/B_ManagerPayAccount/GetList', {
+                    type: this.info.payType,
+                    maxResultCount: 10,
+                    skipCount: 0
                 })
-                if(ret.success&&ret.result.items.length>0){
-                    this.payinfo=ret.result.items;
+                if (ret.success && ret.result.items.length > 0) {
+                    this.payinfo = ret.result.items;
                 }
             },
             async submit() {
@@ -257,8 +285,8 @@
                     Toast.fail('打款金额不能为空。');
                     return;
                 }
-                if(this.info.payAmout<this.agentinfo.firstRechargeAmout+this.agentinfo.deposit){
-                     Toast.fail(`打款金额不能小于首充金额+保证金【${this.agentinfo.firstRechargeAmout+this.agentinfo.deposit}】元。`);
+                if (this.info.payAmout < this.agentinfo.firstRechargeAmout + this.agentinfo.deposit) {
+                    Toast.fail(`打款金额不能小于首充金额+保证金【${this.agentinfo.firstRechargeAmout+this.agentinfo.deposit}】元。`);
                     return;
                 }
                 if (!this.info.payAcount) {
@@ -273,19 +301,19 @@
                     Toast.fail('银行户名不能为空。');
                     return;
                 }
-                if (!this.info.touxiangFile||!this.info.touxiangFile.id) {
+                if (!this.info.touxiangFile || !this.info.touxiangFile.id) {
                     Toast.fail('请上传头像');
                     return;
                 }
-                if (!this.info.credentFiles||this.info.credentFiles.length===0) {
+                if (!this.info.credentFiles || this.info.credentFiles.length === 0) {
                     Toast.fail('请上传打款凭证');
                     return;
                 }
-                if (!this.info.handleCredentFiles||this.info.handleCredentFiles.length===0) {
+                if (!this.info.handleCredentFiles || this.info.handleCredentFiles.length === 0) {
                     Toast.fail('请上传手持证件');
                     return;
                 }
-                this.disabled=true;
+                this.disabled = true;
                 var ret = await this.$http.Post('/api/services/app/B_AgencyApply/Create', this.info);
                 if (ret.success) {
                     Dialog.alert({
@@ -293,8 +321,8 @@
                     }).then(() => {
                         this.$router.push('login')
                     });
-                }else{
-                    this.disabled=false;
+                } else {
+                    this.disabled = false;
                 }
             },
             timeok(val) {
@@ -311,7 +339,7 @@
                 this.$router.go(-1)
             }
         },
-        mounted(){
+        mounted() {
             this.loadinfo();
             this.loadpay();
         }

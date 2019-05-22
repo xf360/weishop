@@ -118,7 +118,7 @@
     },
     data() {
       return {
-        sendwaiting:0,
+        sendwaiting:'',
         labelcol: {
           span: 5
         },
@@ -146,6 +146,7 @@
           let s= setInterval(function(){
             vm.sendwaiting--;
             if(vm.sendwaiting<=0){
+              vm.sendwaiting='';
               clearInterval(s);
             }
           },1000)
