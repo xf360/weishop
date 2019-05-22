@@ -20,7 +20,6 @@ function list2tree (source, pid) {
   return ret
 }
 function list2treetable (source, pid) {
-  debugger
   if (!source) {
     return []
   }

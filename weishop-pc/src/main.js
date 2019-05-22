@@ -86,6 +86,31 @@ Vue.filter('areaname', function (value, type) {
   }
   return ''
 })
+Vue.filter('fileparse', function (value) {
+  var ret = []
+  if (value instanceof Array) {
+    if (value && value.length > 0) {
+      for (var i in value) {
+        var tem = {
+          id: '',
+          name: '',
+          status: '',
+          url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png'
+        }
+        ret.push(tem)
+      }
+    }
+    return ret;
+  } else if (value instanceof Object) {
+    return [{
+      uid: value.id,
+      name: value.fileName,
+      status: '',
+      url: Vue.prototype.$http.api + 'api/AbpFile/Show?id=' + value.id
+    }]
+  }
+  return []
+})
 
 Vue.filter('payType', function (value) {
   switch (value) {

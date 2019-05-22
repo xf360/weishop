@@ -7,9 +7,9 @@
         <a-input placeholder="请输入代理姓名。" />
       </a-form-item>
       <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="联系电话" fieldDecoratorId="tel"
-        :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入联系电话。',whitespace: true}]}">
-        <a-input-search placeholder="请输入联系电话。" @search="send()">
-          <a-button slot="enterButton" >发送短信</a-button>
+        :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入正确的手机号。',whitespace: true,pattern:/^(1[34578]\d{9})$/}]}">
+        <a-input-search v-model="phone" placeholder="请输入联系电话。" @search="send()">
+          <a-button slot="enterButton" :disabled="sendwaiting>0">发送短信({{sendwaiting}})</a-button>
         </a-input-search>
       </a-form-item>
       <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="验证码" fieldDecoratorId="vCode"
@@ -29,7 +29,7 @@
         <a-input placeholder="请再次输入密码。" type="password" />
       </a-form-item>
       <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="身份证号" fieldDecoratorId="pNumber"
-        :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入身份证号。',whitespace: true}]}">
+        :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入身份证号。',whitespace: true,pattern:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/}]}">
         <a-input placeholder="请输入身份证号。" />
       </a-form-item>
       <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="地区" fieldDecoratorId="area"
@@ -118,9 +118,11 @@
     },
     data() {
       return {
+        sendwaiting:0,
         labelcol: {
           span: 5
         },
+        phone:'',
         wrappercol: {
           span: 19
         },
@@ -131,8 +133,23 @@
       }
     },
     methods: {
-      send() {
-        this.$message.error('暂时未开通...');
+      async send() {
+        if(!this.phone){
+           this.$message.error('请先填写手机号');
+           return;
+        }
+        var ret=await this.$http.Post('/api/services/app/B_AgencyApply/SendSms',{phone:this.phone});
+        if(ret.success){
+          this.$message.success('短信已发送');
+          this.sendwaiting=60;
+          var vm=this;
+          let s= setInterval(function(){
+            vm.sendwaiting--;
+            if(vm.sendwaiting<=0){
+              clearInterval(s);
+            }
+          },1000)
+        }
         return;
       },
       async getonemoney(){
@@ -146,7 +163,6 @@
         return new Promise((resolve, reject) => {
 
           this.form.validateFields(async (err, values) => {
-            debugger
             if (!err) {
               if (!values.area) {
                 this.$message.error('请选择地区');
@@ -194,13 +210,14 @@
               values.agencyLevelId = "49c4e8f7-b5ba-424a-ad63-8c59913e5758";
               var ret = await this.$http.Post('/api/services/app/B_AgencyApply/Create', values);
               if (ret.success) {
-                this.$message.success("操作成功", 3)
                 var ret2 = await this.$http.Post('/api/services/app/B_AgencyApply/Audit', {
                   id: ret.result,
                   remark: '管理员添加',
                   isPass: true
                 })
-
+                if(ret2.success){
+                  this.$message.success("操作成功", 3)
+                }
               }
               resolve(ret.success);
             } else {

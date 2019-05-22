@@ -28,7 +28,7 @@
     </van-row>
     <van-row style="margin-top:2px" class="user-links" :gutter="1" type="flex" justify="center" align="center">
       <van-col span="8">
-        <van-icon name="logistics" @click.native="push('/index/yuncangin')" />
+        <van-icon name="logistics" @click.native="push('/index/yuncangin?id='+inid)" />
         我要进货
       </van-col>
       <van-col span="8">
@@ -87,6 +87,7 @@
     data() {
       return {
         api:this.$http.api,
+        inid:'',
         info: {
           userName: '',
           agencyLevelName: '',
@@ -101,10 +102,17 @@
     },
     mounted() {
       this.getinfo();
+      this.getclist();
     },
     methods: {
       push(url) {
         this.$router.push(url);
+      },
+      async getclist(){
+        var ret= await this.$http.Get('/api/services/app/B_Categroy/GetCWCategroyList');
+        if(ret.success){
+          this.inid=ret.result.items[0].id;
+        }
       },
       async getinfo() {
         var ret = await this.$http.Get('/api/services/app/B_Agency/GetSelf');

@@ -28,10 +28,11 @@
         CellGroup,
         Field,
         Button,
-        Dialog
+        Dialog,
+        Notify
     } from 'vant';
     import gooditem from '../goods/gooditem.vue'
-    Vue.use(NavBar).use(Cell).use(CellGroup).use(Field).use(Button).use(Dialog);
+    Vue.use(NavBar).use(Cell).use(CellGroup).use(Field).use(Button).use(Dialog).use(Notify);
 
     export default {
         components: {
@@ -96,6 +97,10 @@
                 }
             },
             async submit() {
+                if(!this.info.categroyId||!this.info.all||!this.info.number){
+                    Notify('请先选择商品。');
+                    return;
+                }
                 var ret = await this.$http.Post('/api/services/app/B_InOrder/OrderIn', this.info);
                 if (ret.success) {
                     await Dialog.alert({
