@@ -3,7 +3,7 @@
     v-model="collapsed" :trigger="null">
     <!-- <div class="sider-fixed" :style="{width:sidewidth}"> -->
     <div :class="['logo', theme]">
-      <router-link to="/dashboard/workplace">
+      <router-link to="/">
         <img src="static/img/vue-antd-logo.png">
         <h1 >{{systemName}}</h1>
       </router-link>

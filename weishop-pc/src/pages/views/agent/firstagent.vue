@@ -52,7 +52,7 @@
         </span>
       </a-table>
     </a-card>
-    <a-modal title="查看详情" v-model="detailvisible" :width="800">
+    <a-modal destroyOnClose :maskClosable="false" title="查看详情" v-model="detailvisible" :width="800">
      <agentinfo :id="selectid" v-if="detailvisible"></agentinfo>
       <template slot="footer">
         <a-button key="back" @click="detailvisible=false">关闭</a-button>

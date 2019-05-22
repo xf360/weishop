@@ -56,14 +56,14 @@
         </span>
       </a-table>
     </a-card>
-    <a-modal title="新建通知" v-model="createvisible" :width="800">
+    <a-modal destroyOnClose :maskClosable="false" title="新建通知" v-model="createvisible" :width="800">
       <noticenew v-if="createvisible" ref="noticenew" :id="selectid"></noticenew>
       <template slot="footer">
         <a-button key="back" @click="createvisible=false">取消</a-button>
         <a-button key="submit" type="primary" :loading="loading" @click="create">确认</a-button>
       </template>
     </a-modal>
-    <a-modal title="通知详情" v-model="detailvisible" :width="800">
+    <a-modal destroyOnClose :maskClosable="false" title="通知详情" v-model="detailvisible" :width="800">
       <noticedetail v-if="detailvisible" ref="noticedetail" :id="selectid"></noticedetail>
       <template slot="footer">
         <a-button key="back" @click="detailvisible=false">取消</a-button>

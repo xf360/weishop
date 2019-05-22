@@ -48,7 +48,7 @@
         </span>
       </a-table>
     </a-card>
-    <a-modal title="商品" v-model="detailvisible" @ok="save" cancelText="取消" okText="确认">
+    <a-modal destroyOnClose :maskClosable="false" title="商品" v-model="detailvisible" @ok="save" cancelText="取消" okText="确认">
       <goodedit v-if="detailvisible" ref="detail" :id="selectid"></goodedit>
     </a-modal>
 

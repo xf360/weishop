@@ -68,7 +68,7 @@
         </span>
       </a-table>
     </a-card>
-    <a-modal title="详情" v-model="detailvisible" :width="800">
+    <a-modal destroyOnClose :maskClosable="false" title="详情" v-model="detailvisible" :width="800">
       
       <template slot="footer">
         

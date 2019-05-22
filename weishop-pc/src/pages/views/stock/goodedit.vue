@@ -71,7 +71,7 @@
     },
     data() {
       return {
-        uploadurl: api + 'api/AbpFile/Post',
+        uploadurl: this.$http.api + 'api/AbpFile/Post',
         labelcol: {
           span: 5
         },

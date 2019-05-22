@@ -18,7 +18,7 @@
         </span>
       </a-table>
     </a-card>
-    <a-modal title="新建类别" v-model="addvisible" :width="800" @ok="save" :confirmLoading="confirmLoading" cancelText="取消"
+    <a-modal destroyOnClose :maskClosable="false" title="新建类别" v-model="addvisible" :width="800" @ok="save" :confirmLoading="confirmLoading" cancelText="取消"
       okText="确认">
       <a-form :autoFormCreate="(form) => this.form = form">
         <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="类别名称" fieldDecoratorId="name"
@@ -71,7 +71,7 @@
       return {
         pctree: [],
         selectid:null,
-        uploadurl: api + 'api/AbpFile/Post',
+        uploadurl: this.$http.api + 'api/AbpFile/Post',
         confirmLoading: false,
         labelcol: {
           span: 5

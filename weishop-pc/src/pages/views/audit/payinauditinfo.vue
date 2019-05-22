@@ -15,7 +15,7 @@
       <detail-list-item term="打款凭证" :span="2">
         <span v-if="info.credentFiles">
           <div v-for="(item,index) in info.credentFiles" :key="index">
-            <img :src="api+'api/AbpFile/Show?id='+item.id" @click="showbig(item.id)" width="50" height="50" />
+            <img :src="$http.api+'api/AbpFile/Show?id='+item.id" @click="showbig(item.id)" width="50" height="50" />
           </div>
         </span>
       </detail-list-item>
@@ -39,7 +39,7 @@
         {{info.auditRemark}}
       </detail-list-item>
     </detail-list>
-    <a-modal :visible="showimg" :footer="null" @cancel="showimg=false">
+    <a-modal destroyOnClose :maskClosable="false" :visible="showimg" :footer="null" @cancel="showimg=false">
       <img v-if="showimg" alt="example" style="width: 100%" :src="showimgurl" />
     </a-modal>
   </div>
@@ -56,7 +56,7 @@
       return {
         showimg: false,
         showimgurl: '',
-        api: api,
+        api: this.$http.api,
         info: {}
       }
     },
@@ -71,7 +71,7 @@
     },
     methods: {
       showbig(id){
-        this.showimgurl= api+'api/AbpFile/Show?id='+id;
+        this.showimgurl= this.$http.api+'api/AbpFile/Show?id='+id;
         this.showimg=true;
       },
       async loaddetail() {

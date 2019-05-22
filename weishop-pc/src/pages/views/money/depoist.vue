@@ -59,7 +59,7 @@
         </span>
       </a-table>
     </a-card>
-    <a-modal title="审核" v-model="auditvisible" :width="800">
+    <a-modal destroyOnClose :maskClosable="false" title="审核" v-model="auditvisible" :width="800">
       <depoistaudit v-if="auditvisible" :id="selectid" ref="depoistaudit"></depoistaudit>
       <template slot="footer">
         <a-button key="back">取消</a-button>

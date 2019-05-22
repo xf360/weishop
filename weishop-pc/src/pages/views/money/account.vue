@@ -56,7 +56,7 @@
         </span>
       </a-table>
     </a-card>
-    <a-modal title="新建账户" v-model="createvisible" :width="800">
+    <a-modal destroyOnClose :maskClosable="false" title="新建账户" v-model="createvisible" :width="800">
       <accountnew v-if="createvisible" :id="selectid" ref="accountnew"></accountnew>
       <template slot="footer">
         <a-button key="back" @click="createvisible=false">取消</a-button>

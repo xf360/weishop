@@ -53,46 +53,47 @@
       </a-form-item>
       <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="打款金额" fieldDecoratorId="payAmout"
         :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入打款金额'}]}">
-        <a-input-number :min="0" :max="99999" placeholder="请输入打款金额" />
+        <a-input-number :min="allmoney" :max="99999" placeholder="请输入打款金额" />
       </a-form-item>
 
-      <a-form-item v-if="payType===0" :label-col="labelcol" :wrapper-col="wrappercol" label="支付宝号"
-        fieldDecoratorId="payAcount" :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入账户'}]}">
+      <a-form-item v-show="payType===0" :label-col="labelcol" :wrapper-col="wrappercol" label="支付宝号"
+        fieldDecoratorId="payAcount" :fieldDecoratorOptions="{rules: [{ required: payType===0, message: '请输入账户'}]}">
         <a-input placeholder="请输入账户" />
       </a-form-item>
-      <a-form-item v-if="payType===1" :label-col="labelcol" :wrapper-col="wrappercol" label="开户银行"
-        fieldDecoratorId="bankName" >
+      <a-form-item v-show="payType===1" :label-col="labelcol" :wrapper-col="wrappercol" label="开户银行"
+        fieldDecoratorId="bankName" :fieldDecoratorOptions="{rules: [{ required: payType===1, message: '请输入账户'}]}">
         <a-input placeholder="请输入开户银行" />
       </a-form-item>
-      <a-form-item v-if="payType===1" :label-col="labelcol" :wrapper-col="wrappercol" label="银行户名"
-        fieldDecoratorId="bankUserName" >
+      <a-form-item v-show="payType===1"  :label-col="labelcol" :wrapper-col="wrappercol" label="银行户名"
+        fieldDecoratorId="bankUserName" :fieldDecoratorOptions="{rules: [{ required: payType===1, message: '请输入账户'}]}">
         <a-input placeholder="请输入银行户名" />
       </a-form-item>
-      <a-form-item v-if="payType===1" :label-col="labelcol" :wrapper-col="wrappercol" label="银行账户"
-        fieldDecoratorId="payAcount" :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入账户'}]}">
+      <a-form-item v-show="payType===1" :label-col="labelcol" :wrapper-col="wrappercol" label="银行账户"
+        fieldDecoratorId="payAcount" :fieldDecoratorOptions="{rules: [{ required: payType===1, message: '请输入账户'}]}">
         <a-input placeholder="请输入账户" />
       </a-form-item>
       <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="打款日期" fieldDecoratorId="payDate"
         :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入打款日期'}]}">
         <a-date-picker placeholder="请输入打款日期" />
       </a-form-item>
-      <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="头像" extra="" fieldDecoratorId="touxiangFile">
+      <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="头像" extra="" fieldDecoratorId="touxiangFile"
+      :fieldDecoratorOptions="{rules: [{ required: true, message: '请上传头像'}]}">
         <a-upload accept=".jpg, .jpeg, .png" name="logo" :action="uploadurl" list-type="picture">
           <a-button>
             <a-icon type="upload" />选择文件
           </a-button>
         </a-upload>
       </a-form-item>
-      <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="打款凭证" extra=""
-        fieldDecoratorId="credentFiles">
+      <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="打款凭证(1-2张)" extra=""
+        fieldDecoratorId="credentFiles" :fieldDecoratorOptions="{rules: [{ required: true, message: '请上传打款凭证(1-2张)'}]}">
         <a-upload accept=".jpg, .jpeg, .png" name="logo" :action="uploadurl" list-type="picture">
           <a-button>
             <a-icon type="upload" />选择文件
           </a-button>
         </a-upload>
       </a-form-item>
-      <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="手持证件" extra=""
-        fieldDecoratorId="handleCredentFiles">
+      <a-form-item  :label-col="labelcol" :wrapper-col="wrappercol" label="手持证件(1-2张)" extra=""
+        fieldDecoratorId="handleCredentFiles" :fieldDecoratorOptions="{rules: [{ required: true, message: '请上传手持证件(1-2张)'}]}">
         <a-upload accept=".jpg, .jpeg, .png" name="logo" :action="uploadurl" list-type="picture">
           <a-button>
             <a-icon type="upload" />选择文件
@@ -112,6 +113,9 @@
 
       }
     },
+    mounted(){
+      this.getonemoney();
+    },
     data() {
       return {
         labelcol: {
@@ -120,15 +124,23 @@
         wrappercol: {
           span: 19
         },
+        allmoney:0,
         areaoptions: area,
         payType: 0,
-        uploadurl: api + 'api/AbpFile/Post',
+        uploadurl: this.$http.api + 'api/AbpFile/Post',
       }
     },
     methods: {
       send() {
         this.$message.error('暂时未开通...');
         return;
+      },
+      async getonemoney(){
+        var ret= await this.$http.Get('/api/services/app/B_AgencyLevel/GetOneLeavel');
+        if(ret.success){
+          this.allmoney=ret.result.firstRechargeAmout+ret.result.deposit;
+          this.form.setFieldsValue({payAmout:this.allmoney});
+        }
       },
       async submit() {
         return new Promise((resolve, reject) => {
@@ -148,15 +160,32 @@
                 this.$message.error('两次密码不一致');
                 return;
               }
+              if(values.payAmout<this.allmoney){
+                this.$message.error('打款金额不能小于'+this.allmoney);
+                return;
+              }
               if (values.touxiangFile && values.touxiangFile.fileList) {
                 values.touxiangFile = values.touxiangFile.fileList[0].response.result.data[0]
               }
-              if (values.credentFiles && values.credentFiles.fileList) {
-                values.credentFiles = values.credentFiles.fileList[0].response.result.data;
+              if(!values.credentFiles.fileList||values.credentFiles.fileList.length==0||values.credentFiles.fileList.length>2){
+                this.$message.error('必须上传打款凭证且最多只能上传2张附件');
+                return;
               }
-              if (values.handleCredentFiles && values.handleCredentFiles.fileList) {
-                values.handleCredentFiles = values.handleCredentFiles.fileList[0].response.result.data;
+              var temp=[];
+              for(var i in values.credentFiles.fileList){
+                temp.push(values.credentFiles.fileList[i].response.result.data[0])
               }
+              values.credentFiles=temp;
+              if(!values.handleCredentFiles.fileList||values.handleCredentFiles.fileList.length==0||values.handleCredentFiles.fileList.length>2){
+                this.$message.error('必须上传手持证件且最多只能上传2张附件');
+                return;
+              }
+              var temp2=[];
+              for(var i in values.handleCredentFiles.fileList){
+                temp2.push(values.handleCredentFiles.fileList[i].response.result.data[0])
+              }
+              values.handleCredentFiles=temp2;
+
               values.country = 1;
               values.provinces = values.area[0];
               values.city = values.area[1];

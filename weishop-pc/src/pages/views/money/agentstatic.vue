@@ -40,7 +40,7 @@
         </span>
       </a-table>
     </a-card>
-    <a-modal title="详情" v-model="detailvisible" :width="800">
+    <a-modal destroyOnClose :maskClosable="false" title="详情" v-model="detailvisible" :width="800">
       <a-select :defaultValue="null" style="width: 120px">
         <a-select-option :value="null">全部类型</a-select-option>
         <a-select-option value="">进货</a-select-option>

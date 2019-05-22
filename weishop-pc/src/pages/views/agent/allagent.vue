@@ -55,13 +55,13 @@
         </span>
       </a-table>
     </a-card>
-    <a-modal title="查看详情" v-model="detailvisible" :width="800">
+    <a-modal destroyOnClose :maskClosable="false" title="查看详情" v-model="detailvisible" :width="800">
       <agentinfo :id="selectid" v-if="detailvisible"></agentinfo>
       <template slot="footer">
         <a-button key="back" @click="detailvisible=false">关闭</a-button>
       </template>
     </a-modal>
-    <a-modal title="新建代理" v-model="createvisible" :width="800">
+    <a-modal destroyOnClose :maskClosable="false" title="新建代理" v-model="createvisible" :width="800">
       <agentnew ref="agentnew" v-if="createvisible"></agentnew>
       <template slot="footer">
         <a-button  @click="createvisible=false">关闭</a-button>

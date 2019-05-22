@@ -19,7 +19,7 @@
       <detail-list-item term="详细地址">{{info.address}}</detail-list-item>
       <detail-list-item term="身份证" :span="2">{{info.pNumber}}</detail-list-item>
       <detail-list-item term="头像">
-        <img height="50" width="50" :src="api+'api/AbpFile/Show?id='+info.touxiangFile.id" @click="showbig(info.touxiangFile.id)"/>
+        <img height="50" width="50" :src="$http.api+'api/AbpFile/Show?id='+info.touxiangFile.id" @click="showbig(info.touxiangFile.id)"/>
       </detail-list-item>
     </detail-list>
     <a-divider style="margin-bottom: 32px" />
@@ -36,7 +36,7 @@
     <detail-list layout="grid" :col="2">
       <detail-list-item term="打款凭证">
         <span v-if="info.credentFiles">
-          <img v-for="(item,index) in info.credentFiles" :key="index" :src="api+'api/AbpFile/Show?id='+item.id"
+          <img v-for="(item,index) in info.credentFiles" :key="index" :src="$http.api+'api/AbpFile/Show?id='+item.id"
             width="50" height="50" @click="showbig(item.id)"/>
         </span>
       </detail-list-item>
@@ -45,7 +45,7 @@
     <detail-list layout="grid" :col="2">
       <detail-list-item term="手持证件">
         <span v-if="info.handleCredentFiles">
-          <img v-for="(item,index) in info.handleCredentFiles" :key="index" :src="api+'api/AbpFile/Show?id='+item.id"
+          <img v-for="(item,index) in info.handleCredentFiles" :key="index" :src="$http.api+'api/AbpFile/Show?id='+item.id"
             width="50" height="50" @click="showbig(item.id)"/>
         </span>
       </detail-list-item>
@@ -69,7 +69,7 @@
         -
       </detail-list-item>
     </detail-list>
-    <a-modal :visible="showimg" :footer="null" @cancel="showimg=false">
+    <a-modal destroyOnClose :maskClosable="false" :visible="showimg" :footer="null" @cancel="showimg=false">
       <img v-if="showimg" alt="example" style="width: 100%" :src="showimgurl" />
     </a-modal>
   </div>
@@ -86,7 +86,7 @@
       return {
         showimg: false,
         showimgurl: '',
-        api: api,
+        api: this.$http.api,
         info: {}
       }
     },
@@ -101,7 +101,7 @@
     },
     methods: {
       showbig(id){
-        this.showimgurl= api+'api/AbpFile/Show?id='+id;
+        this.showimgurl= this.$http.api+'api/AbpFile/Show?id='+id;
         this.showimg=true;
       },
       async loaddetail() {

@@ -64,7 +64,7 @@
         </span>
       </a-table>
     </a-card>
-    <a-modal title="商品" v-model="detailvisible" @ok="save" cancelText="取消" okText="确认">
+    <a-modal destroyOnClose :maskClosable="false" title="商品" v-model="detailvisible" @ok="save" cancelText="取消" okText="确认">
       <a-form :autoFormCreate="(form) => this.form = form">
         <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="新增库存" fieldDecoratorId="count"
           :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入新增库存。'}]}">

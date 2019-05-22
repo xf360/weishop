@@ -65,17 +65,17 @@
         </span>
       </a-table>
     </a-card>
-    <a-modal title="审核不通过" v-model="reasonvisible" @ok="handleReasonOk" cancelText="取消" okText="确认">
+    <a-modal destroyOnClose :maskClosable="false" title="审核不通过" v-model="reasonvisible" @ok="handleReasonOk" cancelText="取消" okText="确认">
       <auditresult :id="selectid" v-if="reasonvisible" ref="reasoncom"></auditresult>
     </a-modal>
-    <a-modal title="审核" v-model="auditvisible" :width="800">
+    <a-modal destroyOnClose :maskClosable="false" title="审核" v-model="auditvisible" :width="800">
       <agengtinfo v-if="auditvisible" :id="selectid"></agengtinfo>
       <template slot="footer">
         <a-button key="back" @click="reasonvisible=true">审核不通过</a-button>
         <a-button key="submit" type="primary" :loading="loading" @click="auditpass">审核通过</a-button>
       </template>
     </a-modal>
-    <a-modal title="查看详情" v-model="detailvisible" :width="800">
+    <a-modal destroyOnClose :maskClosable="false" title="查看详情" v-model="detailvisible" :width="800">
       <agengtinfo v-if="detailvisible" :id="selectid"></agengtinfo>
       <template slot="footer">
         <a-button key="back" @click="detailvisible=false">关闭</a-button>
