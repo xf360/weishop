@@ -2,7 +2,7 @@
     <div>
         <van-nav-bar title="我的钱包" :right-text="righttext" left-arrow @click-left="onClickLeft" @click-right="onClickRight" />
         <van-tabs @change="change">
-            <van-tab title="余额">
+            <van-tab title="余额" style="postion:inherit">
                 <!-- <van-pull-refresh v-model="refreshing" @refresh="onRefresh()" style="top:50px"> -->
                 <!-- <van-list style="margin-top:50px"> -->
                     <div class="box">
@@ -21,7 +21,7 @@
 
                 <!-- </van-list> -->
             </van-tab>
-            <van-tab title="货款">
+            <van-tab title="货款" style="postion:inherit">
                 <!-- <van-list> -->
                     <div class="box">
                         <div class="left">￥{{cashinfo.goodPayment}}</div>

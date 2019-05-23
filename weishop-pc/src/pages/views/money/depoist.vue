@@ -26,12 +26,15 @@
             </a-select>
           </a-form-item>
           <a-form-item label="状态">
-            <a-select style="width:100px" placeholder="选择状态" allowClear>
+            <a-select v-model="params.status" style="width:100px" placeholder="选择状态" allowClear>
               <a-select-option :value="1">
-                正常
+                待打款
               </a-select-option>
               <a-select-option :value="2">
-                异常
+                已打款
+              </a-select-option>
+              <a-select-option :value="4">
+                打款异常
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -53,6 +56,11 @@
         :show-icon="true" />
       <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
         :loading="loading" @change="pagechange" :pagination="pagination">
+        <span slot="status" slot-scope="text">
+          <span v-if="text===1">待打款</span>
+          <span v-if="text===2">已打款</span>
+          <span v-if="text===4">打款异常</span>
+        </span>
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="openaudit(record)">打款</a>
           <!-- <a href="javascript:;" @click="detailvisible=true">查看</a> -->
@@ -94,8 +102,9 @@
         },
         params: {
           payType: null,
+          listType:2,
           agencyLevelId: null,
-          status: 1,
+          status: null,
           payDateStart: null,
           payDateEnd: null,
           searchKey: null,
@@ -132,7 +141,10 @@
           dataIndex: 'payTime'
         }, {
           title: '状态',
-          dataIndex: 'status'
+          dataIndex: 'status',
+          scopedSlots: {
+            customRender: 'status'
+          },
         }, {
           title: '操作',
           key: 'action',

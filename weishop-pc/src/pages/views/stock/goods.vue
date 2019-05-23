@@ -170,7 +170,8 @@
         }
       },
       opennew() {
-        this.detailvisible = true
+        this.detailvisible = true;
+        this.selectid=null;
         this.$refs.detail.form.resetFields();
       },
       async save() {

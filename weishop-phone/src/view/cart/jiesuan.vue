@@ -1,37 +1,37 @@
 <template>
     <div>
         <van-nav-bar title="结算" left-text="返回" left-arrow @click-left="onClickLeft" />
-        <van-cell-group style="margin-top:50px">
-            <van-cell icon="location-o" is-link @click="$router.push('/index/addresslist')">
-                <template slot="title" v-if="address&&address!={}">
+        <van-cell-group style="margin-top:50px" v-if="address">
+            <van-cell style="" icon="location-o" is-link @click="$router.push('/index/addresslist')">
+                <template slot="title" style="height: 65px;">
                     <span class="custom-text">{{address.name}}[{{address.tel}}]</span>
                     <div class="van-cell__label">{{address.address}}</div>
                 </template>
-                <template slot="title" v-else>
-                    <span>请选择地址</span>
-                </template>
             </van-cell>
         </van-cell-group>
+        <van-cell-group style="margin-top:50px" v-else>
+            <van-cell title="请填写地址" icon="location-o" is-link @click="$router.push('/index/addresslist')" />
+        </van-cell-group>
+
         <carditem @countchange="countchange" v-for="item in goods" :key="item.id" :title="item.name" :desc="item.spe"
             :count="item.number" :id="item.id" :price="item.price" :thumb="api+'api/AbpFile/Show?id='+item.file.id" />
-
         <van-cell-group style="margin-bottom:5px">
             <van-field v-model="message" label="买家备注" type="textarea" placeholder="请备注尺码颜色等信息" rows="2" autosize />
         </van-cell-group>
+
         <van-cell-group style="margin-bottom:5px">
             <van-cell title="商品金额" :value="totalPrice" />
-            <van-cell title="快递费用" value="￥0" />
+            <van-cell title="快递费用" :value="0" />
             <van-cell title="合计付款" :value="totalPrice" />
         </van-cell-group>
 
         <van-cell-group style="margin-bottom:5px">
-            <van-cell title="可用货款" value="￥0" />
-            <van-cell title="可用余额" value="￥0" />
+            <van-cell title="可用货款" :value="selfinfo.goodsPayment" />
+            <van-cell title="可用余额" :value="selfinfo.balance" />
         </van-cell-group>
         <div style="padding:20px">
             <van-button block type="primary" :loading="result.loading" @click="onSubmit">确认下单</van-button>
         </div>
-
     </div>
 </template>
 <style>
@@ -42,15 +42,6 @@
         top: 0;
     }
 
-    .van-cell__left-icon {
-        line-height: 45px;
-        font-size: 20px;
-    }
-
-    .van-cell__right-icon {
-        line-height: 45px;
-        font-size: 20px;
-    }
 
     .van-pull-refresh {
         bottom: 50px;
@@ -85,7 +76,11 @@
         },
         data() {
             return {
-                api:this.$http.api,
+                selfinfo:{
+                     goodsPayment:0,//可用获取
+                    balance:0,
+                },
+                api: this.$http.api,
                 result: {
                     loading: false
                 },
@@ -93,16 +88,19 @@
                 refreshing: false,
                 loading: false,
                 finished: false,
-
+                message: '',
             }
         },
         mounted() {
-            var userid = this.$store.state.loginInfo.user.id;
-            if (userid) {
-                this.$store.dispatch('getaddress', userid)
+            if (this.$store.state.loginInfo && this.$store.state.loginInfo.user) {
+                // var userid = this.$store.state.loginInfo.user.id;
+                // if (userid) {
+                //     this.$store.dispatch('getaddress', userid)
+                // }
+                this.gettotalPrice();
+                this.loadlist();
+                this.getinfo();
             }
-            this.gettotalPrice();
-            this.loadlist();
         },
         computed: {
             goods() {
@@ -113,28 +111,34 @@
             }
         },
         methods: {
-            async loadlist(){
-                var userid=this.$store.state.loginInfo.user.id;
-                var ret= await this.$http.Get('/api/services/app/B_MyAddress/GetList',{
-                    userId:userid,
-                    maxResultCount:99,
-                    skipCount:0
+            async getinfo() {
+                var ret = await this.$http.Get('/api/services/app/B_Agency/GetSelf');
+                if (ret.success) {
+                    this.selfinfo = ret.result;
+                }
+            },
+            async loadlist() {
+                var userid = this.$store.state.loginInfo.user.id;
+                var ret = await this.$http.Get('/api/services/app/B_MyAddress/GetList', {
+                    userId: userid,
+                    maxResultCount: 99,
+                    skipCount: 0
                 });
-                if(ret.success){
-                    this.list=[];
-                    for(var i in ret.result.items){
-                        var addressstr=ret.result.items[i].provinces+
-                        ret.result.items[i].city+ret.result.items[i].county+
-                        ret.result.items[i].addres
-                        var tem={
-                            id:ret.result.items[i].id,
+                if (ret.success) {
+                    this.list = [];
+                    for (var i in ret.result.items) {
+                        var addressstr = ret.result.items[i].provinces +
+                            ret.result.items[i].city + ret.result.items[i].county +
+                            ret.result.items[i].addres
+                        var tem = {
+                            id: ret.result.items[i].id,
                             //name:ret.result.items[i].name,
-                            name:'',
-                            tel:ret.result.items[i].tel,
-                            address:addressstr,
+                            name: '',
+                            tel: ret.result.items[i].tel,
+                            address: addressstr,
                         }
-                        if(ret.result.items[i].isDefault){
-                             this.$store.commit('setaddress',tem);
+                        if (ret.result.items[i].isDefault) {
+                            this.$store.commit('setaddress', tem);
                         }
                     }
                 }
@@ -160,7 +164,6 @@
 
             },
             async onSubmit() {
-                debugger;
                 if (!this.goods || this.goods.length == 0) {
                     Toast.fail('购物车为空');
                     return;
@@ -178,7 +181,7 @@
                     goodsPayment: this.totalPrice,
                     balance: 0,
                     addressId: this.address.id,
-                    remark:' '+ this.message,
+                    remark: ' ' + this.message,
                     goods: []
                 }
                 for (var i in this.goods) {

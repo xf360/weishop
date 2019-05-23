@@ -41,15 +41,15 @@
       </a-table>
     </a-card>
     <a-modal destroyOnClose :maskClosable="false" title="详情" v-model="detailvisible" :width="800">
-      <a-select :defaultValue="null" style="width: 120px">
+      <a-select v-model="detailparams.businessType" :defaultValue="null" style="width: 120px" @change="loaddetail">
         <a-select-option :value="null">全部类型</a-select-option>
-        <a-select-option value="">进货</a-select-option>
-        <a-select-option value="">提货</a-select-option>
-        <a-select-option value="">提现</a-select-option>
-        <a-select-option value="">充值</a-select-option>
-        <a-select-option value="">团队管理奖金</a-select-option>
-        <a-select-option value="">保证金</a-select-option>
-        <a-select-option value="">推荐奖金</a-select-option>
+        <a-select-option :value="1">进货</a-select-option>
+        <a-select-option :value="2">提货</a-select-option>
+        <a-select-option :value="3">提现</a-select-option>
+        <a-select-option :value="4">充值</a-select-option>
+        <a-select-option :value="5">团队管理奖金</a-select-option>
+        <a-select-option :value="6">保证金</a-select-option>
+        <a-select-option :value="7">推荐奖金</a-select-option>
       </a-select>
       <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="detailcolumns"
       :rowKey="record => record.id" :dataSource="detaillist" :loading="loading" @change="detailpagechange"
@@ -74,7 +74,12 @@
     data() {
       return {
         pagination: {},
-        detailparams:{},
+        detailparams:{
+           businessType:null,
+           userId:null,
+          maxResultCount:99,
+          skipCount:0
+        },
         params: {
           searchKey: null,
           maxResultCount: 10,
@@ -108,18 +113,27 @@
           title: '代理等级',
           dataIndex: 'agencyLevelName'
         }, {
-          title: '保证金',
-          dataIndex: 'deposite'
+          title: '可用余额',
+          dataIndex: 'blance'
         }, {
           title: '充值金额',
           dataIndex: 'orderInAmout'
         }, {
+          title: '可用货款',
+          dataIndex: 'goodsPayment'
+        }, {
           title: '提现金额',
           dataIndex: 'withdrawalAmout'
         }, {
-          title: '奖励金额',
+          title: '推荐奖',
           dataIndex: 'inviteAmout'
         }, {
+          title: '下级提货奖',
+          dataIndex: 'childOrderinOutAmout'
+        }, {
+          title: '团队奖',
+          dataIndex: 'teamBonus'
+        },{
           title: '操作',
           key: 'action',
           scopedSlots: {
@@ -152,17 +166,16 @@
       },
       async opendetail(row) {
         this.selectid = row.userId
-        var ret= await this.$http.Get('/api/services/app/B_Order/GetAgencyMoneyDetailList',{
-          businessType:0,
-          userId:row.userId,
-          maxResultCount:99,
-          skipCount:0
-        })
+        this.detailparams.userId=row.userId
+        await this.loaddetail();
+        this.detailvisible = true
+      },
+      async loaddetail(){
+        var ret= await this.$http.Get('/api/services/app/B_Order/GetAgencyMoneyDetailList',this.detailparams)
         if(ret.success){
           this.detaillist=ret.result.items;
         }
-        this.detailvisible = true
-      },
+      }
     }
   }
 </script>

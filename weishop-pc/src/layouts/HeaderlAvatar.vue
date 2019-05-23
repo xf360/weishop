@@ -5,7 +5,7 @@
       <span>{{currUser.name}}</span>
     </span>
     <a-menu style="width: 150px" slot="overlay" @click="click">
-      <a-menu-item>
+      <!-- <a-menu-item>
         <a-icon type="user" />
         <span>个人中心</span>
       </a-menu-item>
@@ -13,7 +13,7 @@
         <a-icon type="setting" />
         <span>设置</span>
       </a-menu-item>
-      <a-menu-divider />
+      <a-menu-divider /> -->
       <a-menu-item key="loginout">
         <a-icon type="poweroff" />
         <span>退出登录</span>

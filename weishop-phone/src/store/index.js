@@ -19,16 +19,16 @@ export default new Vuex.Store({
             })
         },
         //
-        getaddress(context,userid){
-            http.Get('/api/services/app/B_MyAddress/GetList',{
-                UserId:userid,
-                IsDefault:true,
-            }).then(function (data) {
-                if (data.success&&data.result.item.length>0) {
-                    context.commit('setaddress', data.result.item[0])
-                }
-            })
-        }
+        // getaddress(context,userid){
+        //     http.Get('/api/services/app/B_MyAddress/GetList',{
+        //         UserId:userid,
+        //         IsDefault:true,
+        //     }).then(function (data) {
+        //         if (data.success&&data.result.items.length>0) {
+        //             context.commit('setaddress', data.result.items[0])
+        //         }
+        //     })
+        // }
     },
     mutations: {
         setuser(state, loginInfo) {
