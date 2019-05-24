@@ -11,7 +11,6 @@
               @addcart="addcart"  :id="item.id" :price="item.price" :oldprice="item.pirce1" :thumb="api+'api/AbpFile/Show?id='+item.file.id" />
         </div>
         <div v-if="!goods||goods.length==0"><center>暂无数据</center></div>
-        <pre>{{goods}}</pre>
     </div>
 </template>
 
