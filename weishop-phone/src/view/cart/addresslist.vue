@@ -44,8 +44,7 @@
                         ret.result.items[i].addres
                         var tem={
                             id:ret.result.items[i].id,
-                            //name:ret.result.items[i].name,
-                            name:'',
+                            name:ret.result.items[i].name,
                             tel:ret.result.items[i].tel,
                             address:addressstr,
                         }

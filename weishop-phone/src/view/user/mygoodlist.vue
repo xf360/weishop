@@ -248,7 +248,7 @@
 <style>
     .van-tabs .van-tab__pane {
         bottom: 50px;
-        position: fixed;
+        /* position: fixed; */
         overflow: auto;
         top: 90px;
     }

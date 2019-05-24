@@ -104,7 +104,7 @@
         bottom: 50px;
         position: fixed;
         overflow: auto;
-        top: 50px;
+        top: 45px;
     }
     .van-panel__content {
         padding: 1px 10px;

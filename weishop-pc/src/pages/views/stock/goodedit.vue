@@ -30,7 +30,7 @@
       </a-form-item>
       <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="商品类别" fieldDecoratorId="info.categroy"
         :fieldDecoratorOptions="{rules: [{ required: true, message: '请选择商品类别'}]}">
-        <a-cascader changeOnSelect placeholder="选择分类" :options="pctree" />
+        <a-cascader :changeOnSelect="false" placeholder="选择分类" :options="pctree" />
       </a-form-item>
       <!-- <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="商品小类" fieldDecoratorId="info.categroyId"
         :fieldDecoratorOptions="{rules: [{ required: true, message: '请选择商品小类'}]}">

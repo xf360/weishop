@@ -6,11 +6,12 @@
         <van-tabs @change="change">
             <van-tab :title="item.name" v-for="(item,index) in catory" :key="index"></van-tab>
         </van-tabs>
-        <div v-show="goods&&goods.length>0" style="background-color:#fff">
-            <gooditem v-for="(item,index) in goods" :key="index" :title="item.name" :desc="item.spe"
+        <div v-if="goods&&goods.length>0" style="background-color:#fff">
+            <gooditem  v-for="(item,index) in goods" :key="index" :title="item.name" :desc="item.spe"
               @addcart="addcart"  :id="item.id" :price="item.price" :oldprice="item.pirce1" :thumb="api+'api/AbpFile/Show?id='+item.file.id" />
         </div>
         <div v-if="!goods||goods.length==0"><center>暂无数据</center></div>
+        <pre>{{goods}}</pre>
     </div>
 </template>
 
@@ -45,6 +46,7 @@
             change(index){
                 var cid=this.catory[index].id;
                 this.loadlist(cid);
+                this.$forceUpdate()
             },
             addcart(id,count,price){
                 var good=this.goods.filter((item)=>item.id===id)[0]

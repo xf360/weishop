@@ -89,6 +89,7 @@
                 loading: false,
                 finished: false,
                 message: '',
+                address:null,
             }
         },
         mounted() {
@@ -106,9 +107,9 @@
             goods() {
                 return this.$store.getters.goods;
             },
-            address() {
-                return this.$store.getters.address;
-            }
+            // address() {
+            //     return this.$store.getters.address;
+            // }
         },
         methods: {
             async getinfo() {
@@ -118,6 +119,10 @@
                 }
             },
             async loadlist() {
+                this.address=this.$store.getters.address;
+                if(this.address){
+                    return;
+                }
                 var userid = this.$store.state.loginInfo.user.id;
                 var ret = await this.$http.Get('/api/services/app/B_MyAddress/GetList', {
                     userId: userid,
@@ -132,13 +137,13 @@
                             ret.result.items[i].addres
                         var tem = {
                             id: ret.result.items[i].id,
-                            //name:ret.result.items[i].name,
-                            name: '',
+                            name:ret.result.items[i].name,
                             tel: ret.result.items[i].tel,
                             address: addressstr,
                         }
                         if (ret.result.items[i].isDefault) {
                             this.$store.commit('setaddress', tem);
+                            this.address=tem;
                         }
                     }
                 }
@@ -198,7 +203,8 @@
                     Dialog.alert({
                         message: '恭喜你下单成功。'
                     }).then(() => {
-                        this.$router.go(-1)
+                        window.location.href='/#/index/cart';
+                        window.location.reload();
                     });
                 }
             },
