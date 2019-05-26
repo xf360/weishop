@@ -84,8 +84,6 @@ Vue.component(VueQrcode.name, VueQrcode);
             del(val) {
                 switch (val) {
                     case 'cell':
-                    debugger;
-                        
                         break;
                     case 'right':
                         Dialog.confirm({

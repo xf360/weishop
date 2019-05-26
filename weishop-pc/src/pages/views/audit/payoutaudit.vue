@@ -204,6 +204,7 @@
         if (ret.success) {
           this.auditvisible = false;
           this.loadlist();
+          this.loadstatic();
         }
       }, //审核通过
       async handleReasonOk() { //审核不通过并提交原因
@@ -218,6 +219,7 @@
             this.reasonvisible = false;
             this.detailvisible=false;
             this.loadlist()
+            this.loadstatic()
           } else {
 
           }

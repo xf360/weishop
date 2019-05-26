@@ -1,7 +1,7 @@
 <template>
-    <!-- 我的提货订单 -->
+    <!-- 下级进货订单 -->
     <div>
-        <van-nav-bar title="我的进货订单" left-arrow @click-left="$router.go(-1)" @click-right="onClickRight" />
+        <van-nav-bar title="下级进货订单" left-arrow @click-left="$router.go(-1)" @click-right="onClickRight" />
         <van-tabs @change="change">
             <van-tab :title="item.name" v-for="(item,index) in catory" :key="index"></van-tab>
         </van-tabs>
@@ -83,6 +83,7 @@
             async loadlist() {
                 var ret = await this.$http.Get('/api/services/app/B_InOrder/GetB_InOrderListAsync', {
                     status: this.status,
+                    lowerUsers:true,
                     maxResultCount: 20,
                     skipCount: 0,
                 });

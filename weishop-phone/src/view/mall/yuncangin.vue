@@ -40,18 +40,18 @@
         },
         data() {
             return {
-                api:this.$http.api,
+                api: this.$http.api,
                 goods: [],
-                selfinfo:{
-                    goodsPayment:0,//可用获取
-                    balance:0,
+                selfinfo: {
+                    goodsPayment: 0, //可用获取
+                    balance: 0,
                 },
                 info: {
                     categroyId: '',
                     number: 0,
-                    goodsPayment: 0,//货款支付
-                    balance: 0,//余额支付
-                    all:0,
+                    goodsPayment: 0, //货款支付
+                    balance: 0, //余额支付
+                    all: 0,
                 }
             }
         },
@@ -61,38 +61,35 @@
         },
         methods: {
             async getgoods() {
-                var id=this.$route.query.id;
-                if(!id){
+                var id = this.$route.query.id;
+                if (!id) {
                     return;
                 }
-                var ret=await this.$http.Get('/api/services/app/B_CloudWarehouse/GetCWInventoryListAsync',{
-                    categroyPropertyId:1,
-                    categroyId:id,
-                    isActive:true,
-                    searchKey:'',
-                    maxResultCount:50,
-                    skipCount:0
+                var ret = await this.$http.Get('/api/services/app/B_CloudWarehouse/GetCWInventoryListAsync', {
+                    categroyPropertyId: 1,
+                    categroyId: id,
+                    isActive: true,
+                    searchKey: '',
+                    maxResultCount: 50,
+                    skipCount: 0
                 })
-                if(ret.success){
-                    this.goods=ret.result.items;
+                if (ret.success) {
+                    this.goods = ret.result.items;
                 }
             },
             addcart(id, value, price) {
-                debugger;
-                
                 this.info.categroyId = id;
                 this.info.number = value;
-                this.info.all=value * price;
-                if(this.info.all>(this.selfinfo.goodsPayment+this.selfinfo.balance)){
+                this.info.all = value * price;
+                if (this.info.all > (this.selfinfo.goodsPayment + this.selfinfo.balance)) {
                     Notify('货款和余额不足，请在我的钱包中进行充值。');
                     return;
                 }
-                if(this.info.all<=this.selfinfo.goodsPayment){
-                    this.info.goodsPayment=this.info.all;
-                }
-                else{
-                    this.info.goodshPayment=this.info.all;
-                    this.info.balance=this.info.all-this.info.goodsPayment;
+                if (this.info.all <= this.selfinfo.goodsPayment) {
+                    this.info.goodsPayment = this.info.all;
+                } else {
+                    this.info.goodshPayment = this.info.all;
+                    this.info.balance = this.info.all - this.info.goodsPayment;
                 }
             },
             async getinfo() {
@@ -102,19 +99,26 @@
                 }
             },
             async submit() {
-                if(!this.info.categroyId||!this.info.all||!this.info.number){
+                if (!this.info.categroyId || !this.info.all || !this.info.number) {
                     Notify('请先选择商品。');
                     return;
                 }
-                if(this.info.all>(this.selfinfo.goodsPayment+this.selfinfo.balance)){
+                if (this.info.all > (this.selfinfo.goodsPayment + this.selfinfo.balance)) {
                     Notify('货款和余额不足，请在我的钱包中进行充值。');
                     return;
                 }
                 var ret = await this.$http.Post('/api/services/app/B_InOrder/OrderIn', this.info);
                 if (ret.success) {
-                    await Dialog.alert({
-                        title: '下单成功'
-                    })
+                    if (ret.result === 1) {
+                        await Dialog.alert({
+                            title: '下单成功，上级缺货。'
+                        })
+                    }
+                    if (ret.result === 2) {
+                        await Dialog.alert({
+                            title: '下单成功。'
+                        })
+                    }
                     this.$router.go(-1)
                 }
             },

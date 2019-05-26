@@ -22,7 +22,7 @@
     export default {
         data(){
             return {
-                active:0
+                active:0,
             }
         },
         methods:{
@@ -30,9 +30,14 @@
                 this.active=active;
             }
         },
+        watch:{
+            // 'goodcount':function(){
+            //     debugger;
+            // }
+        },
         computed:{
             goodcount(){
-                return this.$store.getters.count;
+                return this.$store.state.count
             }
         },
         mounted(){

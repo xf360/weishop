@@ -39,8 +39,15 @@
         {{info.auditRemark}}
       </detail-list-item>
     </detail-list>
-    <a-modal destroyOnClose :maskClosable="false" :visible="showimg" :footer="null" @cancel="showimg=false">
-      <img v-if="showimg" alt="example" style="width: 100%" :src="showimgurl" />
+    <a-modal destroyOnClose width="800px" :maskClosable="false" :visible="showimg" @cancel="showimg=false">
+      <template slot="footer">
+        <a-button key="submit" type="primary" @click="rate">
+          旋转
+        </a-button>
+        <a-button key="back" @click="showimg=false">关闭</a-button>
+        
+      </template>
+      <img ref="img" width="700" v-if="showimg" alt="example" style="width: 100%" :src="showimgurl" />
     </a-modal>
   </div>
 </template>
@@ -57,6 +64,7 @@
         showimg: false,
         showimgurl: '',
         api: this.$http.api,
+        currentdeg:0,
         info: {}
       }
     },
@@ -70,6 +78,10 @@
       this.loaddetail()
     },
     methods: {
+      rate(){
+        this.currentdeg=this.currentdeg+90
+        this.$refs.img.style.transform='rotate('+this.currentdeg+'deg)';
+      },
       showbig(id){
         this.showimgurl= this.$http.api+'api/AbpFile/Show?id='+id;
         this.showimg=true;

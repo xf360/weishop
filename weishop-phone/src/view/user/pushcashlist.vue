@@ -11,12 +11,12 @@
             <van-tab title="未通过">
             </van-tab>
         </van-tabs>
-        <van-list v-model="loading" :finished="finished" finished-text="加载完成" @load="onLoad(0)">
+        <van-list v-model="loading" :finished="finished" finished-text="加载完成" style="margin-top: 40px;" @load="onLoad(0)">
             <van-cell-group v-for="(item,index) in datalist" :key="index">
-                <van-cell title="编号" :value="item.no" :label="item.payDate" />
-                <van-cell title="打款方式" :value="item.payType" />
+                <van-cell title="编号" :value="item.code" :label="item.payDate|dateformat" />
+                <van-cell title="打款方式" :value="item.payType===0?'支付宝':'银行转账'" />
                 <van-cell title="支付账户" :value="item.payAcount" />
-                <van-cell title="状态" :value="item.status" />
+                <van-cell title="状态" :value="item.status===0?'待审核':(item.status===1?'已通过':'未通过')" />
                 <van-cell title="打款金额">
                     <span slot="right-icon" style="color:#ff0000">￥{{item.payAmout}}</span>
                 </van-cell>

@@ -83,7 +83,6 @@
                     MaxResultCount:999,
                     SkipCount:0
                 })
-                debugger;
                 if(ret.success){
                 this.agentlist=ret.result.items;
                 this.agentlevelselect=this.agentlist[0]

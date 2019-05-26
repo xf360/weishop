@@ -6,6 +6,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
         cart: [],
+        count:0,
         loginInfo:{},
         cartaddress:null,
     },
@@ -44,20 +45,36 @@ export default new Vuex.Store({
             } else {
                 state.cart.push(good)
             }
+            state.count=0;
+            for(var i in state.cart){
+                state.count=state.count+state.cart[i].number
+            }
 
         },
         changecount(state, obj) {
             var has = state.cart.filter((item) => item.id === obj.id)[0];
             if (has) {
                 has.number = obj.count;
-
+            }
+            state.count=0;
+            for(var i in state.cart){
+                state.count=state.count+state.cart[i].number
+            }
+        },
+        remove(state,id){
+            for(var i in state.cart){
+                if(state.cart[i].id===id){
+                    state.cart.splice(i,1);
+                }
+            }
+            state.count=0;
+            for(var j in state.cart){
+                state.count=state.count+state.cart[j].number
             }
         }
     },
     getters: {
-        count: state => {
-            return state.cart.length;
-        },
+        
         goods: state => {
             return state.cart;
         },

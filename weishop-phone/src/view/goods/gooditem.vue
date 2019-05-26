@@ -46,10 +46,8 @@
             },
         },
         mounted(){
-            debugger;
         },
         destroyed(){
-            debugger;
         },
         data(){
             return {

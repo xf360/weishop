@@ -8,7 +8,7 @@
         <img v-if="info&&info.file" :src="api+'api/AbpFile/Show?id='+info.file.id" />
       </div>
       <div v-if="info">{{info.userName}}【{{info.agencyLevelName}}】
-        <div>销售额：0</div>
+        <div>销售额：0 <van-button  v-if="info.agencyLeavel>1" type="primary" size="mini" @click="push('/register3')">代理升级</van-button></div>
       </div>
 
     </div>
@@ -32,7 +32,7 @@
         我要进货
       </van-col>
       <van-col span="8">
-        <van-icon name="cash-back-record" @click.native="push('/index/inlog')" />
+        <van-icon name="cash-back-record" @click.native="push('/index/yunindex')" />
         云仓订单
       </van-col>
       <van-col span="8">

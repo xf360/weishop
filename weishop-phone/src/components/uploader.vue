@@ -58,6 +58,7 @@
                 this.filelist.push(file);
                 let formData = new FormData();
                 formData.append(this.name, file.file);
+                this.$emit("uploading",file);
                 var ret=await this.$http.Post('/api/AbpFile/Post',formData);
                  this.files.push(ret.result.data[0])
                 if(this.limit==1){
@@ -65,7 +66,8 @@
                 }else{
                     this.$emit("input",this.files)
                 }
-                
+                this.$emit("uploaded",this.files)
+                this.$forceUpdate();
             },
         }
     }

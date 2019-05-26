@@ -16,11 +16,11 @@
     import {
         NavBar,
         Checkbox,
-        Button
-
+        Button,
+        Toast
     } from 'vant';
 
-    Vue.use(NavBar).use(Checkbox).use(Button);
+    Vue.use(NavBar).use(Checkbox).use(Button).use(Toast);
     export default {
         data(){
             return {
@@ -30,6 +30,10 @@
         },
         methods:{
             click(){
+                if(!this.agree){
+                    Toast.fail('请先同意协议内容。');
+                    return;
+                }
                 this.$router.push("/register2?id="+this.$route.query.id)
             }
         }

@@ -25,7 +25,6 @@
         },
         methods: {
             select(item,index){
-                debugger;
                  this.$store.commit('setaddress',item);
             },
             onAdd() {},

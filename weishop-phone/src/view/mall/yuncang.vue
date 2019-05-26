@@ -6,11 +6,11 @@
         <div>
             <van-row style="text-align:center;padding:10px; background-color: #fff;">
                 <van-col span="12">
-                    <van-button type="primary" style="width:150px"
+                    <van-button type="primary" style="width:130px"
                         @click="$router.push('/index/yuncangin?id='+$route.query.id)">进货</van-button>
                 </van-col>
                 <van-col span="12">
-                    <van-button type="primary" style="width:150px"
+                    <van-button type="primary" style="width:130px"
                         @click="$router.push('/index/yuncangout?id='+$route.query.id)">提货</van-button>
                 </van-col>
             </van-row>

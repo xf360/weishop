@@ -25,8 +25,8 @@
           <a-input placeholder="请输入等级名称，不可重复。" />
         </a-form-item>
         <a-form-item :label-col="labelcol" :wrapper-col="wrappercol" label="层级" fieldDecoratorId="level"
-          :fieldDecoratorOptions="{rules: [{ required: true, message: '请选择层级'}]}">
-          <a-select placeholder="请选择层级">
+          :fieldDecoratorOptions="{rules: [{ required: true, message: '请输入层级。'}]}">
+          <!-- <a-select placeholder="请选择层级">
             <a-select-option :value="1">
               一级
             </a-select-option>
@@ -36,7 +36,8 @@
             <a-select-option :value="3">
               三级
             </a-select-option>
-          </a-select>
+          </a-select> -->
+          <a-input-number :min="1" :max="99" placeholder="请输入层级。" />
         </a-form-item>
       </a-form>
     </a-modal>

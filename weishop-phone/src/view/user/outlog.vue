@@ -41,13 +41,9 @@
         PullRefresh,
         NavBar
     } from 'vant';
-    import gooditem from '../goods/gooditem.vue'
     Vue.use(Tab).use(Tabs).use(Panel).use(List).use(PullRefresh).use(NavBar);
 
     export default {
-        components: {
-            gooditem
-        },
         data() {
             return {
                 api: this.$http.api,
@@ -104,7 +100,6 @@
                     skipCount: 0,
                 });
                 if (ret.success) {
-                    debugger;
                     this.list = ret.result.items;
                 }
             }

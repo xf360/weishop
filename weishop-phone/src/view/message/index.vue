@@ -19,8 +19,8 @@
                     <van-list v-model="loading" :finished="finished" finished-text="加载完成"
                         @load="loadnotice(0)">
                         <van-panel v-for="(item ,index) in noticedata" :key="index" :title="item.title" 
-                            :status="item.creationTime | dateformat">
-                            <p>{{item.statusTitle}}</p>
+                            :status="item.creationTime | dateformat" @click="detail(item.id)">
+                            <!-- <p>{{item.isRead?:''}}</p> -->
 
                         </van-panel>
                     </van-list>
@@ -55,6 +55,9 @@
             }
         },
         methods: {
+            detail(id){
+                alert(id)
+            },
             change(index){
                 if(index===0){
                     this.loadmessage()

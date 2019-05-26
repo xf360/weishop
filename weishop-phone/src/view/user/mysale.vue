@@ -87,7 +87,7 @@
         padding: 20px;
         text-align: center;
         font-size: 20px;
-        margin-top: 40px;
+        /* margin-top: 40px; */
         background-color: #fff;
         color: #666666;
     }
@@ -97,7 +97,7 @@
         display: grid;
         grid-template-columns: 40px auto 40px;
         border-bottom: 1px solid #F1F1F1;
-        position: fixed;
+        /* position: fixed; */
         top: 45px;
         left: 0px;
         right: 0px;
@@ -176,7 +176,7 @@
             async getsaleinfo() {
                 var ret = await this.$http.Get('/api/services/app/B_AgencySales/Get', this.parmars);
                 if (ret.success) {
-                    ret.saleinfo = ret.result;
+                    this.saleinfo = ret.result;
                 }
             },
             async getsalelist(){
@@ -184,7 +184,7 @@
                 this.listparmar.salesDateMonth=this.parmars.month;
                 var ret = await this.$http.Get('/api/services/app/B_AgencySales/GetList', this.listparmar);
                 if (ret.success) {
-                    ret.salelist = ret.result.items;
+                    this.salelist = ret.result.items;
                 }
             },
             pre() {

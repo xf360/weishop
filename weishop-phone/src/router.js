@@ -36,6 +36,13 @@ const routes = [{
       title: '邀请注册'
     }
   },
+    {
+    name: 'register3',
+    component: () => import('./view/user/register3.vue'),
+    meta: {
+      title: '账户升级'
+    }
+  },
   {
     name: 'mycash',
     component: () => import('./view/user/mycash.vue'),
@@ -127,6 +134,7 @@ const routes = [{
       title: '我要推广'
     }
   },
+
   {
     name: 'myadadd',
     component: () => import('./view/user/myadadd.vue'),
@@ -215,6 +223,22 @@ const routes = [{
         component: () => import('./view/user/outlog.vue'),
         meta: {
           title: '我的云仓提货'
+        }
+      },
+      {
+        name: 'yunindex',
+        path:'yunindex',
+        component: () => import('./view/user/yunindex.vue'),
+        meta: {
+          title: '云仓订单'
+        }
+      },
+      {
+        name: 'sublog',
+        path:'sublog',
+        component: () => import('./view/user/sublog.vue'),
+        meta: {
+          title: '下级订单'
         }
       },
       {

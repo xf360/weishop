@@ -105,7 +105,7 @@
         },
         computed: {
             goods() {
-                return this.$store.getters.goods;
+                return this.$store.getters.goods.filter(ite=>ite.number>0);
             },
             // address() {
             //     return this.$store.getters.address;
