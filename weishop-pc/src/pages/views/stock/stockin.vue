@@ -58,7 +58,9 @@
         detailvisible: false,
         selectid: null,
          list: [],
-         pagination:{},
+         pagination:{
+           total:0,
+         },
          params:{
           status:null,
           lowerUsers:true,
@@ -124,7 +126,8 @@
         var ret=await this.$http.Get('/api/services/app/B_InOrder/GetList',this.params);
         this.loading=false;
         if(ret.success){
-          this.list=ret.result;
+          this.list=ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
       onDelete() {},

@@ -42,7 +42,9 @@
       return {
         selectid: null,
         list:[],
-        pagination:{},
+        pagination:{
+              total:0,
+          },
         params:{
           maxResultCount:10,
           skipCount:0,
@@ -135,6 +137,7 @@
         this.loading=false
         if(ret.success){
           this.list=ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
 

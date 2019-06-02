@@ -7,12 +7,12 @@
             <van-cell>
                 <template slot="title">
                     <span class="custom-text">头像：</span>
-                    <uploader :limit="1" v-model="info.file"></uploader>
+                    <uploader  @uploading="cansave=false" @uploaded="cansave=true" :limit="1" v-model="info.file"></uploader>
                 </template>
             </van-cell>
         </van-cell-group>
         <div class="loginbt">
-            <van-button block @click="onSubmit">保存</van-button>
+            <van-button :disabled="!cansave" block @click="onSubmit">保存</van-button>
         </div>
     </div>
 </template>
@@ -41,6 +41,7 @@
         },
         data() {
             return {
+                cansave:true,
                 info: {
                     file: null
                 }

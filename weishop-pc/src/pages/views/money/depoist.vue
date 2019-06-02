@@ -51,11 +51,12 @@
           </a-form-item>
         </a-form>
       </div>
-       <a-alert style="margin-top:20px"
-        :message="`待打款人数：${static.waitAuditCount}，已打款人数：${static.passCount}，未打款人数:${static.noPassCount}。已打款金额：${static.passAmout}，未打款金额：${static.waitAmout}。`" type="info"
-        :show-icon="true" />
-      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
-        :loading="loading" @change="pagechange" :pagination="pagination">
+      <a-alert style="margin-top:20px"
+        :message="`待打款人数：${static.waitAuditCount}，已打款人数：${static.passCount}，未打款人数:${static.noPassCount}。已打款金额：${static.passAmout}，未打款金额：${static.waitAmout}。`"
+        type="info" :show-icon="true" />
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns"
+        :rowKey="record => record.id" :dataSource="list" :loading="loading" @change="pagechange"
+        :pagination="pagination">
         <span slot="status" slot-scope="text">
           <span v-if="text===1">待打款</span>
           <span v-if="text===2">已打款</span>
@@ -89,20 +90,23 @@
     },
     data() {
       return {
-        auditvisible:false,
-        selectid:null,
-         list: [],
+        auditvisible: false,
+        selectid: null,
+        list: [],
+        pagination: {
+          total: 0,
+        },
         levellist: [],
         static: {
           waitAuditCount: 0,
           passCount: 0,
           noPassCount: 0,
-          passAmout:0,
-          waitAmout:0
+          passAmout: 0,
+          waitAmout: 0
         },
         params: {
           payType: null,
-          listType:2,
+          listType: 2,
           agencyLevelId: null,
           status: null,
           payDateStart: null,
@@ -115,7 +119,7 @@
         columns: [{
           title: '提现单号',
           dataIndex: 'code'
-        },  {
+        }, {
           title: '姓名',
           dataIndex: 'userName'
         }, {
@@ -133,7 +137,7 @@
         }, {
           title: '卡号',
           dataIndex: 'bankNumber'
-        },{
+        }, {
           title: '金额',
           dataIndex: 'amout'
         }, {
@@ -164,7 +168,7 @@
         this.params.startDate = datastr[0] + ' 00:00:00'
         this.params.endDate = datastr[1] + ' 23:59:59'
       },
-       async loadlevel() {
+      async loadlevel() {
         this.loading = true
         var ret = await this.$http.Get('/api/services/app/B_AgencyLevel/GetList', {
           MaxResultCount: 999,
@@ -192,16 +196,17 @@
         this.loading = false
         if (ret.success) {
           this.list = ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
-      openaudit(row){
-        this.selectid=row.id
-        this.auditvisible=true
+      openaudit(row) {
+        this.selectid = row.id
+        this.auditvisible = true
       },
-      async auditpass(){
-        var ret=await this.$refs.depoistaudit.submit();
-        if(ret){
-          this.auditvisible=false;
+      async auditpass() {
+        var ret = await this.$refs.depoistaudit.submit();
+        if (ret) {
+          this.auditvisible = false;
           this.loadlist()
         }
       }

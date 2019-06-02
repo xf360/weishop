@@ -73,7 +73,9 @@
     },
     data() {
       return {
-        pagination: {},
+        pagination: {
+          total:0,
+        },
         detailparams:{
            businessType:null,
            userId:null,
@@ -157,6 +159,7 @@
         this.loading = false;
         if (ret.success) {
           this.list = ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
       async loaddetail() {

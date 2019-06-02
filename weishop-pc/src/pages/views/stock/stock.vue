@@ -99,7 +99,9 @@
         detailvisible: false,
         selectid: null,
         pctree: [],
-        pagination: {},
+        pagination: {
+          total:0,
+        },
         list: [],
         params: {
           maxResultCount: 10,
@@ -215,6 +217,7 @@
         this.loading = false
         if (ret.success) {
           this.list = ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
       onDelete() {},

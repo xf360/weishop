@@ -106,7 +106,9 @@
         auditvisible: false,
         selectid: null,
         list: [],
-        pagination:{},
+        pagination:{
+          total:0,
+        },
         levellist: [],
         static: {
           waitAuditCount: 0,
@@ -209,6 +211,7 @@
         this.loading = false
         if (ret.success) {
           this.list = ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
       openaudit(row) {

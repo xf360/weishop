@@ -101,6 +101,9 @@
           passCount: 0,
           noPassCount: 0,
         },
+        pagination:{
+          total:0,
+        },
         params: {
           payType: null,
           listType:2,
@@ -189,6 +192,7 @@
         this.loading = false
         if (ret.success) {
           this.list = ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
       openaudit(row) {

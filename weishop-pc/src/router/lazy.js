@@ -165,6 +165,12 @@ const routers = new Router({
               icon: 'none'
             },
             {
+              path: '/money/bonuses',
+              name: '奖励设置',
+              component: () => import('@/pages/views/money/bonuses.vue'),
+              icon: 'none'
+            },
+            {
               path: '/money/account',
               name: '账号设置',
               component: () => import('@/pages/views/money/account.vue'),
