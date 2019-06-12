@@ -1,25 +1,40 @@
-function list2tree (source, pid) {
+function list2tree(source, pid, option) {
+  if (!option) {
+    option = {
+      sourcePid: 'p_Id', //原数据父键
+      sourceKey: 'id', //原数据主键
+      sourceTitle:'name',//
+      targetKey:'value',
+      targetTitle:'name',
+      targetChildren:'children'
+    }
+  }
   if (!source) {
     return []
   }
   var ret = []
-  var list = source.filter(item => item.p_Id === pid)
+  var list = source.filter(item => item[option.sourcePid] === pid)
   if (!list || list.length == 0) {
     return []
   }
   for (var index in list) {
-    var tmp = {
-      value: list[index].id,
-      label: list[index].name,
-      children: []
-    }
-    var sublist = list2tree(source, tmp.value)
-    tmp.children = sublist
+    // var tmp = {
+    //   value: list[index].id,
+    //   label: list[index].name,
+    //   children: []
+    // }
+    var tmp={};
+    tmp[option.targetKey]=list[index][option.sourceKey];
+    tmp[option.targetTitle]=list[index][option.sourceTitle];
+    tmp[option.targetChildren]=[];
+    var sublist = list2tree(source, tmp[option.targetKey],option)
+    tmp[option.targetChildren] = sublist
     ret.push(tmp)
   }
   return ret
 }
-function list2treetable (source, pid) {
+
+function list2treetable(source, pid) {
   if (!source) {
     return []
   }
@@ -29,7 +44,7 @@ function list2treetable (source, pid) {
     return null
   }
   for (var index in list) {
-    var tmp=list[index];
+    var tmp = list[index];
     var sublist = list2treetable(source, tmp.id)
     tmp.children = sublist
     ret.push(tmp)
