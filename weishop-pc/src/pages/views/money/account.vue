@@ -81,6 +81,9 @@
           maxResultCount:10,
           skipCount:0,
         },
+        pagination:{
+              total:0,
+          },
         list:[],
         loading: false,
         columns: [{
@@ -134,6 +137,7 @@
         this.loading=false
         if(ret.success){
           this.list=ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
       async upordown(id){

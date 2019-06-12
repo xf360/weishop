@@ -26,12 +26,15 @@
             </a-select>
           </a-form-item>
           <a-form-item label="状态">
-            <a-select style="width:100px" placeholder="选择状态" allowClear>
+            <a-select v-model="params.status" style="width:100px" placeholder="选择状态" allowClear>
               <a-select-option :value="1">
-                正常
+                待打款
               </a-select-option>
               <a-select-option :value="2">
-                异常
+                已打款
+              </a-select-option>
+              <a-select-option :value="4">
+                打款异常
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -48,11 +51,17 @@
           </a-form-item>
         </a-form>
       </div>
-       <a-alert style="margin-top:20px"
-        :message="`待打款人数：${static.waitAuditCount}，已打款人数：${static.passCount}，未打款人数:${static.noPassCount}。已打款金额：${static.passAmout}，未打款金额：${static.waitAmout}。`" type="info"
-        :show-icon="true" />
-      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns" :rowKey="record => record.id" :dataSource="list"
-        :loading="loading" @change="pagechange" :pagination="pagination">
+      <a-alert style="margin-top:20px"
+        :message="`待打款人数：${static.waitAuditCount}，已打款人数：${static.passCount}，未打款人数:${static.noPassCount}。已打款金额：${static.passAmout}，未打款金额：${static.waitAmout}。`"
+        type="info" :show-icon="true" />
+      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns"
+        :rowKey="record => record.id" :dataSource="list" :loading="loading" @change="pagechange"
+        :pagination="pagination">
+        <span slot="status" slot-scope="text">
+          <span v-if="text===1">待打款</span>
+          <span v-if="text===2">已打款</span>
+          <span v-if="text===4">打款异常</span>
+        </span>
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="openaudit(record)">打款</a>
           <!-- <a href="javascript:;" @click="detailvisible=true">查看</a> -->
@@ -81,21 +90,25 @@
     },
     data() {
       return {
-        auditvisible:false,
-        selectid:null,
-         list: [],
+        auditvisible: false,
+        selectid: null,
+        list: [],
+        pagination: {
+          total: 0,
+        },
         levellist: [],
         static: {
           waitAuditCount: 0,
           passCount: 0,
           noPassCount: 0,
-          passAmout:0,
-          waitAmout:0
+          passAmout: 0,
+          waitAmout: 0
         },
         params: {
           payType: null,
+          listType: 2,
           agencyLevelId: null,
-          status: 1,
+          status: null,
           payDateStart: null,
           payDateEnd: null,
           searchKey: null,
@@ -106,7 +119,7 @@
         columns: [{
           title: '提现单号',
           dataIndex: 'code'
-        },  {
+        }, {
           title: '姓名',
           dataIndex: 'userName'
         }, {
@@ -124,7 +137,7 @@
         }, {
           title: '卡号',
           dataIndex: 'bankNumber'
-        },{
+        }, {
           title: '金额',
           dataIndex: 'amout'
         }, {
@@ -132,7 +145,10 @@
           dataIndex: 'payTime'
         }, {
           title: '状态',
-          dataIndex: 'status'
+          dataIndex: 'status',
+          scopedSlots: {
+            customRender: 'status'
+          },
         }, {
           title: '操作',
           key: 'action',
@@ -152,7 +168,7 @@
         this.params.startDate = datastr[0] + ' 00:00:00'
         this.params.endDate = datastr[1] + ' 23:59:59'
       },
-       async loadlevel() {
+      async loadlevel() {
         this.loading = true
         var ret = await this.$http.Get('/api/services/app/B_AgencyLevel/GetList', {
           MaxResultCount: 999,
@@ -180,16 +196,17 @@
         this.loading = false
         if (ret.success) {
           this.list = ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
-      openaudit(row){
-        this.selectid=row.id
-        this.auditvisible=true
+      openaudit(row) {
+        this.selectid = row.id
+        this.auditvisible = true
       },
-      async auditpass(){
-        var ret=await this.$refs.depoistaudit.submit();
-        if(ret){
-          this.auditvisible=false;
+      async auditpass() {
+        var ret = await this.$refs.depoistaudit.submit();
+        if (ret) {
+          this.auditvisible = false;
           this.loadlist()
         }
       }

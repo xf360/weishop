@@ -171,7 +171,6 @@
         },
         methods: {
             async getsaleinfo() {
-                debugger;
                 if(!this.$route.query.id){
                     return;
                 }

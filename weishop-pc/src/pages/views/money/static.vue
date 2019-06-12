@@ -86,7 +86,9 @@
       return {
         detailvisible:false,
         selectid:null,
-        pagination:{},
+        pagination:{
+              total:0,
+          },
         levellist: [],
         params: {
           maxResultCount: 10,
@@ -157,6 +159,7 @@
         this.loading=false;
         if(ret.success){
           this.list=ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
       async loaddetail(){

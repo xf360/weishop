@@ -21,7 +21,7 @@
             <van-field v-model="info.pNumber" required clearable label="身份证号：" placeholder="请输入身份证号" />
             <!-- <van-cell class="van-cell--required" title="国家：">
                 <template slot="right-icon">
-                    <select required v-model="info.country" style="width:250px">
+                    <select required v-model="info.country" style="min-width:200px">
                         <option value="001">中国</option>
                         <option value="002">中国香港</option>
                         <option value="003">中国澳门</option>
@@ -32,14 +32,16 @@
             <van-field @click="areaclick" v-model="info.areaname" required readonly="readonly" clearable label="地区："
                 placeholder="省/市/区" />
             <van-field v-model="info.address" clearable label="详细地址：" required placeholder="请输入详细地址" />
-            <van-cell class="van-cell--required" title="打款方式：">
+            <!-- <van-cell class="van-cell--required" title="打款方式：">
                 <template slot="right-icon">
-                    <select v-model="info.payType" required style="width:250px" @change="loadpay()">
+                    <select v-model="info.payType" required style="min-width:200px;" @change="loadpay()">
                         <option :value="0">支付宝</option>
                         <option :value="1">银行转账</option>
                     </select>
                 </template>
-            </van-cell>
+            </van-cell> -->
+            <van-field @click="payshow=true" :value="info.payType===0?'支付宝':'银行转账'" required readonly="readonly" clearable label="打款方式："
+                placeholder="打款方式" />
             <van-field v-model="info.payAmout" required label="打款金额：" />
             <van-field v-if="info.payType===0" v-model="info.payAcount" required clearable label="支付宝："
                 placeholder="请输入支付宝号" />
@@ -54,19 +56,19 @@
             <van-cell class="van-cell--required">
                 <template slot="title">
                     <span class="custom-text">头像：</span>
-                    <uploader :limit="1" v-model="info.touxiangFile"></uploader>
+                    <uploader @uploading="cansave=false" @uploaded="cansave=true" :limit="1" v-model="info.touxiangFile"></uploader>
                 </template>
             </van-cell>
             <van-cell class="van-cell--required">
                 <template slot="title">
                     <span class="custom-text">打款凭证（1-2张）：</span>
-                    <uploader :limit="2" v-model="info.credentFiles"></uploader>
+                    <uploader @uploading="cansave=false" @uploaded="cansave=true" :limit="2" v-model="info.credentFiles"></uploader>
                 </template>
             </van-cell>
             <van-cell class="van-cell--required">
                 <template slot="title">
                     <span class="custom-text">手持证件（1-2张）：</span>
-                    <uploader :limit="2" v-model="info.handleCredentFiles"></uploader>
+                    <uploader @uploading="cansave=false" @uploaded="cansave=true" :limit="2" v-model="info.handleCredentFiles"></uploader>
                 </template>
             </van-cell>
         </van-cell-group>
@@ -85,7 +87,7 @@
             </van-cell-group>
         </div>
         <center style="margin:10px;">
-            <van-button type="primary" style="width:150px" @click="submit" :disabled="disabled">提交</van-button>
+            <van-button type="primary" style="width:150px" @click="submit" :disabled="!cansave" :loading="loading">提交</van-button>
         </center>
         <van-popup v-model="show" position="bottom">
             <van-area :area-list="areaList" @confirm="areaok" @cancel="show=false;" />
@@ -93,6 +95,9 @@
         <van-popup v-model="timeshow" position="bottom">
             <van-datetime-picker :min-date="minDate" :formatter="formatter" type="date" @confirm="timeok"
                 @cancel="timeshow=false;" />
+        </van-popup>
+        <van-popup v-model="payshow" position="bottom">
+            <van-picker :columns="paytypes" @change="onpayChange" />
         </van-popup>
     </div>
 </template>
@@ -124,12 +129,15 @@
         },
         data() {
             return {
+                cansave:true,
                 show: false,
                 areaList: area,
+                loading:false,
                 timeshow: false,
-                disabled: false,
                 userinfo: {},
                 payinfo: [],
+                paytypes:['支付宝','银行转账'],
+                payshow:false,
                 minDate: new Date(2019, 4, 1),
                 agentinfo: {},
                 sendwaiting:'',
@@ -163,8 +171,10 @@
             }
         },
         methods: {
+            onpayChange(picker, value, index){
+                this.info.payType=index;
+            },
             async send() {
-                debugger;
                 if (!this.info.tel) {
                     Toast.fail('请先填写手机号。');
                     return;
@@ -232,7 +242,7 @@
             async loadpay() {
 
                 var ret = await this.$http.Get('/api/services/app/B_ManagerPayAccount/GetList', {
-                    type: this.info.payType,
+                    //type: this.info.payType,
                     maxResultCount: 10,
                     skipCount: 0
                 })
@@ -313,8 +323,9 @@
                     Toast.fail('请上传手持证件');
                     return;
                 }
-                this.disabled = true;
+                this.loading=true;
                 var ret = await this.$http.Post('/api/services/app/B_AgencyApply/Create', this.info);
+                 this.loading=false;
                 if (ret.success) {
                     Dialog.alert({
                         message: '恭喜你提交成功，请等待管理员审核。'
@@ -322,7 +333,6 @@
                         this.$router.push('login')
                     });
                 } else {
-                    this.disabled = false;
                 }
             },
             timeok(val) {

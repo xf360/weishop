@@ -2,7 +2,7 @@
     <div>
         <van-nav-bar title="我的钱包" :right-text="righttext" left-arrow @click-left="onClickLeft" @click-right="onClickRight" />
         <van-tabs @change="change">
-            <van-tab title="余额">
+            <van-tab title="余额" >
                 <!-- <van-pull-refresh v-model="refreshing" @refresh="onRefresh()" style="top:50px"> -->
                 <!-- <van-list style="margin-top:50px"> -->
                     <div class="box">
@@ -11,10 +11,10 @@
                     </div>
 
                     <van-panel v-for="(item,index) in banlcelist" :key="index" :title="`类型:${item.type===0?'支出':'充值'}`"
-                        :desc="item.createTime" :status="item.status">
+                        :desc="item.createTime|dateformat" :status="item.status">
                         <div class="cont">
-                            <p style="color:green" v-if="item.type==1">金额：+ {{item.money}}</p>
-                            <p style="color:red" v-if="item.type==0">金额：- {{item.money}}</p>
+                            <p style="color:red" v-if="item.inOrOut==1">金额：- {{item.amout}}</p>
+                            <p  style="color:green" v-if="item.inOrOut==0">金额：+ {{item.money}}</p>
                             <p>订单号:{{item.orderNo}}</p>
                         </div>
                     </van-panel>
@@ -30,10 +30,10 @@
                         <van-cell title="货款充值" icon="location-o" is-link @click="chongzhi"/>
                     </van-cell-group>
                     <van-panel v-for="(item,index) in goodpaymentlist" :key="index" :title="`类型:${item.type===0?'支出':'充值'}`"
-                        :status="item.createTime">
+                        :status="item.createTime|dateformat">
                         <div class="cont">
-                            <p style="color:green" v-if="item.type==1">金额：+ {{item.money}}</p>
-                            <p style="color:red" v-if="item.type==0">金额：- {{item.money}}</p>
+                            <p style="color:red" v-if="item.inOrOut==1">金额：- {{item.amout}}</p>
+                            <p style="color:green"  v-if="item.inOrOut==0">金额：+ {{item.amout}}</p>
                             <p>订单号:{{item.orderNo}}</p>
                         </div>
                     </van-panel>
@@ -43,6 +43,9 @@
     </div>
 </template>
 <style>
+.van-tabs .van-tab__pane{
+    position:initial !important;
+}
     .box {
         /* display: grid;
         grid-template-columns: 50% 50%; */

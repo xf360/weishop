@@ -11,10 +11,11 @@
     import {
         NavBar,
         AddressEdit,
-        Dialog
+        Dialog,
+        Toast
     } from 'vant';
 
-    Vue.use(NavBar).use(AddressEdit).use(Dialog);
+    Vue.use(NavBar).use(AddressEdit).use(Dialog).use(Toast);
     import area from '../../utils/area.js'
     export default {
         data() {
@@ -64,6 +65,10 @@
                     tel: info.tel,
                     isDefault: info.isDefault,
                     name: info.name
+                }
+                if(!address.consignee){
+                    Toast.fail('请填写邮政编码。');
+                    return;
                 }
                 if (!id) {
                     var ret = await this.$http.Post('/api/services/app/B_MyAddress/Create', address);

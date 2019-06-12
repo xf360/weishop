@@ -86,6 +86,7 @@
     line-height: 18px;
     margin: 5px;
 }
+
 .card-title{
     font-size: 14px;
         line-height: 16px;
@@ -102,7 +103,8 @@
         grid-template-columns: 100px auto;
         height: 90px;
         margin: 10px;
-        font-size: 12px
+        font-size: 12px;
+        background-color: #fff;
     }
 
     .card-img {

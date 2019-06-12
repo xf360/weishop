@@ -8,7 +8,8 @@
         </a-button>
       </div>
       <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" bordered :columns="columns"
-        :rowKey="record => record.id" :dataSource="data" :loading="loading">
+        :rowKey="record => record.id" :dataSource="data" :loading="loading" @change="pagechange"
+          :pagination="pagination">
         <span slot="action" slot-scope="text, record">
           <!-- <a-popconfirm title="你确定要删除？" @confirm="del(record)">
             <a-icon slot="icon" type="question-circle-o" style="color: red" />
@@ -82,6 +83,9 @@
         labelcol: {
           span: 5
         },
+        pagination:{
+              total:0,
+          },
         wrappercol: {
           span: 19
         },

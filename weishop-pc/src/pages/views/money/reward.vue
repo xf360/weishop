@@ -20,7 +20,7 @@
           <template v-else>{{text}}</template>
         </template>
         <template slot="name7" slot-scope="text, record">
-          <a-input-number :min="0" :max="100"  v-if="record.editable" style="margin: -5px 0" :value="text"
+          <a-input-number :min="0" :max="1" :precision="4" :step="0.1" v-if="record.editable" style="margin: -5px 0" :value="text"
             @change="e => handleChange(e, record.id,'discount')" />
           <template v-else>{{text}}</template>
         </template>
@@ -42,7 +42,9 @@
       return {
         selectid: null,
         list:[],
-        pagination:{},
+        pagination:{
+              total:0,
+          },
         params:{
           maxResultCount:10,
           skipCount:0,
@@ -94,7 +96,6 @@
     },
     methods: {
       handleChange(value, key, column) {
-        debugger;
         const newData = [...this.list]
         const target = newData.filter(item => key === item.id)[0]
         if (target) {
@@ -106,11 +107,10 @@
         var ret=await this.$http.Put('/api/services/app/B_AgencyLevel/Update',row);
         if(ret.success){
           this.loadlist();
-          this.cancel();
+          this.cancel(row);
         }
       },
       edit(row) {
-        debugger;
         const newData = [...this.list]
         const target = newData.filter(item => row.id === item.id)[0]
         if (target) {
@@ -137,6 +137,7 @@
         this.loading=false
         if(ret.success){
           this.list=ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
 

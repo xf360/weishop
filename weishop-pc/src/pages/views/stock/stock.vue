@@ -47,9 +47,9 @@
         </a-form>
       </div>
 
-      <a-table :locale="{emptyText: '暂无数据'}" style="margin-top:20px" :columns="columns" :dataSource="list" :loading="loading" @change="pagechange"
+      <a-table ref="table" :locale="{emptyText: '暂无数据'}" style="margin-top:20px" :columns="columns" :dataSource="list" :loading="loading" @change="pagechange"
         :pagination="pagination" @expand="expand">
-        <a-table :locale="{emptyText: '暂无数据'}" slot="expandedRowRender" :columns="stockcolumns" :dataSource="stacklist" slot-scope="text"
+        <a-table :locale="{emptyText: '暂无数据'}" slot="expandedRowRender" :columns="stockcolumns" :dataSource="record.sub" slot-scope="record"
           :pagination="false">
           <span slot="creationTime" slot-scope="text">
           <span>{{text|dateformat}}</span>
@@ -83,7 +83,6 @@
       </a-form-item>
       </a-form>
     </a-modal>
-
   </div>
 </template>
 <script>
@@ -100,7 +99,9 @@
         detailvisible: false,
         selectid: null,
         pctree: [],
-        pagination: {},
+        pagination: {
+          total:0,
+        },
         list: [],
         params: {
           maxResultCount: 10,
@@ -176,12 +177,12 @@
         var ret=await this.$http.Post('/api/services/app/B_InventoryAddRecord/Confirm',{id:id});
         if(ret.success){
           this.$message.success('操作成功。');
-          this.getstacklist();
+          this.getstacklist(this.selectid);
         }
       },
       async expand(expanded, record){
         if(expanded){
-          debugger;
+          this.selectid=record.id;
           this.getstacklist(record.id)
         }
       },
@@ -192,8 +193,12 @@
             skipCount:0
           });
           if(ret.success){
-            this.stacklist=ret.result.items;
+            var row=this.list.filter(ite=>ite.id===id)[0];
+            if(row){
+              row.sub=ret.result.items;
+            }
           }
+          this.$forceUpdate();
       },
       async loadCator() {
         var ret = await this.$http.Get('/api/services/app/B_Categroy/GetList', this.cparams)
@@ -212,6 +217,7 @@
         this.loading = false
         if (ret.success) {
           this.list = ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
       onDelete() {},

@@ -26,11 +26,11 @@
           </a-form-item>
           <a-form-item label="状态">
             <a-select style="width:100px" placeholder="选择状态" allowClear>
-              <a-select-option :value="1">
-                正常
+              <a-select-option :value="0">
+                待审核
               </a-select-option>
-              <a-select-option :value="2">
-                异常
+              <a-select-option :value="3">
+                未通过
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -54,8 +54,7 @@
         :loading="loading" @change="pagechange" :pagination="pagination">
         <span slot="status" slot-scope="text">
           <span v-if="text===0">待审核</span>
-          <span v-if="text===1">已通过</span>
-          <span v-if="text===2">未通过</span>
+          <span v-if="text===3">未通过</span>
         </span>
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;" @click="openaudit(record)">审核</a>
@@ -102,8 +101,12 @@
           passCount: 0,
           noPassCount: 0,
         },
+        pagination:{
+          total:0,
+        },
         params: {
           payType: null,
+          listType:2,
           agencyLevelId: null,
           status: null,
           payDateStart: null,
@@ -189,6 +192,7 @@
         this.loading = false
         if (ret.success) {
           this.list = ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
       openaudit(row) {
@@ -204,6 +208,7 @@
         if (ret.success) {
           this.auditvisible = false;
           this.loadlist();
+          this.loadstatic();
         }
       }, //审核通过
       async handleReasonOk() { //审核不通过并提交原因
@@ -218,6 +223,7 @@
             this.reasonvisible = false;
             this.detailvisible=false;
             this.loadlist()
+            this.loadstatic()
           } else {
 
           }

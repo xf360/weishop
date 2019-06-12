@@ -104,7 +104,7 @@
             },
             async onLoad() {
                 this.loading = true;
-                var ret = await this.$http.Get('/api/services/app/B_Withdrawal/GetList', this.parmars);
+                var ret = await this.$http.Get('/api/services/app/B_Withdrawal/GetMyList', this.parmars);
                 this.loading = false;
                 if (ret.success) {
                     this.datalist = ret.result.items;

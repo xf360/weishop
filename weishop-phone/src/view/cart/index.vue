@@ -1,6 +1,5 @@
 <template>
   <div>
-    <van-checkbox-group class="card-goods" v-model="checkedGoods">
       <div v-if="goods.length>0">
         <!-- <van-checkbox class="card-goods__item" v-for="item in goods" :key="item.id" :name="item.id"> -->
         <carditem @countchange="countchange" v-for="item in goods" :key="item.id" :title="item.name" :desc="item.spe"
@@ -8,8 +7,6 @@
         <!-- </van-checkbox> -->
       </div>
       <center v-else>购物车为空</center>
-
-    </van-checkbox-group>
     <van-submit-bar :price="totalPrice" button-text="结算" @submit="onSubmit" style="bottom:50px" />
   </div>
 </template>

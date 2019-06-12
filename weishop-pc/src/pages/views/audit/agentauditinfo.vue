@@ -7,7 +7,7 @@
     </detail-list>
     <a-divider style="margin-bottom: 32px" />
     <detail-list title="代理详情" layout="grid" :col="2">
-      <detail-list-item term="代理编号">{{info.agencyLevelCode}}</detail-list-item>
+      <!-- <detail-list-item term="代理编号">{{info.agencyLevelCode}}</detail-list-item> -->
       <detail-list-item term="国家地区">中国</detail-list-item>
       <detail-list-item term="代理等级">{{info.agencyLevelName}}</detail-list-item>
       <detail-list-item term="省份">{{info.provinces|areaname(1)}}</detail-list-item>
@@ -69,7 +69,14 @@
         -
       </detail-list-item>
     </detail-list>
-    <a-modal destroyOnClose :maskClosable="false" :visible="showimg" :footer="null" @cancel="showimg=false">
+    <a-modal destroyOnClose :maskClosable="false" :visible="showimg" @cancel="showimg=false">
+      <template slot="footer">
+        <a-button key="submit" type="primary" @click="rate">
+          旋转
+        </a-button>
+        <a-button key="back" @click="showimg=false">关闭</a-button>
+        
+      </template>
       <img v-if="showimg" alt="example" style="width: 100%" :src="showimgurl" />
     </a-modal>
   </div>
@@ -100,6 +107,10 @@
       this.loaddetail()
     },
     methods: {
+      rate(){
+        this.currentdeg=this.currentdeg+90
+        this.$refs.img.style.transform='rotate('+this.currentdeg+'deg)';
+      },
       showbig(id){
         this.showimgurl= this.$http.api+'api/AbpFile/Show?id='+id;
         this.showimg=true;

@@ -6,7 +6,7 @@
             <div class="card-desc">{{desc}}</div>
             <div class="card-price">￥{{formatPrice}} <span v-if="oldprice" class="card-oldprice">原价：￥{{oldprice}}</span></div>
             <div class="card-count">
-                <van-stepper :integer="true" :disable-input="true" :min="0" :max="99" @change="change" :value="count" />
+                <van-stepper :integer="true" :disable-input="true" :min="0" :max="99" @change="change" v-model="count" />
             </div>
         </div>
 
@@ -31,9 +31,6 @@
             desc: {
                 type: String
             },
-            num: {
-                type: Number
-            },
             changeNum: {
                 type: Boolean,
                 default: false,
@@ -47,6 +44,10 @@
             thumb: {
                 type: String
             },
+        },
+        mounted(){
+        },
+        destroyed(){
         },
         data(){
             return {

@@ -51,7 +51,9 @@
         detailvisible: false,
         selectid: null,
         list: [],
-         pagination:{},
+         pagination:{
+           total:0,
+         },
          params:{
           status:null,
           lowerUsers:true,
@@ -125,6 +127,7 @@
         this.loading=false
         if(ret.success){
           this.list=ret.result.items;
+          this.pagination.total=ret.result.totalCount;
         }
       },
       onDelete() {},

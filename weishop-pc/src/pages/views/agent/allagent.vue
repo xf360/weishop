@@ -85,7 +85,9 @@
         detailvisible: false,
         createvisible:false,
         selectid: null,
-        pagination: {},
+        pagination: {
+          total:0,
+        },
         params: {
           maxResultCount: 10,
           skipCount: 0,
@@ -154,7 +156,7 @@
         var ret = await this.$http.Get('/api/services/app/B_Agency/GetManagerList', this.params)
         this.loading = false
         if (ret.success) {
-          this.total=ret.result.totalCount;
+         this.pagination.total=ret.result.totalCount;
           this.list = ret.result.items;
         }
       },
