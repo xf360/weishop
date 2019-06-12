@@ -158,7 +158,7 @@
       },
       openaudit(row) {
         this.selectid = row.id
-        this.detailvisible = true
+        this.detailvisible = true;
       },
       async enable(row) {
         var ret = await this.$http.Post('/api/services/app/B_Goods/Enable', {
@@ -170,7 +170,8 @@
         }
       },
       opennew() {
-        this.detailvisible = true
+        this.detailvisible = true;
+        this.selectid=null;
         this.$refs.detail.form.resetFields();
       },
       async save() {
