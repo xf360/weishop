@@ -4,7 +4,7 @@ import {
 } from 'ant-design-vue'
 import axios from 'axios'
 import qs from 'qs'
-var api = 'http://127.0.0.1:5000/'
+var api = 'http://47.105.211.64:8055/'
 axios.defaults.baseURL = api
 axios.defaults.timeout = 30000
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
