@@ -151,7 +151,11 @@
       })
     },
     mounted() {
-      this.getself();
+      var vm=this;
+      setTimeout(function(){
+        vm.getself();
+      },2000)
+      
     }
   }
 

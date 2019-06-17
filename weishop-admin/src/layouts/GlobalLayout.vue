@@ -123,7 +123,6 @@
             }
           }
         }
-        debugger;
         this.menuData = [];
         for (var i in menu) {
           var ret = a(menu[i])
@@ -131,7 +130,11 @@
             this.menuData.push(ret);
           }
         }
-        debugger;
+        if(!this.menuData||this.menuData.length==0){
+          this.$message.error('你没有权限登录后台。')
+          window.localStorage.removeItem("token")
+          this.$router.push('/login');
+        }
       }
     }
   }
