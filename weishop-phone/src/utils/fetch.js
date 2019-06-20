@@ -3,7 +3,7 @@ import { Notify } from 'vant';
 Vue.use(Notify);
   import axios from 'axios'
   import qs from 'qs'
-  var api='http://47.105.211.64:8055/'
+  var api='http://api.wereborn.com/'
   axios.defaults.baseURL = api;
 
   axios.defaults.timeout = 30000

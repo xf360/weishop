@@ -61,7 +61,6 @@
         <van-popup v-model="levelshow" position="bottom">
             <van-picker :columns="levellistname" @change="onlevelChange" />
         </van-popup>
-        <pre>info{{info}}</pre>
     </div>
 </template>
 

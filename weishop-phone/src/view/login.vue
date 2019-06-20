@@ -10,7 +10,7 @@
         <div class="loginbt">
             <van-button block type="primary" :loading="result.loading" @click="onSubmit">登陆</van-button>
         </div>
-
+        
     </div>
 </template>
 <style>
@@ -47,8 +47,10 @@
             return {
                 parm: {
                     userNameOrEmailAddress: '',
-                    password: ''
+                    password: '',
+                    code:''
                 },
+                redirect:'',
                 result: {
                     loading: false
                 }
@@ -69,6 +71,16 @@
                     this.$router.push('/index/message')
                     this.$notify('欢迎你回来');
                 }
+            },
+            
+        },
+        mounted(){
+            this.redirect=window.location.href;
+            debugger;
+            var codeindex= window.location.href.indexOf('code=')
+            if(codeindex>=0){
+                var code=window.location.href.substr(codeindex+5,32);
+                this.parm.code=code;
             }
         }
     }
