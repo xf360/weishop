@@ -40,7 +40,7 @@ const routes = [{
     name: 'register3',
     component: () => import('./view/user/register3.vue'),
     meta: {
-      title: '账户升级'
+      title: '代理升级'
     }
   },
   {

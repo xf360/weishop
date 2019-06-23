@@ -1,27 +1,35 @@
 <template>
   <div class="rank">
-    <h4 class="title">{{title}}</h4>
+   
     <div class="tool">
-      <div class="quick">
-        <a>本周</a>
-        <a>本月</a>
-      </div>
-      <a-range-picker placeholder="选择时间" style="width:220px;"></a-range-picker>
+      <h4 class="title">{{title}}</h4>
+      <a-range-picker :ranges="quickranges" :placeholder="['开始时间','结束时间']" style="width:220px;"></a-range-picker>
     </div>
-    <ul class="list">
+    <ul v-if="list&&list.length>0" class="list">
       <li :key="index" v-for="(item, index) in list">
         <span :class="index < 3 ? 'active' : null">{{index + 1}}</span>
         <span>{{item.name}}</span>
-        <span>{{item.total}}</span>
+        <span>{{item.agencyCount}}</span>
       </li>
     </ul>
+    <div v-else><center>暂无数据</center></div>
   </div>
 </template>
 
 <script>
+import moment from 'moment';
   export default {
     name: 'RankingList',
-    props: ['title', 'list']
+    props: ['title', 'list'],
+    methods:{
+      moment
+    },
+    data(){
+      return {
+          quickranges:{ '本周': [moment().subtract(6,'d'), moment()], '本月': [moment().startOf('month'), moment()] ,'上月':[moment().subtract(1,'month').startOf('month'),moment().subtract(1,'month').endOf('month')]},
+
+      }
+    },
   }
 
 </script>

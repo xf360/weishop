@@ -47,7 +47,7 @@
               <a>本周</a>
               <a>本月</a>
             </div>
-            <a-range-picker placeholder="选择时间" :style="{width: '256px'}"></a-range-picker>
+            <a-range-picker :placeholder="['开始时间','结束时间']" :style="{width: '256px'}"></a-range-picker>
           </div>
           <a-tab-pane loading="true" tab="新增代理人数" key="1">
             <!-- <a-row>

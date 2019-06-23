@@ -13,7 +13,7 @@
         :labelCol="{span: 7}"
         :wrapperCol="{span: 10}"
       >
-        <a-range-picker placeholder="选择时间" style="width: 100%" />
+        <a-range-picker :placeholder="['开始时间','结束时间']" style="width: 100%" />
       </a-form-item>
       <a-form-item
         label="目标描述"

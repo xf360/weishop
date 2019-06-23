@@ -39,7 +39,7 @@
             </a-select>
           </a-form-item>
           <a-form-item label="打款日期">
-            <a-range-picker placeholder="选择时间" style="width:250px" @change="onChange" />
+            <a-range-picker :placeholder="['开始时间','结束时间']" style="width:250px" @change="onChange" />
           </a-form-item>
           <a-form-item label="关键字">
             <a-input v-model="params.searchKey" style="width:300px" placeholder="请输入代理姓名、电话、微信、身份证搜索" />

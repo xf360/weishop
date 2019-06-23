@@ -19,7 +19,7 @@
             </a-select>
           </a-form-item>
           <a-form-item label="发布时间">
-             <a-range-picker placeholder="选择时间" style="width:250px" @change="onChange" />
+             <a-range-picker :placeholder="['开始时间','结束时间']" style="width:250px" @change="onChange" />
           </a-form-item>
                 
           <a-form-item label="关键字">

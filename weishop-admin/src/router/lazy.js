@@ -26,14 +26,14 @@ const routers = new Router({
       children: [
         {
           path: '/dashboard',
-          name: '仪表盘',
+          name: '数据统计',
           component: RouteView,
           icon: 'dashboard',
           permiss:'Dashboard',
           children: [
             {
               path: '/dashboard/analysis',
-              name: '数据统计',
+              name: '代理统计',
               component: () => import('@/demopages/dashboard/Analysis'),
               icon: 'none',
               permiss:'Dashboard.Data',

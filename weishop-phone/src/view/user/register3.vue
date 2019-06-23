@@ -1,6 +1,6 @@
 <template>
     <div>
-        <van-nav-bar title="升级代理" left-arrow @click-left="onClickLeft" />、
+        <van-nav-bar title="升级代理" left-arrow @click-left="onClickLeft" />
         <van-cell-group>
             <van-cell title="当前等级" :value="myinfo.agencyLevelName" />
             <van-field @click="levelshow=true" required :value="info.toAgencyLevelName" readonly="readonly" clearable label="升级等级："
@@ -21,7 +21,7 @@
             <van-cell class="van-cell--required">
                 <template slot="title">
                     <span class="custom-text">打款凭证（1-2张）：</span>
-                    <uploader @uploading="cansave=false" @uploaded="cansave=true" :limit="2"
+                    <uploader @uploading="cansave=false" @uploaded="()=>{ debugger; cansave=true;}" :limit="2"
                         v-model="info.credentFiles"></uploader>
                 </template>
             </van-cell>
@@ -253,7 +253,7 @@ import { async } from 'q';
                         });
                     if(tomoneyret.success){
                         this.tomoney=tomoneyret.result;
-                        this.minpayAmout=(this.tomoney.firstRechargeAmout+this.tomoney.deposit)-(this.currentmoney.firstRechargeAmout+this.currentmoney.deposit)
+                        this.minpayAmout=(this.tomoney.firstRechargeAmout)+(this.tomoney.deposit-this.currentmoney.deposit)
                         this.info.payAmout=this.minpayAmout;
                     }
             }

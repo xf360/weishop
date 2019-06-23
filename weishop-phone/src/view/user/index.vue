@@ -8,7 +8,8 @@
         <img v-if="info&&info.file" :src="api+'api/AbpFile/Show?id='+info.file.id" />
       </div>
       <div v-if="info">{{info.userName}}【{{info.agencyLevelName}}】
-        <div>销售额：0 <van-button  v-if="info.agencyLeavel>1" type="primary" size="mini" @click="push('/register3')">代理升级</van-button></div>
+        <div>销售额：0 
+          </div>
       </div>
 
     </div>
@@ -54,7 +55,9 @@
         综合业务
       </van-col>
     </van-row>
-
+    <div v-if="info.agencyLeavel>1" @click="push('/register3')" style="position: fixed; right:40px;bottom:80px;" >
+      <img height="50" width="50" src="@/components/1.jpg"/>
+    </div>
     <!-- <van-cell-group class="user-group">
       <van-cell icon="records" title="全部订单" is-link />
     </van-cell-group>

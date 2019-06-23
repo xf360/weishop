@@ -6,12 +6,12 @@
     </drawer>
     <sider-menu :theme="theme" v-else-if="layout === 'side'" :menuData="menuData" :collapsed="collapsed"
       :collapsible="true" />
-    <drawer :open-drawer="showSetting" placement="right" @change="onSettingDrawerChange">
+    <!-- <drawer :open-drawer="showSetting" placement="right" @change="onSettingDrawerChange">
       <div class="setting" slot="handler">
         <a-icon :type="showSetting ? 'close' : 'setting'" />
       </div>
       <setting />
-    </drawer>
+    </drawer> -->
     <a-layout class="fixlayout" :style="{left:contentleft}">
       <global-header class="fixheader" :style="{left:contentleft}" :menuData="menuData" :collapsed="collapsed"
         @toggleCollapse="toggleCollapse" />
@@ -97,9 +97,7 @@
       var menu = this.$router.options.routes.find((item) => item.path === '/').children;
       var config = await this.$http.Get('/AbpUserConfiguration/GetAll');
       if (config.success) {
-        debugger;
         var grantedPermissions = config.result.auth.grantedPermissions
-
         function a(item) {
           var t = JSON.parse(JSON.stringify(item));
           if (item.children && item.children.length > 0) {

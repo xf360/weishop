@@ -114,9 +114,9 @@ Vue.filter('fileparse', function (value) {
 
 Vue.filter('payType', function (value) {
   switch (value) {
-    case 1:
+    case 0:
       return '支付宝'
-    case 2:
+    case 1:
       return '银行转账'
     default:
       return '未知'

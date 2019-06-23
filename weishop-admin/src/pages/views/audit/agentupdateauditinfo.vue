@@ -29,10 +29,10 @@
       <detail-list-item term="打款方式">{{info.payType|payType}}
       </detail-list-item>
        <detail-list-item term="打款金额">￥{{info.payAmout}}</detail-list-item>
-      <detail-list-item v-if="info.payType===1" term="支付宝号">{{info.payAcount}}</detail-list-item>
-      <detail-list-item v-if="info.payType===2" term="银行账户名">{{info.bankUserName}}</detail-list-item>
-      <detail-list-item v-if="info.payType===2" term="银行账户">{{info.payAcount}}</detail-list-item>
-      <detail-list-item v-if="info.payType===2" term="开户银行">{{info.bankName}}</detail-list-item>
+      <detail-list-item v-if="info.payType===0" term="支付宝号">{{info.payAcount}}</detail-list-item>
+      <detail-list-item v-if="info.payType===1" term="银行账户名">{{info.bankUserName}}</detail-list-item>
+      <detail-list-item v-if="info.payType===1" term="银行账户">{{info.payAcount}}</detail-list-item>
+      <detail-list-item v-if="info.payType===1" term="开户银行">{{info.bankName}}</detail-list-item>
     </detail-list>
     <a-divider style="margin-bottom: 32px" />
     <detail-list layout="grid" :col="2">
