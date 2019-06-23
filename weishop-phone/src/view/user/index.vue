@@ -11,7 +11,10 @@
         <div>销售额：0 
           </div>
       </div>
-
+      
+    <div v-if="info.agencyLeavel>1" @click="push('/register3')" style="position: fixed; right:40px;bottom:80px;" >
+      <img height="50" width="50" src="@/components/1.jpg"/>
+    </div>
     </div>
     <van-row class="user-links" :gutter="1" type="flex" justify="center" align="center">
       <van-col span="8" @click.native="push('/mycash')">
@@ -55,9 +58,7 @@
         综合业务
       </van-col>
     </van-row>
-    <div v-if="info.agencyLeavel>1" @click="push('/register3')" style="position: fixed; right:40px;bottom:80px;" >
-      <img height="50" width="50" src="@/components/1.jpg"/>
-    </div>
+    
     <!-- <van-cell-group class="user-group">
       <van-cell icon="records" title="全部订单" is-link />
     </van-cell-group>
